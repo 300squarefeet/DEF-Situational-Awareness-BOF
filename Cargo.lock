@@ -52,6 +52,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "authenticate-http"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "capture-netntlm"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "clipboard"
 version = "0.1.0"
 dependencies = [
@@ -309,6 +329,16 @@ dependencies = [
 
 [[package]]
 name = "kerberoast"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "keylogger-rawinput"
 version = "0.1.0"
 dependencies = [
  "common",
