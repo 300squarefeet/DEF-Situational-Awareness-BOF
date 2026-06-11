@@ -1,0 +1,17 @@
+[package]
+name = "ldapsec-check"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "LDAP signing/binding security probe — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_Networking_Ldap", "Win32_Foundation"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "ldapsec_check"

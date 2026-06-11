@@ -3,9 +3,54 @@
 resolver = "2"
 members = [
     "common",
-    "situational-awareness/uptime",                           # ← uncommented
-    "situational-awareness/hostname",                          # ← uncommented
-    "situational-awareness/whoami",                            # ← uncommented
+    "situational-awareness/uptime",
+    "situational-awareness/hostname",
+    "situational-awareness/whoami",
+    # Phase 2 — 25 remaining SA BOFs
+    "situational-awareness/arp",
+    "situational-awareness/env",
+    "situational-awareness/ipconfig",
+    "situational-awareness/netstat",
+    "situational-awareness/netuser",
+    "situational-awareness/netshare",
+    "situational-awareness/netloggedon",
+    "situational-awareness/tasklist",
+    "situational-awareness/schtasksquery",
+    "situational-awareness/reg-query",
+    "situational-awareness/windowlist",
+    "situational-awareness/routeprint",
+    "situational-awareness/ldapsearch",
+    "situational-awareness/nonpaged-ldapsearch",
+    "situational-awareness/adcs-enum-com",
+    "situational-awareness/list-firewall",
+    "situational-awareness/enum-filter-driver",
+    "situational-awareness/wmi-query",
+    "situational-awareness/get-dpapi-system",
+    "situational-awareness/clipboard",
+    "situational-awareness/dnscache",
+    "situational-awareness/driversigs",
+    "situational-awareness/findmodule",
+    "situational-awareness/sccm-decrypt",
+    "situational-awareness/ldapsec-check",
+    # Phase 3 — Remote-Ops BOFs (in progress)
+    "remote-ops/enablepriv",
+    "remote-ops/reg-save",
+    "remote-ops/sc-create",
+    "remote-ops/sc-delete",
+    "remote-ops/adduser",
+    "remote-ops/portscan",
+    "remote-ops/suspendresume",
+    "remote-ops/etw-patch",
+    "remote-ops/amsi-patch",
+    "remote-ops/inject-apc",
+    "remote-ops/inject-ntcreate",
+    "remote-ops/make-token",
+    "remote-ops/shspawnas",
+    "remote-ops/ghost-task",
+    "remote-ops/inject-crt",
+    "remote-ops/procdump",
+    "remote-ops/global-unprotect",
+    "remote-ops/inject-ktable",
 ]
 
 [workspace.package]
@@ -17,14 +62,29 @@ license = "MIT"
 [workspace.dependencies]
 rustbof = { git = "https://github.com/joaoviictorti/rustbof", branch = "main" }
 windows-sys = { version = "0.52", default-features = false, features = [
-    # Phase 1 (canary) BOFs need these:
+    # Foundation + Security
     "Win32_Foundation",
     "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_Security_Cryptography",
+    # System
     "Win32_System_SystemInformation",
-    # Pre-declared for Phase 2-6 BOFs (COM-using persistence + injection + DFR):
     "Win32_System_Threading",
     "Win32_System_Com",
     "Win32_System_LibraryLoader",
+    "Win32_System_Registry",
+    "Win32_System_Wmi",
+    "Win32_System_DataExchange",
+    # Network
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_NetManagement",
+    "Win32_NetworkManagement_Ndis",
+    "Win32_Networking_Ldap",
+    "Win32_Networking_WinSock",
+    # Storage / FS
+    "Win32_Storage_FileSystem",
+    # UI
+    "Win32_UI_WindowsAndMessaging",
 ] }
 obfstr = "0.4"
 

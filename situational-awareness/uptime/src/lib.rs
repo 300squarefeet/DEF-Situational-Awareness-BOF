@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
 // Credit: Rust port + OPSEC hardening — by Dani
-// Original C: TrustedSec/cs-situational-awareness-bof — uptime.c
 //
 #![no_std]
 #![cfg_attr(not(test), no_main)]

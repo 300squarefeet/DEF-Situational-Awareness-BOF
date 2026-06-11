@@ -1,0 +1,20 @@
+[package]
+name = "adduser"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Local user create + group add via NetUserAdd — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_NetworkManagement_NetManagement",
+] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "adduser"

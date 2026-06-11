@@ -1,0 +1,17 @@
+[package]
+name = "routeprint"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "IP routing table — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_NetworkManagement_IpHelper", "Win32_Foundation", "Win32_Networking_WinSock"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "routeprint"

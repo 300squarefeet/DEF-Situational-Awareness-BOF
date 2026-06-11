@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
 // Credit: Rust port + OPSEC hardening — by Dani
-// Original C: derived from TrustedSec/cs-situational-awareness-bof whoami banner
 //
 #![no_std]
 #![cfg_attr(not(test), no_main)]

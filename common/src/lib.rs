@@ -23,3 +23,5 @@ pub mod syscalls;
 pub mod token;
 #[cfg(target_arch = "x86_64")]
 pub mod dfr;
+#[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+pub mod evasion;

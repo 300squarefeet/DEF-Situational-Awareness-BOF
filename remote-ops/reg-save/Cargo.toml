@@ -1,0 +1,17 @@
+[package]
+name = "reg-save"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Remote registry hive dump via RegSaveKeyExA — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "reg_save"

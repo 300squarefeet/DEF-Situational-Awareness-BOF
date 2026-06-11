@@ -1,0 +1,17 @@
+[package]
+name = "netshare"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "SMB share enumeration — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_NetworkManagement_NetManagement", "Win32_Foundation"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "netshare"

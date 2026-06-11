@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Uptime via KUSER_SHARED_DATA — by Dani. Original C: TrustedSec/cs-situational-awareness-bof (uptime.c)"
+description = "Uptime via KUSER_SHARED_DATA — by Dani."
 
 [dependencies]
 rustbof.workspace = true
