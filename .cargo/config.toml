@@ -1,0 +1,20 @@
+# .cargo/config.toml
+[unstable]
+build-std = ["core", "alloc", "panic_abort", "compiler_builtins"]
+build-std-features = ["panic_immediate_abort"]
+
+[target.x86_64-pc-windows-gnu]
+rustflags = [
+    "-C", "panic=abort",
+    "-C", "symbol-mangling-version=v0",
+    "-Z", "function-sections",
+    "-C", "link-arg=--no-entry",
+]
+
+[target.i686-pc-windows-gnu]
+rustflags = [
+    "-C", "panic=abort",
+    "-C", "symbol-mangling-version=v0",
+    "-Z", "function-sections",
+    "-C", "link-arg=--no-entry",
+]

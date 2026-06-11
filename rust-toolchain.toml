@@ -1,0 +1,6 @@
+# rust-toolchain.toml
+[toolchain]
+channel    = "nightly-2025-01-25"
+components = ["rust-src", "clippy", "rustfmt"]
+targets    = ["x86_64-pc-windows-gnu", "i686-pc-windows-gnu", "aarch64-apple-darwin"]
+profile    = "minimal"

@@ -1,0 +1,33 @@
+# Makefile.toml
+[config]
+default_to_workspace = false
+
+[tasks.setup]
+description = "One-time toolchain setup"
+script_runner = "@shell"
+script = ["bash scripts/setup_macos.sh"]
+
+[tasks.build-all]
+description = "Build all BOFs → dist/"
+script_runner = "@shell"
+script = ["bash scripts/build_all.sh"]
+
+[tasks.build-one]
+description = "Build a single BOF crate (env CRATE=sa-uptime)"
+script_runner = "@shell"
+script = ["bash scripts/build_one.sh \"$CRATE\""]
+
+[tasks.verify]
+description = "Verify COFF outputs"
+script_runner = "@shell"
+script = ["bash scripts/verify_coff.sh"]
+
+[tasks.test]
+description = "Run host unit tests"
+command = "cargo"
+args = ["test", "--target", "aarch64-apple-darwin", "-p", "common"]
+
+[tasks.clippy]
+description = "Lint the workspace"
+command = "cargo"
+args = ["clippy", "--workspace", "--", "-D", "warnings", "-D", "clippy::unwrap_used", "-D", "clippy::expect_used", "-D", "clippy::panic"]

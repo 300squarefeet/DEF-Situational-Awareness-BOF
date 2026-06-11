@@ -1,0 +1,21 @@
+# Build artifacts
+/target/
+/dist/
+
+# macOS
+.DS_Store
+
+# Secrets
+*.key
+.env
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Test outputs
+*.log
+
+# Vendored upstream repos
+/refs/

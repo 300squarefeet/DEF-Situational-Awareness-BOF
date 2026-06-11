@@ -1,0 +1,40 @@
+# Cargo.toml
+[workspace]
+resolver = "2"
+members = [
+    "common",
+    "situational-awareness/sa-uptime",
+    "situational-awareness/sa-hostname",
+    "situational-awareness/sa-whoami",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Dani <daniagungg@gmail.com>"]
+license = "MIT"
+repository = "internal"
+
+[workspace.dependencies]
+rustbof = { git = "https://github.com/joaoviictorti/rustbof", branch = "main" }
+windows-sys = { version = "0.52", default-features = false, features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_System_SystemInformation",
+    "Win32_System_Com",
+    "Win32_System_LibraryLoader",
+] }
+obfstr = "0.4"
+
+[profile.release]
+opt-level     = "z"
+lto           = true
+codegen-units = 1
+strip         = true
+panic         = "abort"
+debug         = false
+overflow-checks = false
+
+[profile.dev]
+panic = "abort"
