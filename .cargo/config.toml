@@ -1,7 +1,7 @@
 # .cargo/config.toml
 [unstable]
 build-std = ["core", "alloc", "panic_abort", "compiler_builtins"]
-build-std-features = ["panic_immediate_abort"]
+build-std-features = ["panic_immediate_abort", "compiler-builtins-mem"]
 
 [target.x86_64-pc-windows-gnu]
 rustflags = [

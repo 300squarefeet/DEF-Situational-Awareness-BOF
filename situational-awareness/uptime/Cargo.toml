@@ -1,0 +1,17 @@
+[package]
+name = "uptime"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Uptime via KUSER_SHARED_DATA — by Dani. Original C: TrustedSec/cs-situational-awareness-bof (uptime.c)"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "uptime"
