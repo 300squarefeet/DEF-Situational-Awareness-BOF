@@ -5,7 +5,7 @@ members = [
     "common",
     "situational-awareness/uptime",                           # ← uncommented
     "situational-awareness/hostname",                          # ← uncommented
-    # "situational-awareness/whoami",    # forward-declared, not yet created
+    "situational-awareness/whoami",                            # ← uncommented
 ]
 
 [workspace.package]
