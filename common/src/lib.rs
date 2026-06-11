@@ -11,7 +11,7 @@ extern crate alloc;
 pub mod credit;
 pub mod hash;
 pub mod mitre;
-pub mod panic_safe { /* filled in Task 7 */ }
+pub mod panic_safe;
 pub mod str_util   { /* filled in Task 8 */ }
 pub mod obf        { /* filled in Task 9 */ }
 pub mod dfr        { /* filled in Task 10 */ }
