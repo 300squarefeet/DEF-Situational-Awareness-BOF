@@ -57,11 +57,12 @@ members = [
     "operators-kit/inject-poolparty",
     "operators-kit/spn",
     "operators-kit/wifi-passwords",
-    # Phase 4 — C2-Tool-Collection (batch A)
-    "c2-collection/psx",
     # Phase 4 — OperatorsKit (batch B)
     "operators-kit/cred-prompt",
     "operators-kit/add-exclusion",
+    # Phase 4 — OperatorsKit (batch D): COM lateral movement
+    "operators-kit/execute-crosssession",
+    "operators-kit/dcom-localserver32",
 ]
 
 [workspace.package]

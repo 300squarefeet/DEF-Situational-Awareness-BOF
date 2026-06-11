@@ -80,6 +80,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dcom-localserver32"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "dnscache"
 version = "0.1.0"
 dependencies = [
@@ -150,6 +160,16 @@ dependencies = [
 
 [[package]]
 name = "etw-patch"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "execute-crosssession"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -390,15 +410,6 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "psx"
-version = "0.1.0"
-dependencies = [
- "common",
- "obfstr",
- "rustbof",
 ]
 
 [[package]]

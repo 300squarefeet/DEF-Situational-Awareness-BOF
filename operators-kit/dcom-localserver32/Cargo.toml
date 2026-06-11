@@ -1,0 +1,17 @@
+[package]
+name = "dcom-localserver32"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "DCOM LocalServer32 lateral movement — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_System_Com"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "dcom_localserver32"
