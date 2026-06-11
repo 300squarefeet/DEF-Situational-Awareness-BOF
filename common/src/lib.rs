@@ -17,5 +17,5 @@ pub mod str_util;
 pub mod obf;
 pub mod dfr;
 pub mod syscalls;
-pub mod com        { /* filled in Task 12 */ }
+pub mod com;
 pub mod token      { /* filled in Task 13 */ }
