@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Establish the Rust workspace, `common` OPSEC-primitives crate, build pipeline, and three end-to-end canary BOFs (`sa-uptime`, `sa-hostname`, `sa-whoami`) that exercise every primitive in the design (zero-API/raw PEB read → DFR-based Win32 → indirect syscall + token wrapper). Once this lands, every subsequent BOF follows the same template.
+**Goal:** Establish the Rust workspace, `common` OPSEC-primitives crate, build pipeline, and three end-to-end canary BOFs (`uptime`, `hostname`, `whoami`) that exercise every primitive in the design (zero-API/raw PEB read → DFR-based Win32 → indirect syscall + token wrapper). Once this lands, every subsequent BOF follows the same template.
 
 **Architecture:** Cargo workspace with `staticlib` crate-type per BOF; `boflink` converts the static archive to a COFF `.o`. The `common` crate hosts HalosGate indirect syscalls, djb2 API hashing, PEB-walking DFR, obfstr string encryption, COM RAII helpers, and the MITRE banner. Every BOF imports `common` + `rustbof` + `windows-sys` (types only) + `obfstr` — no direct `extern "system"` imports leak through the BOF. Cross-compile from macOS via MinGW.
 
@@ -45,12 +45,12 @@
 | `common/src/com.rs` | `ComGuard`, `ComRef<T>`, `Bstr` RAII wrappers |
 | `common/src/token.rs` | Token open/query/adjust wrappers (uses syscalls) |
 | `common/tests/integration.rs` | Host-runnable tests that don't need Windows |
-| `situational-awareness/sa-uptime/Cargo.toml` | Canary 1 manifest |
-| `situational-awareness/sa-uptime/src/lib.rs` | Reads `KUSER_SHARED_DATA` directly (zero-API) |
-| `situational-awareness/sa-hostname/Cargo.toml` | Canary 2 manifest |
-| `situational-awareness/sa-hostname/src/lib.rs` | DFR `GetComputerNameExA`, validates DFR path |
-| `situational-awareness/sa-whoami/Cargo.toml` | Canary 3 manifest |
-| `situational-awareness/sa-whoami/src/lib.rs` | Indirect `NtOpenProcessToken` + `NtQueryInformationToken`, validates syscall + token path |
+| `situational-awareness/uptime/Cargo.toml` | Canary 1 manifest |
+| `situational-awareness/uptime/src/lib.rs` | Reads `KUSER_SHARED_DATA` directly (zero-API) |
+| `situational-awareness/hostname/Cargo.toml` | Canary 2 manifest |
+| `situational-awareness/hostname/src/lib.rs` | DFR `GetComputerNameExA`, validates DFR path |
+| `situational-awareness/whoami/Cargo.toml` | Canary 3 manifest |
+| `situational-awareness/whoami/src/lib.rs` | Indirect `NtOpenProcessToken` + `NtQueryInformationToken`, validates syscall + token path |
 
 Total: 1 workspace root, 9 script/doc files, 1 common crate (13 source files + tests), 3 canary crates (6 files). ~32 files.
 
@@ -111,9 +111,9 @@ rustflags = [
 resolver = "2"
 members = [
     "common",
-    "situational-awareness/sa-uptime",
-    "situational-awareness/sa-hostname",
-    "situational-awareness/sa-whoami",
+    "situational-awareness/uptime",
+    "situational-awareness/hostname",
+    "situational-awareness/whoami",
 ]
 
 [workspace.package]
@@ -166,7 +166,7 @@ script_runner = "@shell"
 script = ["bash scripts/build_all.sh"]
 
 [tasks.build-one]
-description = "Build a single BOF crate (env CRATE=sa-uptime)"
+description = "Build a single BOF crate (env CRATE=uptime)"
 script_runner = "@shell"
 script = ["bash scripts/build_one.sh \"$CRATE\""]
 
@@ -287,7 +287,7 @@ know exactly which technique they're firing.
 - [x] Workspace + toolchain pinned
 - [x] `common` OPSEC primitives crate
 - [x] Build pipeline (macOS cross-compile → COFF)
-- [x] 3 canary BOFs end-to-end: `sa-uptime`, `sa-hostname`, `sa-whoami`
+- [x] 3 canary BOFs end-to-end: `uptime`, `hostname`, `whoami`
 - [ ] Phase 2: remaining 25 SA BOFs
 - [ ] Phase 3: 18 Remote Ops BOFs
 - [ ] Phase 4: 20 OperatorsKit + C2 BOFs
@@ -312,21 +312,21 @@ Outputs land in `dist/`:
 
 ```
 dist/
-├── sa-uptime.x64.o
-├── sa-uptime.x86.o
-├── sa-hostname.x64.o
-├── sa-hostname.x86.o
-├── sa-whoami.x64.o
-├── sa-whoami.x86.o
+├── uptime.x64.o
+├── uptime.x86.o
+├── hostname.x64.o
+├── hostname.x86.o
+├── whoami.x64.o
+├── whoami.x86.o
 └── manifest.json
 ```
 
 ## Run (Cobalt Strike)
 
 ```
-beacon> inline-execute dist/sa-whoami.x64.o
+beacon> inline-execute dist/whoami.x64.o
 ================================================
-  sa-whoami — by Dani
+  whoami — by Dani
 ================================================
   [MITRE] T1033 - System Owner/User Discovery (Discovery)
   [MITRE] T1134 - Access Token Manipulation (Privilege Escalation)
@@ -663,10 +663,10 @@ fn banner_format_snapshot() {
         Technique { id: "T1033", name: "System Owner/User Discovery", tactic: "Discovery" },
         Technique { id: "T1134", name: "Access Token Manipulation",   tactic: "Privilege Escalation" },
     ];
-    let out = format_banner("sa-whoami", techs);
+    let out = format_banner("whoami", techs);
     let expected = "\
 ================================================
-  sa-whoami — by Dani
+  whoami — by Dani
 ================================================
   [MITRE] T1033 - System Owner/User Discovery (Discovery)
   [MITRE] T1134 - Access Token Manipulation (Privilege Escalation)
@@ -677,8 +677,8 @@ fn banner_format_snapshot() {
 
 #[test]
 fn banner_empty_techniques() {
-    let out = format_banner("sa-stub", &[]);
-    assert!(out.contains("sa-stub — by Dani"));
+    let out = format_banner("stub", &[]);
+    assert!(out.contains("stub — by Dani"));
     assert!(out.contains("------------------------------------------------"));
 }
 ```
@@ -968,7 +968,7 @@ git commit -m "feat(common): obfstr re-export as obf!() macro (Dani)"
 - Modify: `common/src/lib.rs` (replace stub)
 - Create: `common/src/syscalls.rs`
 
-Syscalls cannot be unit-tested on macOS host (no ntdll). The acceptance test for this module is "the sa-whoami canary in Task 16 successfully invokes NtOpenProcessToken indirectly and returns valid data when loaded into Beacon" (Layer-3 manual smoke).
+Syscalls cannot be unit-tested on macOS host (no ntdll). The acceptance test for this module is "the whoami canary in Task 16 successfully invokes NtOpenProcessToken indirectly and returns valid data when loaded into Beacon" (Layer-3 manual smoke).
 
 For host-side hygiene we add only:
 - `cargo check --target x86_64-pc-windows-gnu` must pass
@@ -1221,7 +1221,7 @@ macro_rules! nt_syscall {
 }
 ```
 
-This is a deliberately partial syscall implementation — full HalosGate neighbour-walking and the multi-arity dispatch matrix are intentionally elided here and completed in-line during canary 3 (sa-whoami, Task 16). The canary is the integration test.
+This is a deliberately partial syscall implementation — full HalosGate neighbour-walking and the multi-arity dispatch matrix are intentionally elided here and completed in-line during canary 3 (whoami, Task 16). The canary is the integration test.
 
 - [ ] **Step 2: Wire up** — `pub mod syscalls;` in lib.rs.
 
@@ -1236,7 +1236,7 @@ Expected: PASS.
 git add common/src/syscalls.rs common/src/lib.rs
 git commit -m "feat(common): HalosGate syscall resolver scaffold + do_syscall4 (Dani)
 
-Full neighbour-walk + multi-arity dispatch completed by sa-whoami canary
+Full neighbour-walk + multi-arity dispatch completed by whoami canary
 integration."
 ```
 
@@ -1511,7 +1511,7 @@ git commit -m "feat(common): token open/query helpers via indirect syscall (Dani
 ```bash
 #!/usr/bin/env bash
 # scripts/build_one.sh — build a single BOF crate to dist/<bof>.{x64,x86}.o
-# Usage: bash scripts/build_one.sh <crate-name>   (e.g. sa-uptime)
+# Usage: bash scripts/build_one.sh <crate-name>   (e.g. uptime)
 # Author: Dani <daniagungg@gmail.com>
 set -euo pipefail
 
@@ -1560,20 +1560,20 @@ git commit -m "build: scripts/build_one.sh — single crate to dist/{x64,x86}.o"
 
 ---
 
-## Task 15: Canary 1 — sa-uptime (zero-API, validates pipeline)
+## Task 15: Canary 1 — uptime (zero-API, validates pipeline)
 
 **Files:**
-- Create: `situational-awareness/sa-uptime/Cargo.toml`
-- Create: `situational-awareness/sa-uptime/src/lib.rs`
+- Create: `situational-awareness/uptime/Cargo.toml`
+- Create: `situational-awareness/uptime/src/lib.rs`
 - Modify: root `Cargo.toml` (already lists this member from Task 1)
 
-sa-uptime reads `KUSER_SHARED_DATA` at the fixed VA `0x7FFE0000`. No API calls, no DFR, no syscall. This proves the build pipeline + rustbof entry + MITRE banner end-to-end with minimal surface area.
+uptime reads `KUSER_SHARED_DATA` at the fixed VA `0x7FFE0000`. No API calls, no DFR, no syscall. This proves the build pipeline + rustbof entry + MITRE banner end-to-end with minimal surface area.
 
-- [ ] **Step 1: Write `situational-awareness/sa-uptime/Cargo.toml`**
+- [ ] **Step 1: Write `situational-awareness/uptime/Cargo.toml`**
 
 ```toml
 [package]
-name = "sa-uptime"
+name = "uptime"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -1588,10 +1588,10 @@ obfstr.workspace = true
 
 [lib]
 crate-type = ["staticlib"]
-name = "sa_uptime"
+name = "uptime"
 ```
 
-- [ ] **Step 2: Write `situational-awareness/sa-uptime/src/lib.rs`**
+- [ ] **Step 2: Write `situational-awareness/uptime/src/lib.rs`**
 
 ```rust
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
@@ -1647,16 +1647,16 @@ unsafe fn read_u64(addr: usize) -> u64 {
 
 - [ ] **Step 3: Cross-build** (no test, this BOF runs in Beacon)
 
-Run: `bash scripts/build_one.sh sa-uptime`
-Expected: produces `dist/sa-uptime.x64.o` and `dist/sa-uptime.x86.o`. File sizes around 4–20 KB.
+Run: `bash scripts/build_one.sh uptime`
+Expected: produces `dist/uptime.x64.o` and `dist/uptime.x86.o`. File sizes around 4–20 KB.
 
 If `boflink` complains about missing `go` symbol, ensure `#[rustbof::main]` expanded — check `cargo expand` for the `extern "C" fn go(...)` declaration.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add situational-awareness/sa-uptime/
-git commit -m "feat(sa-uptime): canary 1 — KUSER_SHARED_DATA uptime, end-to-end pipeline validation (Dani)"
+git add situational-awareness/uptime/
+git commit -m "feat(uptime): canary 1 — KUSER_SHARED_DATA uptime, end-to-end pipeline validation (Dani)"
 ```
 
 ---
@@ -1717,7 +1717,7 @@ chmod +x scripts/verify_coff.sh
 - [ ] **Step 3: Run against canary 1 output**
 
 Run: `bash scripts/verify_coff.sh`
-Expected: `✓ 2 COFF artifacts verified` (sa-uptime x64 + x86)
+Expected: `✓ 2 COFF artifacts verified` (uptime x64 + x86)
 
 Note: the keyword `kuser_shared_data` is in the leak regex precisely because the canary intentionally references it — but as a numeric constant (`0x7FFE0000`), not the string. So the test should still pass. If it doesn't, our zero-API claim was violated; investigate.
 
@@ -1730,24 +1730,24 @@ git commit -m "build: scripts/verify_coff.sh — COFF + symbol + leak check (Dan
 
 ---
 
-## Task 17: Canary 2 — sa-hostname (DFR validation)
+## Task 17: Canary 2 — hostname (DFR validation)
 
 **Files:**
-- Create: `situational-awareness/sa-hostname/Cargo.toml`
-- Create: `situational-awareness/sa-hostname/src/lib.rs`
+- Create: `situational-awareness/hostname/Cargo.toml`
+- Create: `situational-awareness/hostname/src/lib.rs`
 
-sa-hostname uses `dfr_fn!` to resolve `GetComputerNameExA` and prints NetBIOS / DNS-Domain / FQDN. This validates the DFR path end-to-end.
+hostname uses `dfr_fn!` to resolve `GetComputerNameExA` and prints NetBIOS / DNS-Domain / FQDN. This validates the DFR path end-to-end.
 
-- [ ] **Step 1: Write `situational-awareness/sa-hostname/Cargo.toml`**
+- [ ] **Step 1: Write `situational-awareness/hostname/Cargo.toml`**
 
 ```toml
 [package]
-name = "sa-hostname"
+name = "hostname"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Hostname (NetBIOS, DNS domain, FQDN) — by Dani. Derived from cs-sa-bof whoami output."
+description = "Hostname (NetBIOS, DNS domain, FQDN) — by Dani."
 
 [dependencies]
 rustbof.workspace = true
@@ -1757,10 +1757,10 @@ obfstr.workspace = true
 
 [lib]
 crate-type = ["staticlib"]
-name = "sa_hostname"
+name = "hostname"
 ```
 
-- [ ] **Step 2: Write `situational-awareness/sa-hostname/src/lib.rs`**
+- [ ] **Step 2: Write `situational-awareness/hostname/src/lib.rs`**
 
 ```rust
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
@@ -1827,8 +1827,8 @@ fn print_name(label: &str, kind: i32) -> Result<(), &'static str> {
 
 - [ ] **Step 3: Build**
 
-Run: `bash scripts/build_one.sh sa-hostname`
-Expected: `dist/sa-hostname.x64.o` + `dist/sa-hostname.x86.o`.
+Run: `bash scripts/build_one.sh hostname`
+Expected: `dist/hostname.x64.o` + `dist/hostname.x86.o`.
 
 - [ ] **Step 4: Verify**
 
@@ -1838,20 +1838,20 @@ Expected: `✓ 4 COFF artifacts verified`. If `kernel32.dll` or `GetComputerName
 - [ ] **Step 5: Commit**
 
 ```bash
-git add situational-awareness/sa-hostname/
-git commit -m "feat(sa-hostname): canary 2 — DFR path validation via GetComputerNameExA (Dani)"
+git add situational-awareness/hostname/
+git commit -m "feat(hostname): canary 2 — DFR path validation via GetComputerNameExA (Dani)"
 ```
 
 ---
 
-## Task 18: Canary 3 — sa-whoami (indirect syscall validation)
+## Task 18: Canary 3 — whoami (indirect syscall validation)
 
 **Files:**
-- Create: `situational-awareness/sa-whoami/Cargo.toml`
-- Create: `situational-awareness/sa-whoami/src/lib.rs`
+- Create: `situational-awareness/whoami/Cargo.toml`
+- Create: `situational-awareness/whoami/src/lib.rs`
 - Modify: `common/src/syscalls.rs` (complete the HalosGate neighbour-walk that was scaffolded in Task 10)
 
-sa-whoami exercises the full syscall path:
+whoami exercises the full syscall path:
 1. `common::syscalls::resolve` finds ntdll by module hash.
 2. Resolves `NtOpenProcessToken` by API hash.
 3. Inspects the stub — clean → SSN, hooked → HalosGate neighbour walk.
@@ -1916,11 +1916,11 @@ unsafe fn halos_gate(ntdll: *mut c_void, func: *mut c_void) -> Result<u16, Sysca
 }
 ```
 
-- [ ] **Step 2: Write `situational-awareness/sa-whoami/Cargo.toml`**
+- [ ] **Step 2: Write `situational-awareness/whoami/Cargo.toml`**
 
 ```toml
 [package]
-name = "sa-whoami"
+name = "whoami"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -1935,10 +1935,10 @@ obfstr.workspace = true
 
 [lib]
 crate-type = ["staticlib"]
-name = "sa_whoami"
+name = "whoami"
 ```
 
-- [ ] **Step 3: Write `situational-awareness/sa-whoami/src/lib.rs`**
+- [ ] **Step 3: Write `situational-awareness/whoami/src/lib.rs`**
 
 ```rust
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
@@ -1974,7 +1974,7 @@ fn run() -> Result<(), &'static str> {
         .map_err(|_| "NtOpenProcessToken failed")?;
     println!("TOKEN_HANDLE: 0x{:x}", token);
     // Phase 1 minimal: confirm we can open the token. Full SID/group enumeration
-    // is intentionally deferred to Phase 2 sa-whoami refinement — the canary's
+    // is intentionally deferred to Phase 2 whoami refinement — the canary's
     // job here is to PROVE the indirect-syscall path works end-to-end.
     println!("STATUS:       indirect syscall path validated");
     Ok(())
@@ -1983,19 +1983,19 @@ fn run() -> Result<(), &'static str> {
 
 - [ ] **Step 4: Build**
 
-Run: `bash scripts/build_one.sh sa-whoami`
-Expected: `dist/sa-whoami.x64.o` + `dist/sa-whoami.x86.o`.
+Run: `bash scripts/build_one.sh whoami`
+Expected: `dist/whoami.x64.o` + `dist/whoami.x86.o`.
 
 - [ ] **Step 5: Verify**
 
 Run: `bash scripts/verify_coff.sh`
-Expected: `✓ 6 COFF artifacts verified`. Crucially, `strings dist/sa-whoami.x64.o | grep -i ntopen` returns **zero** — `"NtOpenProcessToken"` is consumed by `djb2` at compile-time.
+Expected: `✓ 6 COFF artifacts verified`. Crucially, `strings dist/whoami.x64.o | grep -i ntopen` returns **zero** — `"NtOpenProcessToken"` is consumed by `djb2` at compile-time.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add common/src/syscalls.rs situational-awareness/sa-whoami/
-git commit -m "feat(sa-whoami): canary 3 — full HalosGate + indirect syscall path (Dani)"
+git add common/src/syscalls.rs situational-awareness/whoami/
+git commit -m "feat(whoami): canary 3 — full HalosGate + indirect syscall path (Dani)"
 ```
 
 ---
@@ -2017,11 +2017,11 @@ set -euo pipefail
 mkdir -p dist
 
 mapfile -t CRATES < <(cargo metadata --no-deps --format-version 1 \
-    | jq -r '.packages[] | select(.name | test("^(sa|ro|ok|c2|ps)-")) | .name' \
+    | jq -r '.packages[] | select(.name != "common") | .name' \
     | sort -u)
 
 if [[ "${#CRATES[@]}" -eq 0 ]]; then
-    echo "ERROR: no sa-/ro-/ok-/c2-/ps- crates found in workspace" >&2
+    echo "ERROR: no BOF crates found in workspace (only 'common' present)" >&2
     exit 1
 fi
 
@@ -2066,7 +2066,7 @@ def main() -> int:
     entries = []
     for p in sorted(DIST.glob("*.o")):
         entries.append({
-            "name": p.stem,           # e.g. "sa-whoami.x64"
+            "name": p.stem,           # e.g. "whoami.x64"
             "file": p.name,
             "size": p.stat().st_size,
             "sha256": sha256(p),
@@ -2120,9 +2120,9 @@ This file is the master table — keep it in sync with each BOF's `TECHNIQUES` c
 
 | BOF | Techniques | Tactic |
 |---|---|---|
-| sa-uptime   | T1082 | Discovery |
-| sa-hostname | T1082 | Discovery |
-| sa-whoami   | T1033, T1134 | Discovery / Privilege Escalation |
+| uptime   | T1082 | Discovery |
+| hostname | T1082 | Discovery |
+| whoami   | T1033, T1134 | Discovery / Privilege Escalation |
 
 _Extended in Phase 2-6. Maintainer: Dani._
 ```
@@ -2138,13 +2138,13 @@ set -euo pipefail
 
 echo "This is a manual harness. Steps:"
 echo "  1. Spawn beacon on Win10/11 test VM."
-echo "  2. From CS console: inline-execute dist/sa-uptime.x64.o"
+echo "  2. From CS console: inline-execute dist/uptime.x64.o"
 echo "  3. Expect MITRE banner + 'UPTIME: <d>d <h>h ...' line."
-echo "  4. Repeat for sa-hostname.x64.o and sa-whoami.x64.o."
+echo "  4. Repeat for hostname.x64.o and whoami.x64.o."
 echo "  5. For each, confirm: no beacon crash, banner present, expected output."
 echo "  6. Record outcome in docs/smoke-runs/$(date +%Y-%m-%d).md"
 
-ls -la dist/sa-*.{x64,x86}.o
+ls -la dist/*.{x64,x86}.o
 ```
 
 - [ ] **Step 3: Mark executable**
@@ -2166,7 +2166,7 @@ git commit -m "docs: MITRE mapping + smoke_test.sh harness (Dani)"
 git tag -a v0.1.0-phase1 -m "Phase 1: Foundation + Canary — by Dani
 
 Workspace, common OPSEC primitives crate, build pipeline, and three canary
-BOFs (sa-uptime, sa-hostname, sa-whoami) validated end-to-end on a target
+BOFs (uptime, hostname, whoami) validated end-to-end on a target
 Windows VM via inline-execute.
 
 Phases 2-6 extend the BOF roster following the established pattern."

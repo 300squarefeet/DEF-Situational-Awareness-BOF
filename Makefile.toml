@@ -13,7 +13,7 @@ script_runner = "@shell"
 script = ["bash scripts/build_all.sh"]
 
 [tasks.build-one]
-description = "Build a single BOF crate (env CRATE=sa-uptime)"
+description = "Build a single BOF crate (env CRATE=uptime)"
 script_runner = "@shell"
 script = ["bash scripts/build_one.sh \"$CRATE\""]
 

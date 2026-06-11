@@ -60,11 +60,11 @@ DEF-Situational-Awareness-BOF/
 │   └── mitre-mapping.md                # BOF → ATT&CK technique table
 ├── common/                             # shared OPSEC primitives crate
 │   └── src/{lib,syscalls,hash,dfr,obf,com,token,str_util,panic_safe,mitre,credit}.rs
-├── situational-awareness/              # 28 BOF crates (sa-*)
-├── remote-ops/                         # 18 BOF crates (ro-*)
-├── operators-kit/                      # 12 BOF crates (ok-*)
-├── c2-collection/                      # 8 BOF crates (c2-*)
-├── persistence/                        # 2 BOF crates (ps-*)
+├── situational-awareness/              # 28 BOF crates (flat-named: whoami, hostname, ...)
+├── remote-ops/                         # 18 BOF crates (portscan, procdump, ...)
+├── operators-kit/                      # 12 BOF crates (poolparty, xsession, ...)
+├── c2-collection/                      # 8 BOF crates (psx, psk, kerberoast, ...)
+├── persistence/                        # 2 BOF crates (schtask-com, lnk-startup)
 ├── tools/
 │   └── inline-execute-ex-opsec/        # OPSEC-modified InlineExecuteEx fork (C++)
 │       ├── src/, aggressor/, Makefile, scripts/encrypt_bof.py
@@ -322,34 +322,34 @@ Credit C: TrustedSec / `cs-sa-bof/src/SA/*`.
 
 | # | Crate | Original | Tujuan | Inti API (post-OPSEC) | MITRE |
 |---|---|---|---|---|---|
-| 1 | `sa-arp` | arp/ | ARP cache | indirect `NtDeviceIoControlFile`, fallback DFR `GetIpNetTable2` | T1018 |
-| 2 | `sa-env` | env/ | Env vars | `RtlGetCurrentPeb()->ProcessParameters->Environment` (zero-API) | T1082 |
-| 3 | `sa-ipconfig` | ipconfig/ | Adapter info | DFR `GetAdaptersAddresses` | T1016 |
-| 4 | `sa-netstat` | netstat/ | TCP/UDP conn | indirect `NtDeviceIoControlFile` → `\Device\Tcp`, `\Device\Udp` | T1049 |
-| 5 | `sa-netuser` | netuser/ | Local/domain user | DFR `NetUserEnum` | T1087.001, T1087.002 |
-| 6 | `sa-netshare` | netshares/ | SMB shares | DFR `NetShareEnum` | T1135 |
-| 7 | `sa-netloggedon` | netloggedon/ | Logged-on users | DFR `NetWkstaUserEnum` | T1033 |
-| 8 | `sa-tasklist` | tasklist/ | Process list | indirect `NtQuerySystemInformation(SystemProcessInformation)` — no WMI | T1057 |
-| 9 | `sa-whoami` | whoami/ | Token info | indirect `NtOpenProcessToken` + `NtQueryInformationToken` | T1033, T1134 |
-| 10 | `sa-schtasksquery` | schtasksquery/ | Scheduled tasks | COM `ITaskService` via DFR `CoCreateInstance` | T1053.005, T1518 |
-| 11 | `sa-reg-query` | reg_query/ | Registry read | DFR `RegOpenKeyExA` + Enum | T1012 |
-| 12 | `sa-windowlist` | windowlist/ | Window enum | DFR `EnumWindows` (extern "system" callback) | T1010 |
-| 13 | `sa-uptime` | uptime/ | Uptime | `KUSER_SHARED_DATA` @ `0x7FFE0000` (zero-API) | T1082 |
-| 14 | `sa-routeprint` | routeprint/ | Routing table | DFR `GetIpForwardTable2` | T1016 |
-| 15 | `sa-ldapsearch` | ldapsearch/ | LDAP query | DFR `ldap_bind` + `ldap_search_ext` | T1087.002, T1018 |
-| 16 | `sa-nonpaged-ldapsearch` | nonpagedldapsearch/ | LDAP non-paged (stealth) | indirect ADSI via COM | T1087.002 |
-| 17 | `sa-adcs-enum-com` | adcs_enum_com/ | ADCS template enum | COM `ICertConfig` + `IEnrollmentPolicyServer` | T1518.001 |
-| 18 | `sa-list-firewall` | list_firewall_rules/ | Firewall rules | Registry walk `HKLM\System\...\FirewallPolicy` | T1518.001 |
-| 19 | `sa-enum-filter-driver` | enum_filter_driver/ | Mini-filter drivers | DFR `FilterFindFirst`/`Next` | T1518.001, T1014 |
-| 20 | `sa-wmi-query` | wmi_query/ | Generic WMI | COM `IWbemServices::ExecQuery` | T1047 |
-| 21 | `sa-get-dpapi-system` | get_dpapi_system/ | DPAPI system master key | indirect LSASS access + DFR `LsaRetrievePrivateData` | T1555.004 |
-| 22 | `sa-hostname` | derived from whoami | NetBIOS+FQDN | DFR `GetComputerNameExA` (3 modes) | T1082 |
-| 23 | `sa-clipboard` | clipboard/ | Clipboard dump | DFR `GetClipboardData(CF_UNICODETEXT)` | T1115 |
-| 24 | `sa-dnscache` | dnscache/ | DNS cache | DFR `DnsGetCacheDataTable` | T1016.001 |
-| 25 | `sa-driversigs` | driversigs/ | Driver signature info | DFR `WinVerifyTrust` | T1518.001 |
-| 26 | `sa-findmodule` | findLoadedModule/ | Find module in remote PID | indirect `NtQueryInformationProcess` + PEB walk | T1057 |
-| 27 | `sa-sccm-decrypt` | sccm_decrypt/ | SCCM secret decrypt | DPAPI via DFR | T1555 |
-| 28 | `sa-ldapsec-check` | ldapsecuritycheck/ | LDAP sign/binding probe | DFR ldap SSPI | T1518 |
+| 1 | `arp` | arp/ | ARP cache | indirect `NtDeviceIoControlFile`, fallback DFR `GetIpNetTable2` | T1018 |
+| 2 | `env` | env/ | Env vars | `RtlGetCurrentPeb()->ProcessParameters->Environment` (zero-API) | T1082 |
+| 3 | `ipconfig` | ipconfig/ | Adapter info | DFR `GetAdaptersAddresses` | T1016 |
+| 4 | `netstat` | netstat/ | TCP/UDP conn | indirect `NtDeviceIoControlFile` → `\Device\Tcp`, `\Device\Udp` | T1049 |
+| 5 | `netuser` | netuser/ | Local/domain user | DFR `NetUserEnum` | T1087.001, T1087.002 |
+| 6 | `netshare` | netshares/ | SMB shares | DFR `NetShareEnum` | T1135 |
+| 7 | `netloggedon` | netloggedon/ | Logged-on users | DFR `NetWkstaUserEnum` | T1033 |
+| 8 | `tasklist` | tasklist/ | Process list | indirect `NtQuerySystemInformation(SystemProcessInformation)` — no WMI | T1057 |
+| 9 | `whoami` | whoami/ | Token info | indirect `NtOpenProcessToken` + `NtQueryInformationToken` | T1033, T1134 |
+| 10 | `schtasksquery` | schtasksquery/ | Scheduled tasks | COM `ITaskService` via DFR `CoCreateInstance` | T1053.005, T1518 |
+| 11 | `reg-query` | reg_query/ | Registry read | DFR `RegOpenKeyExA` + Enum | T1012 |
+| 12 | `windowlist` | windowlist/ | Window enum | DFR `EnumWindows` (extern "system" callback) | T1010 |
+| 13 | `uptime` | uptime/ | Uptime | `KUSER_SHARED_DATA` @ `0x7FFE0000` (zero-API) | T1082 |
+| 14 | `routeprint` | routeprint/ | Routing table | DFR `GetIpForwardTable2` | T1016 |
+| 15 | `ldapsearch` | ldapsearch/ | LDAP query | DFR `ldap_bind` + `ldap_search_ext` | T1087.002, T1018 |
+| 16 | `nonpaged-ldapsearch` | nonpagedldapsearch/ | LDAP non-paged (stealth) | indirect ADSI via COM | T1087.002 |
+| 17 | `adcs-enum-com` | adcs_enum_com/ | ADCS template enum | COM `ICertConfig` + `IEnrollmentPolicyServer` | T1518.001 |
+| 18 | `list-firewall` | list_firewall_rules/ | Firewall rules | Registry walk `HKLM\System\...\FirewallPolicy` | T1518.001 |
+| 19 | `enum-filter-driver` | enum_filter_driver/ | Mini-filter drivers | DFR `FilterFindFirst`/`Next` | T1518.001, T1014 |
+| 20 | `wmi-query` | wmi_query/ | Generic WMI | COM `IWbemServices::ExecQuery` | T1047 |
+| 21 | `get-dpapi-system` | get_dpapi_system/ | DPAPI system master key | indirect LSASS access + DFR `LsaRetrievePrivateData` | T1555.004 |
+| 22 | `hostname` | derived from whoami | NetBIOS+FQDN | DFR `GetComputerNameExA` (3 modes) | T1082 |
+| 23 | `clipboard` | clipboard/ | Clipboard dump | DFR `GetClipboardData(CF_UNICODETEXT)` | T1115 |
+| 24 | `dnscache` | dnscache/ | DNS cache | DFR `DnsGetCacheDataTable` | T1016.001 |
+| 25 | `driversigs` | driversigs/ | Driver signature info | DFR `WinVerifyTrust` | T1518.001 |
+| 26 | `findmodule` | findLoadedModule/ | Find module in remote PID | indirect `NtQueryInformationProcess` + PEB walk | T1057 |
+| 27 | `sccm-decrypt` | sccm_decrypt/ | SCCM secret decrypt | DPAPI via DFR | T1555 |
+| 28 | `ldapsec-check` | ldapsecuritycheck/ | LDAP sign/binding probe | DFR ldap SSPI | T1518 |
 
 ### 6.2 Remote Operations — 18 BOFs (`remote-ops/`)
 
@@ -357,24 +357,24 @@ Credit C: TrustedSec / `cs-remote-ops/src/{Remote,Injection}/*`.
 
 | # | Crate | Original | Tujuan | OPSEC notes | MITRE |
 |---|---|---|---|---|---|
-| 29 | `ro-portscan` | (implement fresh) | TCP connect-scan | non-blocking DFR `WSASocketW` | T1046 |
-| 30 | `ro-etw-patch` | derived | Patch `EtwEventWrite` → `xor eax,eax; ret` | indirect `NtProtectVirtualMemory` | T1562.006 |
-| 31 | `ro-amsi-patch` | derived | Patch `AmsiScanBuffer` → E_INVALIDARG | indirect protect+write | T1562.001 |
-| 32 | `ro-enablepriv` | get_priv/ modified | Enable token privilege | indirect `NtAdjustPrivilegesToken` | T1134.002 |
-| 33 | `ro-procdump` | procdump/ | MiniDump LSASS or PID | DFR `MiniDumpWriteDump` + obfstr temp filename | T1003.001 |
-| 34 | `ro-ghost-task` | ghost_task/ | Hidden scheduled task | COM `ITaskService` + SD modification | T1053.005 |
-| 35 | `ro-reg-save` | reg_save/ | Remote reg hive dump | DFR `RegSaveKeyEx` | T1003.002, T1012 |
-| 36 | `ro-sc-create` | sc_create/ | Remote service create | DFR `OpenSCManagerA` + `CreateServiceA` | T1543.003 |
-| 37 | `ro-sc-delete` | sc_delete/ | Remote service delete | DFR | T1489 |
-| 38 | `ro-adduser` | adduser/ | Local user add | DFR `NetUserAdd` | T1136.001 |
-| 39 | `ro-make-token` | make_token_cert/ | Cert-based token | DFR `LogonUserA` | T1134.003 |
-| 40 | `ro-shspawnas` | shspawnas/ | Spawn as user | DFR `CreateProcessWithLogonW` | T1134.002 |
-| 41 | `ro-suspendresume` | suspendresume/ | Suspend/resume PID | indirect `NtSuspendProcess`/`NtResumeProcess` | T1055 |
-| 42 | `ro-global-unprotect` | global_unprotect/ | DPAPI Chrome cookie decrypt | DFR DPAPI | T1555.003 |
-| 43 | `ro-inject-crt` | createremotethread/ | CreateRemoteThread inject | indirect syscalls + RWX→RX flip | T1055.002 |
-| 44 | `ro-inject-ntcreate` | ntcreatethread/ | NtCreateThreadEx inject | indirect syscall | T1055 |
-| 45 | `ro-inject-apc` | ntqueueapcthread/ | APC inject | indirect syscall | T1055.004 |
-| 46 | `ro-inject-ktable` | kernelcallbacktable/ | KernelCallbackTable hijack | indirect syscall + PEB write | T1055 |
+| 29 | `portscan` | (implement fresh) | TCP connect-scan | non-blocking DFR `WSASocketW` | T1046 |
+| 30 | `etw-patch` | derived | Patch `EtwEventWrite` → `xor eax,eax; ret` | indirect `NtProtectVirtualMemory` | T1562.006 |
+| 31 | `amsi-patch` | derived | Patch `AmsiScanBuffer` → E_INVALIDARG | indirect protect+write | T1562.001 |
+| 32 | `enablepriv` | get_priv/ modified | Enable token privilege | indirect `NtAdjustPrivilegesToken` | T1134.002 |
+| 33 | `procdump` | procdump/ | MiniDump LSASS or PID | DFR `MiniDumpWriteDump` + obfstr temp filename | T1003.001 |
+| 34 | `ghost-task` | ghost_task/ | Hidden scheduled task | COM `ITaskService` + SD modification | T1053.005 |
+| 35 | `reg-save` | reg_save/ | Remote reg hive dump | DFR `RegSaveKeyEx` | T1003.002, T1012 |
+| 36 | `sc-create` | sc_create/ | Remote service create | DFR `OpenSCManagerA` + `CreateServiceA` | T1543.003 |
+| 37 | `sc-delete` | sc_delete/ | Remote service delete | DFR | T1489 |
+| 38 | `adduser` | adduser/ | Local user add | DFR `NetUserAdd` | T1136.001 |
+| 39 | `make-token` | make_token_cert/ | Cert-based token | DFR `LogonUserA` | T1134.003 |
+| 40 | `shspawnas` | shspawnas/ | Spawn as user | DFR `CreateProcessWithLogonW` | T1134.002 |
+| 41 | `suspendresume` | suspendresume/ | Suspend/resume PID | indirect `NtSuspendProcess`/`NtResumeProcess` | T1055 |
+| 42 | `global-unprotect` | global_unprotect/ | DPAPI Chrome cookie decrypt | DFR DPAPI | T1555.003 |
+| 43 | `inject-crt` | createremotethread/ | CreateRemoteThread inject | indirect syscalls + RWX→RX flip | T1055.002 |
+| 44 | `inject-ntcreate` | ntcreatethread/ | NtCreateThreadEx inject | indirect syscall | T1055 |
+| 45 | `inject-apc` | ntqueueapcthread/ | APC inject | indirect syscall | T1055.004 |
+| 46 | `inject-ktable` | kernelcallbacktable/ | KernelCallbackTable hijack | indirect syscall + PEB write | T1055 |
 
 ### 6.3 OperatorsKit selects — 12 BOFs (`operators-kit/`)
 
@@ -382,18 +382,18 @@ Credit C: REDMED-X / `operatorskit/KIT/*`.
 
 | # | Crate | Original | Tujuan | OPSEC notes | MITRE |
 |---|---|---|---|---|---|
-| 47 | `ok-inject-poolparty` | InjectPoolParty/ | Thread pool inject (flagship) | indirect `NtSetTimer2`, handle stealing | T1055 |
-| 48 | `ok-execute-crosssession` | ExecuteCrossSession/ | Cross-session lateral | COM `IStandardActivator` + `IHxHelpPaneServer` | T1021.003 |
-| 49 | `ok-dcom-localserver32` | DcomLocalServer32/ | DCOM CLSID exec | COM `CoCreateInstanceEx` + COAUTHINFO | T1021.003 |
-| 50 | `ok-keylogger-rawinput` | KeyloggerRawInput/ | Raw-input keylog | DFR `RegisterRawInputDevices` | T1056.001 |
-| 51 | `ok-enum-sec-products` | EnumSecProducts/ | AV/EDR detection | WMI `root\SecurityCenter2` + svc enum | T1518.001 |
-| 52 | `ok-enum-sysmon` | EnumSysmon/ | Sysmon detection | minifilter + registry | T1518.001 |
-| 53 | `ok-spn` | SPN/ | SPN kerberoast prep | DFR ldap | T1558.003 |
-| 54 | `ok-wifi-passwords` | WiFiPasswords/ | WLAN profile dump | DFR `WlanEnumInterfaces` | T1555 |
-| 55 | `ok-cred-prompt` | CredPrompt/ | Persistent cred UI | DFR `CredUIPromptForWindowsCredentials` | T1056.002 |
-| 56 | `ok-add-exclusion` | AddExclusion/ | Defender excl add | WMI `MSFT_MpPreference` | T1562.001 |
-| 57 | `ok-capture-netntlm` | CaptureNetNTLM/ | NetNTLMv2 capture | SSPI w/ NTLM | T1187 |
-| 58 | `ok-authenticate-http` | AuthenticateHTTP/ | NTLM HTTP relay primer | WinHTTP w/ NTLM | T1187 |
+| 47 | `inject-poolparty` | InjectPoolParty/ | Thread pool inject (flagship) | indirect `NtSetTimer2`, handle stealing | T1055 |
+| 48 | `execute-crosssession` | ExecuteCrossSession/ | Cross-session lateral | COM `IStandardActivator` + `IHxHelpPaneServer` | T1021.003 |
+| 49 | `dcom-localserver32` | DcomLocalServer32/ | DCOM CLSID exec | COM `CoCreateInstanceEx` + COAUTHINFO | T1021.003 |
+| 50 | `keylogger-rawinput` | KeyloggerRawInput/ | Raw-input keylog | DFR `RegisterRawInputDevices` | T1056.001 |
+| 51 | `enum-sec-products` | EnumSecProducts/ | AV/EDR detection | WMI `root\SecurityCenter2` + svc enum | T1518.001 |
+| 52 | `enum-sysmon` | EnumSysmon/ | Sysmon detection | minifilter + registry | T1518.001 |
+| 53 | `spn` | SPN/ | SPN kerberoast prep | DFR ldap | T1558.003 |
+| 54 | `wifi-passwords` | WiFiPasswords/ | WLAN profile dump | DFR `WlanEnumInterfaces` | T1555 |
+| 55 | `cred-prompt` | CredPrompt/ | Persistent cred UI | DFR `CredUIPromptForWindowsCredentials` | T1056.002 |
+| 56 | `add-exclusion` | AddExclusion/ | Defender excl add | WMI `MSFT_MpPreference` | T1562.001 |
+| 57 | `capture-netntlm` | CaptureNetNTLM/ | NetNTLMv2 capture | SSPI w/ NTLM | T1187 |
+| 58 | `authenticate-http` | AuthenticateHTTP/ | NTLM HTTP relay primer | WinHTTP w/ NTLM | T1187 |
 
 ### 6.4 C2-Tool-Collection selects — 8 BOFs (`c2-collection/`)
 
@@ -401,21 +401,21 @@ Credit C: Outflank / `c2-tool-collection/BOF/*`.
 
 | # | Crate | Original | Tujuan | OPSEC notes | MITRE |
 |---|---|---|---|---|---|
-| 59 | `c2-psx` | Psx/ | Process+token+secproducts | indirect `NtQueryInformationProcess`+`Token` | T1057, T1134 |
-| 60 | `c2-psk` | Psk/ | Kernel drivers & secproducts | indirect `NtQuerySystemInformation(SystemModuleInformation)` | T1518.001 |
-| 61 | `c2-psm` | Psm/ | Process modules+connections | indirect syscalls full chain | T1057, T1016 |
-| 62 | `c2-findobjects` | FindObjects/ | Find safe inject targets | indirect `NtOpenProcessToken` + module scan | T1057 |
-| 63 | `c2-kerberoast` | Kerberoast/ | Service ticket request | DFR LSA SSPI | T1558.003 |
-| 64 | `c2-lapsdump` | Lapsdump/ | LAPS pwd from AD | LDAP `ms-Mcs-AdmPwd` | T1555 |
-| 65 | `c2-wdtoggle` | WdToggle/ | Cred Guard bypass + WDigest | indirect LSASS write | T1003.001, T1112 |
-| 66 | `c2-cve-2022-26923` | CVE-2022-26923/ | AD CS dNSHostName spoof | LDAP + cert request | T1068 |
+| 59 | `psx` | Psx/ | Process+token+secproducts | indirect `NtQueryInformationProcess`+`Token` | T1057, T1134 |
+| 60 | `psk` | Psk/ | Kernel drivers & secproducts | indirect `NtQuerySystemInformation(SystemModuleInformation)` | T1518.001 |
+| 61 | `psm` | Psm/ | Process modules+connections | indirect syscalls full chain | T1057, T1016 |
+| 62 | `findobjects` | FindObjects/ | Find safe inject targets | indirect `NtOpenProcessToken` + module scan | T1057 |
+| 63 | `kerberoast` | Kerberoast/ | Service ticket request | DFR LSA SSPI | T1558.003 |
+| 64 | `lapsdump` | Lapsdump/ | LAPS pwd from AD | LDAP `ms-Mcs-AdmPwd` | T1555 |
+| 65 | `wdtoggle` | WdToggle/ | Cred Guard bypass + WDigest | indirect LSASS write | T1003.001, T1112 |
+| 66 | `cve-2022-26923` | CVE-2022-26923/ | AD CS dNSHostName spoof | LDAP + cert request | T1068 |
 
 ### 6.5 Persistence (original, by Dani) — 2 BOFs (`persistence/`)
 
 | # | Crate | Tujuan | API | MITRE |
 |---|---|---|---|---|
-| 67 | `ps-schtask-com` | Scheduled task via COM (no `schtasks.exe`) | `ITaskService`, args `--name --cmd --trigger --hidden --principal --remove` | T1053.005 |
-| 68 | `ps-lnk-startup` | Startup .LNK via COM (no `explorer`, no `cmd`) | `IShellLinkW` + `IPersistFile`, args `--name --target --args --icon --workdir --scope --remove` | T1547.001 |
+| 67 | `schtask-com` | Scheduled task via COM (no `schtasks.exe`) | `ITaskService`, args `--name --cmd --trigger --hidden --principal --remove` | T1053.005 |
+| 68 | `lnk-startup` | Startup .LNK via COM (no `explorer`, no `cmd`) | `IShellLinkW` + `IPersistFile`, args `--name --target --args --icon --workdir --scope --remove` | T1547.001 |
 
 ### 6.6 Universal rules (semua BOF)
 
@@ -429,7 +429,7 @@ Credit C: Outflank / `c2-tool-collection/BOF/*`.
 
 ## 7. Persistence BOF detail
 
-### 7.1 `ps-schtask-com`
+### 7.1 `schtask-com`
 
 Operator args (parsed via `rustbof::DataParser`):
 
@@ -469,7 +469,7 @@ folder.RegisterTaskDefinition(leaf, def, TASK_CREATE_OR_UPDATE, NULL, NULL, prin
 println!("[+] task registered: {}", path);
 ```
 
-### 7.2 `ps-lnk-startup`
+### 7.2 `lnk-startup`
 
 Operator args:
 

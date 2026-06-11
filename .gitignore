@@ -17,5 +17,5 @@
 # Test outputs
 *.log
 
-# Vendored upstream repos
+# Vendored upstream reference repos (full git clones — do not track)
 /refs/
