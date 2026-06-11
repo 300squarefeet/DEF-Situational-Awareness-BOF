@@ -1,0 +1,117 @@
+# SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
+# SPDX-License-Identifier: MIT
+#
+# bofx.cna — OPSEC-hardened InlineExecuteEx aggressor.
+#
+# Author:   Dani <daniagungg@gmail.com>
+# Upstream: github.com/0xTriboulet/InlineExecuteEx (MIT)
+#
+# Differences from upstream `inline-execute-ex.cna`:
+#   - Modification #1: ASCII banner "BOF+" / "[EXPERIMENTAL] I heard you
+#     like BOFs" REMOVED. No banner is printed on script load.
+#   - Modification #1: command renamed `inline-execute-ex` -> `bofx`.
+#   - Modification #7: optional preflight hash whitelist hook (operator
+#     populates @BOFX_WHITELIST per engagement). Disabled by default.
+#   - Modification #8: explicit BeaconCleanupProcess hint at end of
+#     each bofx invocation so the operator can pair with a cleanup BOF.
+
+# ---------------------------------------------------------------------
+# Modification #7: per-engagement BOF whitelist. Populate with the
+# SHA-256 hex of every BOF you intend to load. Leave empty to disable
+# the preflight check (NOT recommended for live engagements).
+#
+# Example:
+#   @BOFX_WHITELIST = @("3f8c... ", "9e4a... ");
+# ---------------------------------------------------------------------
+@BOFX_WHITELIST = @();
+
+sub bofx_sha256 {
+    # Returns lowercase hex SHA-256 of the file at $1, or $null on error.
+    # Uses Sleep's Java reflection bridge into MessageDigest.
+    local('$path $h $f $b $md $raw $i $hex $byte');
+    $path = $1;
+    if (! -exists $path) { return $null; }
+    $f = openf($path);
+    if ($f is $null) { return $null; }
+    $b = readb($f, -1);
+    closef($f);
+    $md  = [java.security.MessageDigest getInstance: "SHA-256"];
+    $raw = [$md digest: $b];
+    # javax.xml.bind.DatatypeConverter is widely available; fall back to
+    # a manual hex loop if not.
+    try {
+        $hex = [javax.xml.bind.DatatypeConverter printHexBinary: $raw];
+        return lc($hex);
+    }
+    catch $err {
+        $hex = "";
+        for ($i = 0; $i < [$raw length]; $i++) {
+            $byte = [$raw byteValue: $i] & 0xff;
+            if ($byte < 16) { $hex = $hex . "0"; }
+            $hex = $hex . [Long toHexString: $byte];
+        }
+        return lc($hex);
+    }
+}
+
+sub bofx_preflight {
+    # Returns 1 if $1 is allowed to load, 0 otherwise.
+    local('$path $hash $allowed $entry');
+    $path = $1;
+    if (size(@BOFX_WHITELIST) == 0) {
+        return 1; # whitelist disabled
+    }
+    $hash = bofx_sha256($path);
+    if ($hash is $null) {
+        return 0;
+    }
+    foreach $entry (@BOFX_WHITELIST) {
+        if (lc($entry) eq $hash) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+alias bofx {
+    local('$bid $bof $entry $args');
+    $bid   = $1;
+    $bof   = $2;
+    $entry = $3;
+    $args  = $4;
+
+    if ($bof is $null) {
+        berror($bid, "usage: bofx <path-to-bof.o> <entry> [args]");
+        return;
+    }
+    if (! -exists $bof) {
+        berror($bid, "bofx: file not found: $bof");
+        return;
+    }
+    if (bofx_preflight($bof) == 0) {
+        berror($bid, "bofx: preflight hash mismatch (not in @BOFX_WHITELIST)");
+        return;
+    }
+    if ($entry is $null) {
+        $entry = "go";
+    }
+
+    blog($bid, "bofx: loading $bof entry=$entry");
+    # `bof_inline_execute_ex` is the upstream COFFLoader-as-BOF entry. The
+    # OPSEC fork keeps the binary API compatible so this call site is
+    # unchanged from upstream — only the operator command name changed.
+    bof_inline_execute_ex($bid, $bof, $entry, $args);
+}
+
+beacon_command_register(
+    "bofx",
+    "Inline-execute a COFF / BOF-PE object (OPSEC fork of InlineExecuteEx by Dani).",
+    "Usage: bofx <path-to-bof.o> <entry> [args]\n" .
+    "\n" .
+    "  path-to-bof.o   Local path to the COFF/BOF-PE file.\n" .
+    "  entry           Symbol to invoke (default: go).\n" .
+    "  args            Optional argument string (forwarded verbatim).\n" .
+    "\n" .
+    "Preflight: if @BOFX_WHITELIST is non-empty, the file's SHA-256 must\n" .
+    "match an entry before the load is dispatched to the beacon.\n"
+);

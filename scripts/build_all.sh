@@ -42,6 +42,22 @@ for crate in "${CRATES[@]}"; do
     fi
 done
 
+echo "==> Building inline-execute-ex-opsec fork (bofx)"
+if [[ -d tools/inline-execute-ex-opsec ]]; then
+    if make -C tools/inline-execute-ex-opsec CROSS=x86_64-w64-mingw32- ARCH=x64 >/dev/null 2>&1; then
+        cp tools/inline-execute-ex-opsec/build/bofx.x64.o dist/
+        echo "  ✓ bofx.x64.o"
+    else
+        echo "  WARN: bofx x64 build failed"
+    fi
+    if make -C tools/inline-execute-ex-opsec CROSS=i686-w64-mingw32- ARCH=x86 >/dev/null 2>&1; then
+        cp tools/inline-execute-ex-opsec/build/bofx.x86.o dist/
+        echo "  ✓ bofx.x86.o"
+    else
+        echo "  WARN: bofx x86 build failed"
+    fi
+fi
+
 echo "==> Verifying"
 bash scripts/verify_coff.sh || true
 

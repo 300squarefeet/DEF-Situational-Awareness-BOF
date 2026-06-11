@@ -16,11 +16,11 @@ know exactly which technique they're firing.
 - [x] `common` OPSEC primitives crate
 - [x] Build pipeline (macOS cross-compile → COFF)
 - [x] 3 canary BOFs end-to-end: `uptime`, `hostname`, `whoami`
-- [ ] Phase 2: remaining 25 SA BOFs
-- [ ] Phase 3: 18 Remote Ops BOFs
-- [ ] Phase 4: 20 OperatorsKit + C2 BOFs
-- [ ] Phase 5: 2 persistence BOFs (COM scheduled task + COM startup LNK)
-- [ ] Phase 6: InlineExecuteEx OPSEC fork
+- [x] Phase 2: remaining 25 SA BOFs
+- [x] Phase 3: 18 Remote Ops BOFs
+- [x] Phase 4: 20 OperatorsKit + C2 BOFs
+- [x] Phase 5: 2 persistence BOFs (COM scheduled task + COM startup LNK)
+- [x] Phase 6: InlineExecuteEx OPSEC fork (`tools/inline-execute-ex-opsec/`)
 
 ## Build
 

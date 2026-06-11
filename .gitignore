@@ -1,6 +1,7 @@
 # Build artifacts
 /target/
 /dist/
+/tools/inline-execute-ex-opsec/build/
 
 # macOS
 .DS_Store
