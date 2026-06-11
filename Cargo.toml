@@ -13,15 +13,16 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Dani <daniagungg@gmail.com>"]
 license = "MIT"
-repository = "internal"
 
 [workspace.dependencies]
 rustbof = { git = "https://github.com/joaoviictorti/rustbof", branch = "main" }
 windows-sys = { version = "0.52", default-features = false, features = [
+    # Phase 1 (canary) BOFs need these:
     "Win32_Foundation",
     "Win32_Security",
-    "Win32_System_Threading",
     "Win32_System_SystemInformation",
+    # Pre-declared for Phase 2-6 BOFs (COM-using persistence + injection + DFR):
+    "Win32_System_Threading",
     "Win32_System_Com",
     "Win32_System_LibraryLoader",
 ] }
