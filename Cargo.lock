@@ -569,6 +569,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "schtask-com"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "schtasksquery"
 version = "0.1.0"
 dependencies = [

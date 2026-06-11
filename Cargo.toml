@@ -74,6 +74,8 @@ members = [
     # Phase 4 — C2-Collection (batch H, exploits)
     "c2-collection/wdtoggle",
     "c2-collection/cve-2022-26923",
+    # Phase 5 — Persistence (by Dani, original)
+    "persistence/schtask-com",
 ]
 
 [workspace.package]
