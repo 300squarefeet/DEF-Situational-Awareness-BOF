@@ -3,9 +3,9 @@
 resolver = "2"
 members = [
     "common",
-    "situational-awareness/uptime",
-    "situational-awareness/hostname",
-    "situational-awareness/whoami",
+    # "situational-awareness/uptime",    # forward-declared, not yet created
+    # "situational-awareness/hostname",  # forward-declared, not yet created
+    # "situational-awareness/whoami",    # forward-declared, not yet created
 ]
 
 [workspace.package]
