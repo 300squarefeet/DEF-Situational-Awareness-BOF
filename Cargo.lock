@@ -358,6 +358,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "lnk-startup"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "make-token"
 version = "0.1.0"
 dependencies = [

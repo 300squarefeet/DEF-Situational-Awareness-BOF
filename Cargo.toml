@@ -76,6 +76,7 @@ members = [
     "c2-collection/cve-2022-26923",
     # Phase 5 — Persistence (by Dani, original)
     "persistence/schtask-com",
+    "persistence/lnk-startup",
 ]
 
 [workspace.package]
