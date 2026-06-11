@@ -80,6 +80,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cve-2022-26923"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "dcom-localserver32"
 version = "0.1.0"
 dependencies = [
@@ -626,6 +636,16 @@ checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
 name = "uptime"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "wdtoggle"
 version = "0.1.0"
 dependencies = [
  "common",
