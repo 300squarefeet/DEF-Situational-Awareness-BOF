@@ -82,7 +82,7 @@ fn main() {
 
 fn run() -> Result<(), &'static str> {
     unsafe { co_initialize_ex(core::ptr::null_mut(), COINIT_MULTITHREADED) }
-        .map_err(|_| "CoInitializeEx resolve")?;
+        .map_err(|_| "resolve")?;
 
     let mut ds: *mut core::ffi::c_void = core::ptr::null_mut();
 
@@ -100,12 +100,12 @@ fn run() -> Result<(), &'static str> {
             IID_IDIRECTORY_SEARCH.as_ptr(),
             &mut ds,
         )
-    }.map_err(|_| "ADsGetObject resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if hr != S_OK || ds.is_null() {
         unsafe { let _ = co_uninitialize(); };
         // Not a domain-joined host or activeds.dll not available
-        println!("[*] ADsGetObject failed — host may not be domain-joined");
+        println!("[*] obj get failed — host may not be domain-joined");
         return Ok(());
     }
 
@@ -145,7 +145,7 @@ fn run() -> Result<(), &'static str> {
             rel(ds);
             let _ = co_uninitialize();
         };
-        return Err("IDirectorySearch::ExecuteSearch failed");
+        return Err("search failed");
     }
 
     println!("LDAP USER SEARCH (non-paged via ADSI):");

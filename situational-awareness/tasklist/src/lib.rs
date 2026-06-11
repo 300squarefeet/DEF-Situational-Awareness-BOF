@@ -37,7 +37,7 @@ fn run() -> Result<(), &'static str> {
     const HASH: u32 = common::hash::djb2(b"NtQuerySystemInformation");
 
     let (ssn, addr) = unsafe { resolve(&ENTRY, HASH) }
-        .map_err(|_| "resolve NtQuerySystemInformation failed")?;
+        .map_err(|_| "resolve failed")?;
 
     let mut size: u32 = 65536;
     let buf;
@@ -62,12 +62,12 @@ fn run() -> Result<(), &'static str> {
         } else if status == STATUS_INFO_LENGTH_MISMATCH {
             // Grow conservatively. Cap to avoid infinite loop on pathological cases.
             if size >= 64 * 1024 * 1024 {
-                return Err("NtQuerySystemInformation buffer too large");
+                return Err("buf too large");
             }
             size = size.saturating_mul(2);
             continue;
         } else {
-            return Err("NtQuerySystemInformation failed");
+            return Err("sysq failed");
         }
     }
 

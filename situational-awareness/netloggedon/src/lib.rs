@@ -67,10 +67,10 @@ fn run() -> Result<(), &'static str> {
             &mut total_entries,
             &mut resume,
         )
-    }.map_err(|_| "NetWkstaUserEnum resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != NERR_Success {
-        return Err("NetWkstaUserEnum failed");
+        return Err("wksta enum failed");
     }
     if buf.is_null() {
         return Err("null buffer");

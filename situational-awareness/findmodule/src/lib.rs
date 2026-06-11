@@ -59,8 +59,8 @@ fn run() -> Result<(), &'static str> {
     println!("{:<18} {:<12} {}", "Base", "Size", "Module");
 
     let hproc = unsafe { open_process(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, current_pid) }
-        .map_err(|_| "OpenProcess resolve failed")?;
-    if hproc == 0 { return Err("OpenProcess failed"); }
+        .map_err(|_| "resolve")?;
+    if hproc == 0 { return Err("proc open failed"); }
 
     // NtQueryInformationProcess(ProcessBasicInformation) — 5 args
     use common::syscalls::{SyscallEntry, resolve, do_syscall5};
@@ -68,7 +68,7 @@ fn run() -> Result<(), &'static str> {
     const HASH: u32 = common::hash::djb2(b"NtQueryInformationProcess");
 
     let (ssn, addr) = unsafe { resolve(&ENTRY, HASH) }
-        .map_err(|_| "resolve NtQueryInformationProcess failed")?;
+        .map_err(|_| "resolve")?;
 
     let mut pbi = [0u8; 48];
     let mut ret_len: u32 = 0;
@@ -87,7 +87,7 @@ fn run() -> Result<(), &'static str> {
 
     if status != STATUS_SUCCESS {
         unsafe { let _ = close_handle(hproc); };
-        return Err("NtQueryInformationProcess failed");
+        return Err("query failed");
     }
 
     // PROCESS_BASIC_INFORMATION (x64): ExitStatus(8), PebBaseAddress(*void @ +8)
@@ -101,7 +101,7 @@ fn run() -> Result<(), &'static str> {
     let mut peb = [0u8; 64];
     if read_remote(hproc, peb_addr, &mut peb).is_err() {
         unsafe { let _ = close_handle(hproc); };
-        return Err("ReadProcessMemory PEB failed");
+        return Err("peb read failed");
     }
 
     // PEB+0x18 = Ldr (PEB_LDR_DATA*)
@@ -115,7 +115,7 @@ fn run() -> Result<(), &'static str> {
     let mut ldr_data = [0u8; 64];
     if read_remote(hproc, ldr_addr, &mut ldr_data).is_err() {
         unsafe { let _ = close_handle(hproc); };
-        return Err("ReadProcessMemory LDR failed");
+        return Err("ldr read failed");
     }
     let list_head = unsafe { core::ptr::read_unaligned(ldr_data.as_ptr().add(0x10) as *const usize) };
     let list_head_addr = ldr_addr + 0x10;
@@ -168,8 +168,8 @@ fn read_remote(hproc: usize, addr: usize, buf: &mut [u8]) -> Result<(), &'static
     let mut read: usize = 0;
     let rc = unsafe {
         read_process_memory(hproc, addr, buf.as_mut_ptr(), buf.len(), &mut read)
-    }.map_err(|_| "ReadProcessMemory resolve")?;
-    if rc == 0 { return Err("ReadProcessMemory failed"); }
+    }.map_err(|_| "resolve")?;
+    if rc == 0 { return Err("read failed"); }
     Ok(())
 }
 

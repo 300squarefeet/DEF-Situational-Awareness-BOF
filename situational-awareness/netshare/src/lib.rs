@@ -65,10 +65,10 @@ fn run() -> Result<(), &'static str> {
             &mut total_entries,
             &mut resume,
         )
-    }.map_err(|_| "NetShareEnum resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != NERR_Success {
-        return Err("NetShareEnum failed");
+        return Err("share enum failed");
     }
     if buf.is_null() {
         return Err("null buffer");

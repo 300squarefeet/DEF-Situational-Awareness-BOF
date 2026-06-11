@@ -70,7 +70,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     static OPEN_ENTRY: SyscallEntry = SyscallEntry::new();
     const OPEN_HASH: u32 = common::hash::djb2(b"NtOpenProcess");
     let (open_ssn, open_addr) = unsafe { resolve(&OPEN_ENTRY, OPEN_HASH) }
-        .map_err(|_| "resolve NtOpenProcess failed")?;
+        .map_err(|_| "resolve")?;
 
     let oa = ObjectAttributes {
         length: core::mem::size_of::<ObjectAttributes>() as u32,
@@ -89,7 +89,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
         )
     };
     if status != STATUS_SUCCESS || h_proc == 0 {
-        return Err("NtOpenProcess failed (no perms / bad pid?)");
+        return Err("proc open failed");
     }
 
     // -- Suspend or resume (1-arg). do_syscall4 with the trailing 3 args zero.
@@ -100,7 +100,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     };
     static ACT_ENTRY: SyscallEntry = SyscallEntry::new();
     let (act_ssn, act_addr) = unsafe { resolve(&ACT_ENTRY, api_hash) }
-        .map_err(|_| "resolve Nt{Suspend,Resume}Process failed")?;
+        .map_err(|_| "resolve")?;
     let st2 = unsafe { do_syscall4(h_proc, 0, 0, 0, act_ssn, act_addr) };
 
     // -- Close handle
@@ -111,7 +111,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     }
 
     if st2 != STATUS_SUCCESS {
-        return Err("Nt{Suspend,Resume}Process failed");
+        return Err("suspend/resume failed");
     }
     println!("[+] pid {} {}ed", pid, if suspend { "suspend" } else { "resum" });
     Ok(())

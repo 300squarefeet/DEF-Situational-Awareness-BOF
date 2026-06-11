@@ -73,10 +73,10 @@ fn run() -> Result<(), &'static str> {
             &mut total_entries,
             &mut resume,
         )
-    }.map_err(|_| "NetUserEnum resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != NERR_Success {
-        return Err("NetUserEnum failed");
+        return Err("user enum failed");
     }
     if buf.is_null() {
         return Err("null buffer");

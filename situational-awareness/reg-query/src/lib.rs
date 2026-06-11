@@ -88,10 +88,10 @@ fn run() -> Result<(), &'static str> {
     let mut hkey: usize = 0;
     let rc = unsafe {
         reg_open_key_ex_a(hroot, key_path.as_ptr() as *const i8, 0, KEY_READ, &mut hkey)
-    }.map_err(|_| "RegOpenKeyExA resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != ERROR_SUCCESS {
-        return Err("RegOpenKeyExA failed");
+        return Err("key open failed");
     }
 
     let mut num_values: u32 = 0;
@@ -109,11 +109,11 @@ fn run() -> Result<(), &'static str> {
             &mut max_val_len,
             core::ptr::null_mut(), core::ptr::null_mut(),
         )
-    }.map_err(|_| "RegQueryInfoKeyA resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc2 != ERROR_SUCCESS {
         unsafe { let _ = reg_close_key(hkey); };
-        return Err("RegQueryInfoKeyA failed");
+        return Err("key query failed");
     }
 
     obf! {
@@ -146,7 +146,7 @@ fn run() -> Result<(), &'static str> {
                 &mut reg_type,
                 val_buf.as_mut_ptr(), &mut val_len,
             )
-        }.map_err(|_| "RegEnumValueA resolve failed")?;
+        }.map_err(|_| "resolve failed")?;
 
         if rc3 == ERROR_NO_MORE_ITEMS { break; }
         if rc3 != ERROR_SUCCESS { continue; }

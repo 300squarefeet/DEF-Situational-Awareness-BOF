@@ -94,7 +94,7 @@ fn run() -> Result<(), &'static str> {
         let mut ret: u32 = 0;
         let rc = unsafe {
             nt_query_system_information_raw(SystemModuleInformation, v.as_mut_ptr(), size, &mut ret)
-        }.map_err(|_| "NtQuerySystemInformation resolve failed")?;
+        }.map_err(|_| "resolve failed")?;
 
         if rc == STATUS_SUCCESS {
             module_buf = v;
@@ -103,7 +103,7 @@ fn run() -> Result<(), &'static str> {
             size = ret.max(size * 2);
             continue;
         } else {
-            return Err("NtQuerySystemInformation failed");
+            return Err("sysq failed");
         }
     }
 

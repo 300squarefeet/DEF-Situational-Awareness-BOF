@@ -75,7 +75,7 @@ fn run() -> Result<(), &'static str> {
     let mut hkey: usize = 0;
     let rc = unsafe {
         reg_open_key_ex_a(HKEY_LOCAL_MACHINE, fw_key.as_ptr() as *const i8, 0, KEY_READ, &mut hkey)
-    }.map_err(|_| "RegOpenKeyExA resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != ERROR_SUCCESS {
         return Err("FirewallRules key open failed");
@@ -106,7 +106,7 @@ fn run() -> Result<(), &'static str> {
                 core::ptr::null_mut(), core::ptr::null_mut(),
                 core::ptr::null_mut(),
             )
-        }.map_err(|_| "RegEnumKeyExA resolve failed")?;
+        }.map_err(|_| "resolve failed")?;
 
         if rc2 == ERROR_NO_MORE_ITEMS { break; }
         if rc2 != ERROR_SUCCESS { idx += 1; continue; }

