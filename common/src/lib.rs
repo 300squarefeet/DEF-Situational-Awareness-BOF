@@ -12,7 +12,7 @@ pub mod credit;
 pub mod hash;
 pub mod mitre;
 pub mod panic_safe;
-pub mod str_util   { /* filled in Task 8 */ }
+pub mod str_util;
 pub mod obf        { /* filled in Task 9 */ }
 pub mod dfr        { /* filled in Task 10 */ }
 pub mod syscalls   { /* filled in Task 11 */ }
