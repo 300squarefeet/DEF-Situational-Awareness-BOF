@@ -68,6 +68,9 @@ members = [
     "c2-collection/psk",
     "c2-collection/psm",
     "c2-collection/findobjects",
+    # Phase 4 — C2-Collection (batch G, LDAP/AD)
+    "c2-collection/kerberoast",
+    "c2-collection/lapsdump",
 ]
 
 [workspace.package]

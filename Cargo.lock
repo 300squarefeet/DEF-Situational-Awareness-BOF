@@ -298,6 +298,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "kerberoast"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "lapsdump"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "ldapsearch"
 version = "0.1.0"
 dependencies = [
