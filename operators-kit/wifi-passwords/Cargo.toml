@@ -1,0 +1,16 @@
+[package]
+name = "wifi-passwords"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "WLAN profile dump with plaintext keys via wlanapi.dll DFR — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "wifi_passwords"

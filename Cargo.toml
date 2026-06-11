@@ -51,6 +51,11 @@ members = [
     "remote-ops/procdump",
     "remote-ops/global-unprotect",
     "remote-ops/inject-ktable",
+    # Phase 4 — OperatorsKit (batch A)
+    "operators-kit/enum-sec-products",
+    "operators-kit/enum-sysmon",
+    "operators-kit/spn",
+    "operators-kit/wifi-passwords",
 ]
 
 [workspace.package]

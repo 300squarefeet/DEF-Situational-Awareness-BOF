@@ -1,0 +1,16 @@
+[package]
+name = "enum-sysmon"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Sysmon detection via service, driver, and registry — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "enum_sysmon"

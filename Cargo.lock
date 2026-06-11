@@ -102,6 +102,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-sec-products"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-sysmon"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "env"
 version = "0.1.0"
 dependencies = [
@@ -455,6 +474,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "spn"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "suspendresume"
 version = "0.1.0"
 dependencies = [
@@ -509,6 +537,15 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "wifi-passwords"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
