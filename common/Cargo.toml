@@ -1,0 +1,18 @@
+[package]
+name = "common"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Shared OPSEC primitives for the DEF-Situational-Awareness-BOF suite — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[dev-dependencies]
+# host-side test deps (mocking IUnknown, etc.)
+
+[lib]
+crate-type = ["rlib"]

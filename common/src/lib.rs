@@ -1,0 +1,20 @@
+// SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
+// SPDX-License-Identifier: MIT
+// Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
+// Credit: shared OPSEC primitives — by Dani
+//
+#![no_std]
+#![allow(clippy::missing_safety_doc)]
+
+extern crate alloc;
+
+pub mod credit;
+pub mod hash       { /* filled in Task 5 */ }
+pub mod mitre      { /* filled in Task 6 */ }
+pub mod panic_safe { /* filled in Task 7 */ }
+pub mod str_util   { /* filled in Task 8 */ }
+pub mod obf        { /* filled in Task 9 */ }
+pub mod dfr        { /* filled in Task 10 */ }
+pub mod syscalls   { /* filled in Task 11 */ }
+pub mod com        { /* filled in Task 12 */ }
+pub mod token      { /* filled in Task 13 */ }
