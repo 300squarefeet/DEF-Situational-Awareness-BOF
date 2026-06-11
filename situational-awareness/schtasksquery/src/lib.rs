@@ -86,7 +86,7 @@ fn main() {
 
 fn run() -> Result<(), &'static str> {
     unsafe { co_initialize_ex(core::ptr::null_mut(), COINIT_MULTITHREADED) }
-        .map_err(|_| "CoInitializeEx resolve")?;
+        .map_err(|_| "com init")?;
 
     let mut svc: *mut core::ffi::c_void = core::ptr::null_mut();
     let hr = unsafe {
@@ -97,11 +97,11 @@ fn run() -> Result<(), &'static str> {
             IID_ITASK_SERVICE.as_ptr(),
             &mut svc,
         )
-    }.map_err(|_| "CoCreateInstance resolve")?;
+    }.map_err(|_| "create instance")?;
 
     if hr != S_OK || svc.is_null() {
         unsafe { let _ = co_uninitialize(); };
-        return Err("ITaskService create failed");
+        return Err("task svc create");
     }
 
     let svc_vtbl = unsafe { *(svc as *mut *mut usize) };
@@ -116,7 +116,7 @@ fn run() -> Result<(), &'static str> {
     let hr2 = unsafe { connect_fn(svc, Variant::empty(), Variant::empty(), Variant::empty(), Variant::empty()) };
     if hr2 != S_OK {
         unsafe { release_com(svc_vtbl, svc); let _ = co_uninitialize(); };
-        return Err("ITaskService::Connect failed");
+        return Err("task connect");
     }
 
     // GetFolder = vtbl[4]
@@ -125,14 +125,14 @@ fn run() -> Result<(), &'static str> {
     ) -> i32 = unsafe { core::mem::transmute(*svc_vtbl.add(4)) };
 
     let root_bstr = unsafe { sys_alloc_string(ROOT.as_ptr()) }
-        .map_err(|_| "SysAllocString root")?;
+        .map_err(|_| "str alloc")?;
     let mut folder: *mut core::ffi::c_void = core::ptr::null_mut();
     let hr3 = unsafe { get_folder_fn(svc, root_bstr, &mut folder) };
     unsafe { let _ = sys_free_string(root_bstr); };
 
     if hr3 != S_OK || folder.is_null() {
         unsafe { release_com(svc_vtbl, svc); let _ = co_uninitialize(); };
-        return Err("ITaskService::GetFolder failed");
+        return Err("folder get");
     }
 
     let folder_vtbl = unsafe { *(folder as *mut *mut usize) };
@@ -149,7 +149,7 @@ fn run() -> Result<(), &'static str> {
             release_com(svc_vtbl, svc);
             let _ = co_uninitialize();
         };
-        return Err("ITaskFolder::GetTasks failed");
+        return Err("tasks get");
     }
 
     let tasks_vtbl = unsafe { *(tasks as *mut *mut usize) };

@@ -87,16 +87,16 @@ fn run_with_priv(priv_ascii: &str) -> Result<(), &'static str> {
     // 1. Open current process token (indirect NtOpenProcessToken)
     let token = unsafe {
         common::token::open_current_process_token(TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES)
-    }.map_err(|_| "NtOpenProcessToken failed")?;
+    }.map_err(|_| "token open failed")?;
 
     // 2. Resolve LUID for the privilege name (DFR)
     let mut luid = Luid { low: 0, high: 0 };
     let rc = unsafe {
         lookup_privilege_value_w(core::ptr::null(), priv_wide.as_ptr(), &mut luid)
-    }.map_err(|_| "LookupPrivilegeValueW resolve failed")?;
+    }.map_err(|_| "lookup priv failed")?;
     if rc == 0 {
         unsafe { let _ = close_handle(token as usize); };
-        return Err("LookupPrivilegeValueW failed (priv name unknown)");
+        return Err("lookup priv unknown");
     }
 
     // 3. Build TOKEN_PRIVILEGES { count: 1, privileges: [{ luid, SE_PRIVILEGE_ENABLED }] }
@@ -113,7 +113,7 @@ fn run_with_priv(priv_ascii: &str) -> Result<(), &'static str> {
     const HASH: u32 = common::hash::djb2(b"NtAdjustPrivilegesToken");
 
     let (ssn, addr) = unsafe { resolve(&ENTRY, HASH) }
-        .map_err(|_| "resolve NtAdjustPrivilegesToken failed")?;
+        .map_err(|_| "adjust resolve")?;
 
     let mut ret_len: u32 = 0;
     let status = unsafe {
@@ -132,7 +132,7 @@ fn run_with_priv(priv_ascii: &str) -> Result<(), &'static str> {
     unsafe { let _ = close_handle(token as usize); };
 
     if status != STATUS_SUCCESS {
-        return Err("NtAdjustPrivilegesToken failed");
+        return Err("adjust failed");
     }
 
     println!("[+] Privilege enabled: {}", priv_ascii);

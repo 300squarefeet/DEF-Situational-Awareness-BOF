@@ -75,7 +75,7 @@ fn main() {
 
 fn run() -> Result<(), &'static str> {
     unsafe { co_initialize_ex(core::ptr::null_mut(), COINIT_MULTITHREADED) }
-        .map_err(|_| "CoInitializeEx resolve")?;
+        .map_err(|_| "com init")?;
 
     let mut cfg: *mut core::ffi::c_void = core::ptr::null_mut();
     let hr = unsafe {
@@ -86,7 +86,7 @@ fn run() -> Result<(), &'static str> {
             IID_ICERT_CONFIG.as_ptr(),
             &mut cfg,
         )
-    }.map_err(|_| "CoCreateInstance resolve")?;
+    }.map_err(|_| "create instance")?;
 
     if hr != S_OK || cfg.is_null() {
         unsafe { let _ = co_uninitialize(); };

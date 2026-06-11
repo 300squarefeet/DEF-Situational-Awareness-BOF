@@ -117,7 +117,7 @@ fn main() {
 fn run() -> Result<(), &'static str> {
     // Init COM
     unsafe { co_initialize_ex(core::ptr::null_mut(), COINIT_MULTITHREADED) }
-        .map_err(|_| "CoInitializeEx resolve")?;
+        .map_err(|_| "com init")?;
 
     let mut locator: *mut core::ffi::c_void = core::ptr::null_mut();
     let hr = unsafe {
@@ -128,10 +128,10 @@ fn run() -> Result<(), &'static str> {
             IID_IWBEM_LOCATOR.as_ptr(),
             &mut locator,
         )
-    }.map_err(|_| "CoCreateInstance resolve")?;
+    }.map_err(|_| "create instance")?;
     if hr != 0 || locator.is_null() {
         unsafe { let _ = co_uninitialize(); };
-        return Err("IWbemLocator CoCreateInstance failed");
+        return Err("loc create failed");
     }
 
     // Build wide strings from obfuscated ASCII at runtime
@@ -140,10 +140,10 @@ fn run() -> Result<(), &'static str> {
 
     // Alloc BSTR for namespace
     let ns_bstr = unsafe { sys_alloc_string(ns_wide.as_ptr()) }
-        .map_err(|_| "SysAllocString resolve")?;
+        .map_err(|_| "str alloc resolve")?;
     if ns_bstr.is_null() {
         unsafe { let _ = co_uninitialize(); };
-        return Err("SysAllocString namespace failed");
+        return Err("ns alloc failed");
     }
 
     // ConnectServer = IWbemLocator vtbl slot 3
@@ -169,7 +169,7 @@ fn run() -> Result<(), &'static str> {
             release(locator);
             let _ = co_uninitialize();
         };
-        return Err("IWbemLocator::ConnectServer failed");
+        return Err("svc connect failed");
     }
 
     // CoSetProxyBlanket
@@ -191,9 +191,9 @@ fn run() -> Result<(), &'static str> {
     let _ = build_wide(obf!("SELECT Name FROM Win32_Process"), &mut query_wide);
 
     let wql_bstr = unsafe { sys_alloc_string(wql_wide.as_ptr()) }
-        .map_err(|_| "SysAllocString WQL")?;
+        .map_err(|_| "str alloc wql")?;
     let query_bstr = unsafe { sys_alloc_string(query_wide.as_ptr()) }
-        .map_err(|_| "SysAllocString query")?;
+        .map_err(|_| "str alloc qry")?;
 
     let exec_fn: unsafe extern "system" fn(
         *mut core::ffi::c_void, *mut u16, *mut u16,
@@ -224,7 +224,7 @@ fn run() -> Result<(), &'static str> {
             release_loc(locator);
             let _ = co_uninitialize();
         };
-        return Err("IWbemServices::ExecQuery failed");
+        return Err("query exec failed");
     }
 
     println!("WMI QUERY: {}", obf!("SELECT Name FROM Win32_Process"));

