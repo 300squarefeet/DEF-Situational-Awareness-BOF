@@ -15,7 +15,7 @@ pub mod mitre;
 pub mod panic_safe;
 pub mod str_util;
 pub mod obf;
-pub mod dfr        { /* filled in Task 10 */ }
+pub mod dfr;
 pub mod syscalls;
 pub mod com        { /* filled in Task 12 */ }
 pub mod token      { /* filled in Task 13 */ }

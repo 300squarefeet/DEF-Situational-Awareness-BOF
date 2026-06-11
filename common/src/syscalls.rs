@@ -120,6 +120,13 @@ unsafe fn find_export(module: *mut c_void, api_hash: u32) -> Option<*mut c_void>
     None
 }
 
+// Public-facing wrappers around the internal helpers. DFR (`common::dfr`)
+// uses these; we don't want to make `find_module`/`find_export` themselves
+// public because their signatures may evolve, and exposing the raw helpers
+// invites misuse.
+pub unsafe fn find_module_pub(hash: u32) -> Option<*mut c_void> { find_module(hash) }
+pub unsafe fn find_export_pub(m: *mut c_void, hash: u32) -> Option<*mut c_void> { find_export(m, hash) }
+
 #[repr(C)] struct ImageDosHeader { e_magic: u16, _r: [u8; 58], e_lfanew: i32 }
 #[repr(C)] struct ImageDataDirectory { virtual_address: u32, size: u32 }
 #[repr(C)] struct ImageOptionalHeader64 {
