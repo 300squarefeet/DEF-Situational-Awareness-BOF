@@ -10,17 +10,15 @@ syscalls (HalosGate), djb2 API hashing, compile-time string encryption
 Every BOF prints a MITRE ATT&CK banner before its main logic so operators
 know exactly which technique they're firing.
 
-## Phase 1 status
+## Phase status
 
-- [x] Workspace + toolchain pinned
-- [x] `common` OPSEC primitives crate
-- [x] Build pipeline (macOS cross-compile → COFF)
-- [x] 3 canary BOFs end-to-end: `uptime`, `hostname`, `whoami`
-- [x] Phase 2: remaining 25 SA BOFs
-- [x] Phase 3: 18 Remote Ops BOFs
-- [x] Phase 4: 20 OperatorsKit + C2 BOFs
-- [x] Phase 5: 2 persistence BOFs (COM scheduled task + COM startup LNK)
-- [x] Phase 6: InlineExecuteEx OPSEC fork (`tools/inline-execute-ex-opsec/`)
+- [x] Phase 1: Workspace + toolchain + canaries (uptime, hostname, whoami)
+- [x] Phase 2: 25 Situational Awareness BOFs
+- [x] Phase 3: 18 Remote Operations BOFs
+- [x] Phase 4: 20 OperatorsKit + C2-Collection BOFs
+- [x] Phase 5: 2 Persistence BOFs (schtask-com + lnk-startup)
+- [x] Phase 6: InlineExecuteEx OPSEC fork (bofx loader)
+- [ ] Phase 7+: Tier-3 RegisterTaskDefinition + AES blob loader + LDAP/SSPI helpers
 
 ## Build
 
