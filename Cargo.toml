@@ -63,6 +63,11 @@ members = [
     # Phase 4 — OperatorsKit (batch D): COM lateral movement
     "operators-kit/execute-crosssession",
     "operators-kit/dcom-localserver32",
+    # Phase 4 — C2-Collection (batch F, ps* family)
+    "c2-collection/psx",
+    "c2-collection/psk",
+    "c2-collection/psm",
+    "c2-collection/findobjects",
 ]
 
 [workspace.package]

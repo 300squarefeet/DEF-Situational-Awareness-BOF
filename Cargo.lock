@@ -189,6 +189,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "findobjects"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "get-dpapi-system"
 version = "0.1.0"
 dependencies = [
@@ -410,6 +420,34 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "psk"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "psm"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "psx"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
