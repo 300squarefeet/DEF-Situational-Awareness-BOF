@@ -15,7 +15,11 @@ pub mod mitre;
 pub mod panic_safe;
 pub mod str_util;
 pub mod obf;
-pub mod dfr;
-pub mod syscalls;
 pub mod com;
+
+#[cfg(target_arch = "x86_64")]
+pub mod syscalls;
+#[cfg(target_arch = "x86_64")]
 pub mod token;
+#[cfg(target_arch = "x86_64")]
+pub mod dfr;

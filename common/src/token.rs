@@ -3,7 +3,7 @@
 //
 //! Token helpers atop indirect syscalls.
 
-#![cfg(target_os = "windows")]
+#![cfg(all(target_os = "windows", target_arch = "x86_64"))]
 
 use core::ffi::c_void;
 use windows_sys::Win32::Foundation::{HANDLE, NTSTATUS};

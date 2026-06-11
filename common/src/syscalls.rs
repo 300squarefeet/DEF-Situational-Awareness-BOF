@@ -16,7 +16,7 @@
 //!    call-stack legible from an EDR's perspective; the `syscall` opcode lives
 //!    inside ntdll, not in BOF .text.
 
-#![cfg(target_os = "windows")]
+#![cfg(all(target_os = "windows", target_arch = "x86_64"))]
 #![allow(non_snake_case)]
 
 use core::ffi::c_void;
