@@ -583,28 +583,51 @@ beacon_command_register(
 
 # --- portscan ---
 alias portscan {
-    local('$bid $host $portrange $args');
-    $bid       = $1;
-    $host      = $2;
-    $portrange = $3;
-    if ($host is $null || $portrange is $null) {
-        berror($bid, "Use: portscan <host> <port-range>\nExample: portscan 10.10.10.5 22,80,443,3389\nExample: portscan 10.10.10.5 1-1024");
+    local('$bid $target $ports $args');
+    $bid    = $1;
+    $target = $2;
+    if ($target is $null || size(@_) < 3) {
+        berror($bid, "Use: portscan <ip-or-cidr> <ports>\n" .
+                     "Examples:\n" .
+                     "  portscan 192.168.1.6 443 445 80\n" .
+                     "  portscan 192.168.1.6/24 443,445,80\n" .
+                     "  portscan 10.10.10.0/24 22 80 443-445 3389\n" .
+                     "  portscan 10.10.10.5 1-1024");
         return;
     }
-    $args = bof_pack($bid, "zz", $host, $portrange);
+    # Everything after <target> is the port spec. The BOF's port parser
+    # accepts space-, comma-, and dash-delimited tokens interchangeably,
+    # so we just join all trailing args with spaces and let the BOF tokenize.
+    $ports = join(" ", sublist(@_, 2));
+    $args  = bof_pack($bid, "zzz", $target, $ports, "");
     dani_run($bid, "portscan", $args);
 }
 beacon_command_register(
     "portscan",
-    "TCP port scanner — T1046 (by Dani)",
-    "Synopsis: portscan <host> <port-range>\n\n" .
-    "Description: Scan TCP ports on a target host. Port range can be\n" .
-    "comma-separated values or a dash-delimited range.\n\n" .
+    "TCP port scanner — IPv4/CIDR + multi-port — T1046 (by Dani)",
+    "Synopsis: portscan <ip-or-cidr> <ports> [timeout-ms]\n\n" .
+    "Description: Non-blocking TCP connect-scan against a single IPv4 or a\n" .
+    "CIDR range (max /20 = 4096 hosts). Ports accept space/comma delimiters\n" .
+    "and dash-ranges. Both host order and port order are randomized via\n" .
+    "LCG-driven Fisher-Yates so packet captures don't show predictable\n" .
+    "sequential sweeps.\n\n" .
+    "Target formats:\n" .
+    "  192.168.1.6           single host\n" .
+    "  192.168.1.6/24        CIDR (256 hosts)\n" .
+    "  10.0.0.0/20           CIDR (4096 hosts, the maximum)\n\n" .
+    "Port formats (mix freely):\n" .
+    "  443 445 80            space-separated\n" .
+    "  443,445,80            comma-separated\n" .
+    "  1-1024                range\n" .
+    "  22,80 443-445 3389    mixed\n\n" .
     "Examples:\n" .
-    "  portscan 10.10.10.5 22,80,443,3389,8080\n" .
-    "  portscan 192.168.1.1 1-1024\n\n" .
+    "  portscan 192.168.1.6 443 445 80\n" .
+    "  portscan 192.168.1.6/24 443,445,80\n" .
+    "  portscan 10.10.10.0/24 22 80 443 3389 8080\n" .
+    "  portscan 10.10.10.5 1-1024 500     # 500ms timeout\n\n" .
+    "Defaults: timeout = 800ms.\n\n" .
     "MITRE ATT&CK: T1046 (Network Service Discovery)\n\n" .
-    "Phase: 3 — Remote Ops\nArgs: <host> <port-range> (required)"
+    "Phase: 3 — Remote Ops\nArgs: <ip-or-cidr> <ports> [timeout-ms]"
 );
 
 # --- etw-patch ---
