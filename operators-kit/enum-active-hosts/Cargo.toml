@@ -1,0 +1,17 @@
+[package]
+name = "enum-active-hosts"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "ICMP ping sweep to find active hosts in a /24 subnet — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "enum_active_hosts"

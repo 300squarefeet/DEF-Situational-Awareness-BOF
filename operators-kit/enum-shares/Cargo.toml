@@ -1,0 +1,17 @@
+[package]
+name = "enum-shares"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate local and remote network shares via NetShareEnum — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "enum_shares"

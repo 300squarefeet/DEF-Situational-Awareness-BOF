@@ -1,0 +1,16 @@
+[package]
+name = "slack-cookie"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate Slack AppData storage for session cookie artifacts — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "slack_cookie"

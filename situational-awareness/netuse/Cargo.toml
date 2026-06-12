@@ -1,0 +1,17 @@
+[package]
+name = "netuse"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate network connections (mapped drives) via NetUseEnum — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "netuse"

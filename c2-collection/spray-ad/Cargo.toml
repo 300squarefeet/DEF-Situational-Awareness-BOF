@@ -1,0 +1,17 @@
+[package]
+name = "spray-ad"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "AD password spray — discovers domain via GetComputerNameExA then LogonUserA — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "spray_ad"

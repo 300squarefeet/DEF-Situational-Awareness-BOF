@@ -1,0 +1,17 @@
+[package]
+name = "resources"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Display system memory and CPU info via GlobalMemoryStatusEx/GetSystemInfo — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "resources"

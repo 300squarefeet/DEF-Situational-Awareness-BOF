@@ -1,0 +1,17 @@
+[package]
+name = "sc-qfailure"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "QueryServiceConfig2A SERVICE_CONFIG_FAILURE_ACTIONS — by Dani. Original C: TrustedSec/cs-situational-awareness-bof"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "sc_qfailure"

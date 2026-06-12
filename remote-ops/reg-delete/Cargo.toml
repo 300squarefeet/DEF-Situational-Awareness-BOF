@@ -1,0 +1,16 @@
+[package]
+name = "reg-delete"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Delete a registry key or value — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "reg_delete"

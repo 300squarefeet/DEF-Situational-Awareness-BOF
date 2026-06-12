@@ -13,7 +13,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "adcs-enum"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "adcs-enum-com"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "adcs-request"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "adcs-request-on-behalf"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -32,7 +62,57 @@ dependencies = [
 ]
 
 [[package]]
+name = "add-firewall-rule"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "add-local-cert"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "add-machine-account"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "add-task-scheduler"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "adduser"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "adv-audit-policies"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -53,6 +133,16 @@ dependencies = [
 
 [[package]]
 name = "arp"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "ask-mfa"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -92,6 +182,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "chromekey"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "clipboard"
 version = "0.1.0"
 dependencies = [
@@ -111,12 +211,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "conhost"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "cred-prompt"
 version = "0.1.0"
 dependencies = [
  "common",
  "obfstr",
  "rustbof",
+]
+
+[[package]]
+name = "ctray"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -140,7 +260,67 @@ dependencies = [
 ]
 
 [[package]]
+name = "dde"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "del-exclusion"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "del-firewall-rule"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "del-local-cert"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "del-task-scheduler"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "dir"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "dll-env-hijacking"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -180,7 +360,97 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-active-hosts"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-dll-sideloading"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-drives"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-exclusions"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-files"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "enum-filter-driver"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-handles"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-lib"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-local-cert"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-local-sessions"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -200,12 +470,42 @@ dependencies = [
 ]
 
 [[package]]
+name = "enum-shares"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "enum-sysmon"
 version = "0.1.0"
 dependencies = [
  "common",
  "obfstr",
  "rustbof",
+]
+
+[[package]]
+name = "enum-task-scheduler"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-web-client"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -259,6 +559,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "force-lock-screen"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "get-azure-token"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "get-dpapi-system"
 version = "0.1.0"
 dependencies = [
@@ -289,6 +609,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "get-session-info"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "ghost-task"
 version = "0.1.0"
 dependencies = [
@@ -300,6 +630,16 @@ dependencies = [
 
 [[package]]
 name = "global-unprotect"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "hide-file"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -408,6 +748,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lastpass"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "ldapsearch"
 version = "0.1.0"
 dependencies = [
@@ -438,6 +787,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "listdns"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "listmods"
 version = "0.1.0"
 dependencies = [
@@ -458,7 +817,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "locale"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "make-token"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "md5"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -518,7 +897,47 @@ dependencies = [
 ]
 
 [[package]]
+name = "nettime"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netuptime"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netuse"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "netuser"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netview"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -552,6 +971,45 @@ name = "obfstr"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0d354e9a302760d07e025701d40534f17dd1fe4c4db955b4e3bd2907c63bdee"
+
+[[package]]
+name = "office-tokens"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "password-spray-ad"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "password-spray-local"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "petit-potam"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
 
 [[package]]
 name = "portscan"
@@ -593,6 +1051,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "processdestroy"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "processlisthandles"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "psk"
 version = "0.1.0"
 dependencies = [
@@ -630,6 +1106,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "reg-delete"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "reg-query"
 version = "0.1.0"
 dependencies = [
@@ -641,6 +1126,35 @@ dependencies = [
 
 [[package]]
 name = "reg-save"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "reg-set"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "regsession"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "resources"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -679,6 +1193,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-config"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "sc-create"
 version = "0.1.0"
 dependencies = [
@@ -699,6 +1222,74 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-description"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "sc-enum"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sc-failure"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "sc-qc"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sc-qdescription"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sc-qfailure"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sc-qtriggerinfo"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "sc-query"
 version = "0.1.0"
 dependencies = [
@@ -706,6 +1297,24 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sc-start"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "sc-stop"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -749,6 +1358,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "setthreadcontext"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sha1"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "sha256"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "shspawnas"
 version = "0.1.0"
 dependencies = [
@@ -756,6 +1395,33 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "shutdown"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "slack-cookie"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "slackkey"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -768,7 +1434,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "spray-ad"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "start-web-client"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "suspendresume"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "svcctrl"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -799,6 +1495,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tooltip"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -816,6 +1522,26 @@ dependencies = [
 
 [[package]]
 name = "useridletime"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "uxsubclassinfo"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "vssenum"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -944,6 +1670,16 @@ name = "windows_x86_64_msvc"
 version = "0.52.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
+
+[[package]]
+name = "winver"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
 
 [[package]]
 name = "wmi-query"

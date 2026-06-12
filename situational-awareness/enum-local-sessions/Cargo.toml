@@ -1,0 +1,17 @@
+[package]
+name = "enum-local-sessions"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate logged-on sessions via WTSEnumerateSessions — by Dani"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "enum_local_sessions"

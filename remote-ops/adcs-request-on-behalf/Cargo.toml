@@ -1,0 +1,17 @@
+[package]
+name = "adcs-request-on-behalf"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Check ADCS enrollment agent (ESC3) rights from registry — by Dani. Original C: OperatorsKit"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "adcs_request_on_behalf"

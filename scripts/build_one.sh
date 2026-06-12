@@ -4,6 +4,9 @@
 # Author: Dani <daniagungg@gmail.com>
 set -euo pipefail
 
+# Ensure rustup proxy is first in PATH so `cargo +toolchain` directives work
+export PATH="$HOME/.cargo/bin:$PATH"
+
 CRATE="${1:?usage: build_one.sh <crate-name>}"
 UNDER="${CRATE//-/_}"
 mkdir -p dist

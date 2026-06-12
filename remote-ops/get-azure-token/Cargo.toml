@@ -1,0 +1,17 @@
+[package]
+name = "get-azure-token"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Locate Azure/MSAL token cache files — by Dani. Original C: C2-Tool-Collection"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "get_azure_token"
