@@ -130,12 +130,18 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     }
 
     // MiniDumpWriteDump
-    let rc = unsafe {
+    let rc = match unsafe {
         mini_dump_write_dump(
             h_proc, pid, h_file, MINIDUMP_TYPE,
             core::ptr::null_mut(), core::ptr::null_mut(), core::ptr::null_mut(),
         )
-    }.map_err(|_| "dump write resolve")?;
+    } {
+        Ok(v) => v,
+        Err(_) => {
+            unsafe { let _ = close_handle(h_file); let _ = close_handle(h_proc); };
+            return Err("dump write resolve");
+        }
+    };
 
     unsafe {
         let _ = close_handle(h_file);

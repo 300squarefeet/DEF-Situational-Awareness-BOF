@@ -192,8 +192,13 @@ fn run() -> Result<(), &'static str> {
 
     let wql_bstr = unsafe { sys_alloc_string(wql_wide.as_ptr()) }
         .map_err(|_| "str alloc wql")?;
-    let query_bstr = unsafe { sys_alloc_string(query_wide.as_ptr()) }
-        .map_err(|_| "str alloc qry")?;
+    let query_bstr = match unsafe { sys_alloc_string(query_wide.as_ptr()) } {
+        Ok(p) => p,
+        Err(_) => {
+            unsafe { let _ = sys_free_string(wql_bstr); };
+            return Err("str alloc qry");
+        }
+    };
 
     let exec_fn: unsafe extern "system" fn(
         *mut core::ffi::c_void, *mut u16, *mut u16,

@@ -140,8 +140,8 @@ unsafe fn run_inner(parser: &mut rustbof::data::DataParser) -> Result<(), &'stat
         unsafe { core::mem::transmute(*vtbl.add(11)) }; // NewTask
     let hr2 = unsafe { new_task_fn(svc, &mut task_def) };
     if hr2 != S_OK || task_def.is_null() {
-        release_obj(vtbl.add(2), folder);
-        release_obj(vtbl.add(2), svc);
+        release_obj(folder_vtbl, folder);
+        release_obj(vtbl, svc);
         unsafe { let _ = co_uninitialize(); };
         return Err("NewTask failed");
     }
@@ -205,9 +205,9 @@ unsafe fn run_inner(parser: &mut rustbof::data::DataParser) -> Result<(), &'stat
         )
     };
     if hr3 != S_OK {
-        release_obj(def_vtbl.add(2), task_def);
-        release_obj(folder_vtbl.add(2), folder);
-        release_obj(vtbl.add(2), svc);
+        release_obj(def_vtbl, task_def);
+        release_obj(folder_vtbl, folder);
+        release_obj(vtbl, svc);
         unsafe { let _ = co_uninitialize(); };
         return Err("RegisterTaskDefinition failed");
     }
