@@ -32,6 +32,7 @@ members = [
     "situational-awareness/findmodule",
     "situational-awareness/sccm-decrypt",
     "situational-awareness/ldapsec-check",
+    "situational-awareness/probe",
     # Phase 3 — Remote-Ops BOFs (in progress)
     "remote-ops/enablepriv",
     "remote-ops/reg-save",

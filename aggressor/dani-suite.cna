@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2024-2026 Dani <daniagungg@gmail.com>
 #
 # dani-suite.cna — Single Cobalt Strike aggressor script
-# Registers all 68 BOFs in DEF-Situational-Awareness-BOF as native beacon commands.
+# Registers all 69 BOFs in DEF-Situational-Awareness-BOF as native beacon commands.
 #
 # Usage: Load via Cobalt Strike Script Manager (CS 4.x+)
 #        File → Script Manager → Load → dani-suite.cna
@@ -14,20 +14,20 @@
 # script_resource("../dist/X.x64.o") resolves relative to this .cna's directory.
 #
 # Phase 1 — Canary              (3 BOFs)
-# Phase 2 — Situational Aware   (25 BOFs)
+# Phase 2 — Situational Aware   (26 BOFs)
 # Phase 3 — Remote Ops          (18 BOFs)
 # Phase 4 — OperatorsKit        (12 BOFs)
 # Phase 4 — C2-Collection       (8 BOFs)
 # Phase 5 — Persistence         (2 BOFs)
 # Phase 6 — Loader              (1 BOF)
-# Total: 69 registered commands (68 BOFs + dani-help meta)
+# Total: 70 registered commands (69 BOFs + dani-help meta)
 
 # ============================================================
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
 println("  DEF-Situational-Awareness-BOF  //  by Dani");
-println("  68 BOFs across 6 phases loaded");
+println("  69 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
 
@@ -573,6 +573,43 @@ beacon_command_register(
     "environments vulnerable to LDAP relay attacks.\n\n" .
     "MITRE ATT&CK: T1518 (Software Discovery)\n\n" .
     "Phase: 2 — Situational Awareness\nArgs: none"
+);
+
+# --- probe ---
+alias probe {
+    local('$bid $target $ports $args');
+    $bid    = $1;
+    $target = $2;
+    if ($target is $null || size(@_) < 3) {
+        berror($bid, "Use: probe <host-or-ip-or-cidr> <ports>\n" .
+                     "Examples:\n" .
+                     "  probe dc01.corp.local 445\n" .
+                     "  probe 192.168.1.6 443 445 80\n" .
+                     "  probe 192.168.1.6/24 443,445,80");
+        return;
+    }
+    $ports = join(" ", sublist(@_, 2));
+    $args  = bof_pack($bid, "zzz", $target, $ports, "");
+    dani_run($bid, "probe", $args);
+}
+beacon_command_register(
+    "probe",
+    "TCP port probe — hostname/IPv4/CIDR + multi-port — T1046 (by Dani)",
+    "Synopsis: probe <host-or-ip-or-cidr> <ports> [timeout-ms]\n\n" .
+    "Description: Probe TCP ports on a hostname (DNS-resolved), single IPv4,\n" .
+    "or CIDR range. Like portscan but adds hostname resolution via getaddrinfo.\n\n" .
+    "Target formats:\n" .
+    "  dc01.corp.local     hostname (DNS resolved)\n" .
+    "  192.168.1.6         single IPv4\n" .
+    "  192.168.1.6/24      CIDR (max /20 = 4096 hosts)\n\n" .
+    "Port formats: space-, comma-, or dash-separated, mix freely.\n\n" .
+    "Examples:\n" .
+    "  probe dc01.corp.local 445\n" .
+    "  probe 192.168.1.6 443 445 80\n" .
+    "  probe 192.168.1.6/24 443,445,80\n" .
+    "  probe 10.10.10.0/24 22 80 443-445 3389\n\n" .
+    "MITRE ATT&CK: T1046 (Network Service Discovery)\n\n" .
+    "Phase: 2 — SA (filled from upstream cs-sa-bof/probe)\nArgs: <target> <ports>"
 );
 
 # ============================================================
@@ -1589,7 +1626,7 @@ alias dani-help {
     $bid = $1;
     blog($bid, "=================================================================");
     blog($bid, "  DEF-Situational-Awareness-BOF  //  by Dani");
-    blog($bid, "  68 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "  69 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
     blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
@@ -1597,7 +1634,7 @@ alias dani-help {
     blog($bid, "  hostname       T1082     NetBIOS/DNS/FQDN via DFR");
     blog($bid, "  whoami         T1033/34  Token info via indirect syscall");
     blog($bid, "");
-    blog($bid, "PHASE 2 — Situational Awareness (25 BOFs)");
+    blog($bid, "PHASE 2 — Situational Awareness (26 BOFs)");
     blog($bid, "  arp            T1018     ARP cache");
     blog($bid, "  env            T1082     Env vars via PEB");
     blog($bid, "  ipconfig       T1016     Adapter info");
@@ -1623,6 +1660,7 @@ alias dani-help {
     blog($bid, "  findmodule     T1057     Module in remote PID     <pid> <module>");
     blog($bid, "  sccm-decrypt   T1555     SCCM NAA creds");
     blog($bid, "  ldapsec-check  T1518     LDAP signing probe");
+    blog($bid, "  probe          T1046     TCP probe hostname/IP/CIDR  <host> <ports>");
     blog($bid, "");
     blog($bid, "PHASE 3 — Remote Ops (18 BOFs)");
     blog($bid, "  portscan       T1046     TCP scan                 <host> <ports>");
@@ -1680,9 +1718,9 @@ alias dani-help {
 }
 beacon_command_register(
     "dani-help",
-    "List all 68 BOFs in the Dani suite by phase and technique",
+    "List all 69 BOFs in the Dani suite by phase and technique",
     "Synopsis: dani-help\n\n" .
-    "Description: Print a structured list of all 68 BOFs available in the\n" .
+    "Description: Print a structured list of all 69 BOFs available in the\n" .
     "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
     "ATT&CK technique IDs and argument summaries.\n\n" .
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .
