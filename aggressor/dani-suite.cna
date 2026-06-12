@@ -36,17 +36,27 @@ println("============================================================");
 # ============================================================
 sub dani_run {
     # $1 = bid, $2 = bof name (no extension), $3 = packed args (or "")
-    local('$bid $name $args $path');
+    local('$bid $name $args $path $handle $data');
     $bid  = $1;
     $name = $2;
     $args = $3;
     $path = script_resource("../dist/" . $name . ".x64.o");
     if (!-exists $path) {
         berror($bid, "[dani-suite] " . $name . ".x64.o not found at: " . $path);
-        berror($bid, "Run 'cargo make --profile release' in the repo root to build all BOFs.");
+        berror($bid, "Run 'bash scripts/build_all.sh' in the repo root to build all BOFs.");
         return;
     }
-    bof_inline_execute($bid, $path, "go", $args);
+    # Read BOF as binary blob (Cobalt Strike's beacon_inline_execute requires
+    # raw COFF data, NOT a file path). openf/readb/closef is the standard
+    # Aggressor idiom for binary file I/O.
+    $handle = openf($path);
+    $data   = readb($handle, -1);
+    closef($handle);
+    if ($data is $null || strlen($data) == 0) {
+        berror($bid, "[dani-suite] failed to read " . $name . ".x64.o (empty/missing)");
+        return;
+    }
+    beacon_inline_execute($bid, $data, "go", $args);
 }
 
 # ============================================================
@@ -1515,14 +1525,22 @@ alias bofx {
     }
     if ($entry is $null)   { $entry   = "go"; }
     if ($bofargs is $null) { $bofargs = ""; }
-    local('$xargs $xpath');
+    local('$xargs $xpath $xhandle $xdata');
     $xargs = bof_pack($bid, "zzz", $bofpath, $entry, $bofargs);
     $xpath = script_resource("../dist/bofx.x64.o");
     if (!-exists $xpath) {
         berror($bid, "[dani-suite] bofx.x64.o not found at: " . $xpath);
         return;
     }
-    bof_inline_execute($bid, $xpath, "go", $xargs);
+    # Read loader binary (beacon_inline_execute needs raw COFF bytes)
+    $xhandle = openf($xpath);
+    $xdata   = readb($xhandle, -1);
+    closef($xhandle);
+    if ($xdata is $null || strlen($xdata) == 0) {
+        berror($bid, "[dani-suite] failed to read bofx.x64.o");
+        return;
+    }
+    beacon_inline_execute($bid, $xdata, "go", $xargs);
 }
 beacon_command_register(
     "bofx",
