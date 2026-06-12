@@ -24,7 +24,11 @@ const INVALID_HANDLE: usize      = !0usize;
 // dwSize(u32@0), cntUsage(u32@4), th32ProcessID(u32@8), th32DefaultHeapID(usize@16),
 // th32ModuleID(u32@24), cntThreads(u32@28), th32ParentProcessID(u32@32),
 // pcPriClassBase(i32@36), dwFlags(u32@40), szExeFile([u8;260]@44)
-const PROCESSENTRY32A_SIZE: usize = 296;
+// On x64 sizeof(PROCESSENTRY32A) = 304 (ULONG_PTR th32DefaultHeapID introduces
+// 4-byte pad after th32ProcessID, taking the struct from 296 to 304).
+// Process32FirstA validates dwSize == sizeof(PROCESSENTRY32A) and returns
+// ERROR_BAD_LENGTH otherwise; a too-small buffer would also risk overflow.
+const PROCESSENTRY32A_SIZE: usize = 304;
 const PID_OFFSET: usize           = 8;
 const NAME_OFFSET: usize          = 44;
 

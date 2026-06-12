@@ -84,9 +84,9 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
         return Err("snapshot invalid");
     }
 
-    // MODULEENTRY32A = 1084 bytes
-    // Layout (x64):
-    //   offset  0: dwSize     (u32)   — must be set to 1084
+    // MODULEENTRY32A on x64 = 568 bytes (verified via windows-sys-0.52)
+    // Layout (x64, 8-byte aligned):
+    //   offset  0: dwSize     (u32)   — must be set to 568
     //   offset  4: th32ModuleID (u32)
     //   offset  8: th32ProcessID (u32)
     //   offset 12: GlblcntUsage (u32)
@@ -96,11 +96,13 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
     //   offset 32: modBaseSize (u32)
     //   offset 36: _pad (4 bytes)
     //   offset 40: hModule (8 bytes)
-    //   offset 48: szModule ([u8; 256])
-    //   offset 304: szExePath ([u8; 260])
-    let mut entry = [0u8; 1084];
-    // Set dwSize = 1084
-    let dw_size: u32 = 1084u32;
+    //   offset 48: szModule ([u8; 256])  ends @ 304
+    //   offset 304: szExePath ([u8; 260]) ends @ 564
+    //   tail align to 8 → 568
+    const MODULEENTRY32A_SIZE: usize = 568;
+    let mut entry = [0u8; MODULEENTRY32A_SIZE];
+    // Set dwSize = 568 (Module32FirstA validates against sizeof(MODULEENTRY32A))
+    let dw_size: u32 = MODULEENTRY32A_SIZE as u32;
     entry[0..4].copy_from_slice(&dw_size.to_le_bytes());
 
     println!("LOADED MODULES for PID {}:", pid);

@@ -21,7 +21,11 @@ const TH32CS_SNAPTHREAD:     u32 = 0x00000004;
 const THREAD_GET_CONTEXT:    u32 = 0x0008;
 const THREAD_SUSPEND_RESUME: u32 = 0x0002;
 
-// x64 CONTEXT: 1232 bytes total, RIP at offset 248, ContextFlags at offset 48
+// x64 CONTEXT: 1232 bytes total, RIP at offset 248, ContextFlags at offset 48.
+// Per the x64 ABI the CONTEXT struct REQUIRES 16-byte alignment for its
+// embedded M128A XMM register array; passing a misaligned pointer makes
+// GetThreadContext fail with ERROR_NOACCESS. A plain `[u8; 1232]` on the
+// stack is only 1-byte aligned, so we wrap it in a repr(align(16)) struct.
 #[cfg(target_arch = "x86_64")]
 const CONTEXT_FULL: u32  = 0x10000B;
 #[cfg(target_arch = "x86_64")]
@@ -30,6 +34,10 @@ const CONTEXT_SIZE: usize = 1232;
 const CTX_FLAGS_OFF: usize = 48;
 #[cfg(target_arch = "x86_64")]
 const RIP_OFFSET: usize   = 248;
+
+#[cfg(target_arch = "x86_64")]
+#[repr(C, align(16))]
+struct AlignedCtx([u8; CONTEXT_SIZE]);
 
 dfr_fn!(
     create_toolhelp32_snapshot(flags: u32, pid: u32) -> *mut c_void,
@@ -112,18 +120,19 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
                     open_thread(THREAD_GET_CONTEXT | THREAD_SUSPEND_RESUME, 0, tid)
                 }.unwrap_or(core::ptr::null_mut());
                 if !h_thr.is_null() {
-                    let mut ctx = [0u8; CONTEXT_SIZE];
+                    let mut ctx_box = AlignedCtx([0u8; CONTEXT_SIZE]);
+                    let ctx_ptr = ctx_box.0.as_mut_ptr();
                     unsafe {
                         core::ptr::write_unaligned(
-                            ctx.as_mut_ptr().add(CTX_FLAGS_OFF) as *mut u32,
+                            ctx_ptr.add(CTX_FLAGS_OFF) as *mut u32,
                             CONTEXT_FULL,
                         );
                     }
-                    let ctx_ok = unsafe { get_thread_context(h_thr, ctx.as_mut_ptr()) }
+                    let ctx_ok = unsafe { get_thread_context(h_thr, ctx_ptr) }
                         .unwrap_or(0);
                     if ctx_ok != 0 {
                         let rip = unsafe {
-                            core::ptr::read_unaligned(ctx.as_ptr().add(RIP_OFFSET) as *const u64)
+                            core::ptr::read_unaligned(ctx_ptr.add(RIP_OFFSET) as *const u64)
                         };
                         println!("    RIP=0x{:016X}", rip);
                     }

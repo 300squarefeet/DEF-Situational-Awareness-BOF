@@ -74,10 +74,12 @@ fn run(parser: &mut rustbof::data::DataParser) -> Result<(), &'static str> {
         .map_err(|_| "snap resolve")?;
     if snap == !0usize { return Err("snapshot failed"); }
 
-    // PROCESSENTRY32A = 296 bytes
-    // dwSize @ 0, th32ProcessID @ 8 (u32), th32ParentProcessID @ 32 (u32), szExeFile @ 44 ([u8;260])
-    let mut entry = [0u8; 296];
-    let dw: u32 = 296;
+    // PROCESSENTRY32A on x64 = 304 bytes (ULONG_PTR adds 8-byte alignment padding):
+    //   dwSize @ 0, th32ProcessID @ 8, th32ParentProcessID @ 32, szExeFile @ 44 ([u8;260])
+    //   end = 44 + 260 = 304
+    const PE32A_SIZE: usize = 304;
+    let mut entry = [0u8; PE32A_SIZE];
+    let dw: u32 = PE32A_SIZE as u32;
     entry[0..4].copy_from_slice(&dw.to_le_bytes());
 
     let ok = unsafe { process32_first_a(snap, entry.as_mut_ptr()) }
