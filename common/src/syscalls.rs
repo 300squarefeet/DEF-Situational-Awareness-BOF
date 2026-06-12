@@ -72,9 +72,12 @@ unsafe fn current_peb() -> *mut Peb {
 /// Walk PEB, return base address of module whose BaseDllName matches `hash`.
 unsafe fn find_module(target_hash: u32) -> Option<*mut c_void> {
     let peb = current_peb();
+    if peb.is_null() { return None; }
     let ldr = (*peb).ldr;
+    if ldr.is_null() { return None; }
     let head = &mut (*ldr).in_load_order_module_list as *mut ListEntry;
     let mut cur = (*head).flink;
+    if cur.is_null() { return None; }   // empty list
     while cur != head {
         let entry = cur as *mut LdrDataTableEntry;
         let name = &(*entry).base_dll_name;
@@ -109,7 +112,8 @@ unsafe fn find_export(module: *mut c_void, api_hash: u32) -> Option<*mut c_void>
         let name_rva = *names.add(i);
         let name_ptr = base.add(name_rva as usize);
         let mut len = 0usize;
-        while *name_ptr.add(len) != 0 { len += 1; }
+        while len < 256 && *name_ptr.add(len) != 0 { len += 1; }
+        if len == 0 || len >= 256 { continue; }  // skip malformed/oversized names
         let slice = core::slice::from_raw_parts(name_ptr, len);
         if djb2(slice) == api_hash {
             let ord = *ordinals.add(i) as usize;
