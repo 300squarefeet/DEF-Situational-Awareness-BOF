@@ -15,19 +15,20 @@
 #
 # Phase 1 — Canary              (3 BOFs)
 # Phase 2 — Situational Aware   (26 BOFs)
+# Phase 2 — SA gap-fill batch 1 (12 BOFs)
 # Phase 3 — Remote Ops          (18 BOFs)
 # Phase 4 — OperatorsKit        (12 BOFs)
 # Phase 4 — C2-Collection       (8 BOFs)
 # Phase 5 — Persistence         (2 BOFs)
 # Phase 6 — Loader              (1 BOF)
-# Total: 70 registered commands (69 BOFs + dani-help meta)
+# Total: 82 registered commands (81 BOFs + dani-help meta)
 
 # ============================================================
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
 println("  DEF-Situational-Awareness-BOF  //  by Dani");
-println("  69 BOFs across 6 phases loaded");
+println("  81 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
 
@@ -610,6 +611,267 @@ beacon_command_register(
     "  probe 10.10.10.0/24 22 80 443-445 3389\n\n" .
     "MITRE ATT&CK: T1046 (Network Service Discovery)\n\n" .
     "Phase: 2 — SA (filled from upstream cs-sa-bof/probe)\nArgs: <target> <ports>"
+);
+
+# ============================================================
+# ============================================================
+# PHASE 2 — SA GAP-FILL BATCH 1  (12 BOFs — ported upstream cs-sa-bof)
+# ============================================================
+# ============================================================
+
+# --- aadjoininfo ---
+alias aadjoininfo {
+    dani_run($1, "aadjoininfo", "");
+}
+beacon_command_register(
+    "aadjoininfo",
+    "Azure AD join status — T1518 (by Dani)",
+    "Synopsis: aadjoininfo\n\n" .
+    "Description: Query Azure AD join status of the host via\n" .
+    "NetGetAadJoinInformation. Reports join type, tenant ID, and device ID.\n\n" .
+    "MITRE ATT&CK: T1518 (Software Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: none"
+);
+
+# --- nslookup ---
+alias nslookup {
+    local('$bid $name $type $args');
+    $bid  = $1;
+    $name = $2;
+    $type = $3;
+    if ($name is $null) {
+        berror($bid, "Use: nslookup <name> [type]\nExample: nslookup dc01.corp.local\nExample: nslookup corp.local MX");
+        return;
+    }
+    if ($type is $null) { $type = "A"; }
+    $args = bof_pack($bid, "zz", $name, $type);
+    dani_run($bid, "nslookup", $args);
+}
+beacon_command_register(
+    "nslookup",
+    "DNS query via DnsQuery_A — T1018/T1016.001 (by Dani)",
+    "Synopsis: nslookup <name> [type=A]\n\n" .
+    "Description: Perform a DNS query from the beacon context. Supports A,\n" .
+    "AAAA, MX, NS, TXT, PTR record types.\n\n" .
+    "Examples:\n" .
+    "  nslookup dc01.corp.local\n" .
+    "  nslookup corp.local MX\n" .
+    "  nslookup 1.2.3.4.in-addr.arpa PTR\n\n" .
+    "MITRE ATT&CK: T1018 (Remote System Discovery),\n" .
+    "              T1016.001 (Internet Connection Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: <name> [type] (type optional, default A)"
+);
+
+# --- listmods ---
+alias listmods {
+    dani_run($1, "listmods", "");
+}
+beacon_command_register(
+    "listmods",
+    "List loaded modules via PEB walk — T1057 (by Dani)",
+    "Synopsis: listmods\n\n" .
+    "Description: Enumerate all DLLs loaded in the current beacon process\n" .
+    "by walking PEB.Ldr InLoadOrderModuleList. No API call — pure PEB walk.\n\n" .
+    "MITRE ATT&CK: T1057 (Process Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: none"
+);
+
+# --- cacls ---
+alias cacls {
+    local('$bid $path $args');
+    $bid  = $1;
+    $path = $2;
+    if ($path is $null) {
+        berror($bid, "Use: cacls <filepath>\nExample: cacls C:\\Windows\\System32\\lsass.exe");
+        return;
+    }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "cacls", $args);
+}
+beacon_command_register(
+    "cacls",
+    "File ACLs as SDDL via GetNamedSecurityInfo — T1083 (by Dani)",
+    "Synopsis: cacls <filepath>\n\n" .
+    "Description: Print the DACL/owner of a file or directory as an SDDL\n" .
+    "string using GetNamedSecurityInfoA + ConvertSecurityDescriptorToString.\n\n" .
+    "Examples:\n" .
+    "  cacls C:\\Windows\\System32\\lsass.exe\n" .
+    "  cacls C:\\Users\\Administrator\n\n" .
+    "MITRE ATT&CK: T1083 (File and Directory Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: <filepath> (required)"
+);
+
+# --- dir ---
+alias dir {
+    local('$bid $path $args');
+    $bid  = $1;
+    $path = $2;
+    if ($path is $null) {
+        berror($bid, "Use: dir <path>\nExample: dir C:\\Users\\Administrator\\Desktop");
+        return;
+    }
+    $args = bof_pack($bid, "z", $path);
+    dani_run($bid, "dir", $args);
+}
+beacon_command_register(
+    "dir",
+    "Directory listing via FindFirstFile — T1083 (by Dani)",
+    "Synopsis: dir <path>\n\n" .
+    "Description: List files and directories at the specified path using\n" .
+    "FindFirstFileA/FindNextFileA. Prints type, size, and filename.\n\n" .
+    "Examples:\n" .
+    "  dir C:\\Users\\Administrator\\Desktop\n" .
+    "  dir C:\\Windows\\Temp\n\n" .
+    "MITRE ATT&CK: T1083 (File and Directory Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: <path> (required)"
+);
+
+# --- get-netsession ---
+alias get-netsession {
+    local('$bid $host $args');
+    $bid  = $1;
+    $host = $2;
+    if ($host is $null) {
+        berror($bid, "Use: get-netsession <hostname>\nExample: get-netsession DC01");
+        return;
+    }
+    $args = bof_pack($bid, "z", $host);
+    dani_run($bid, "get-netsession", $args);
+}
+beacon_command_register(
+    "get-netsession",
+    "NetSession enumeration via NetSessionEnum — T1049 (by Dani)",
+    "Synopsis: get-netsession <hostname>\n\n" .
+    "Description: List open SMB sessions on a target host using\n" .
+    "NetSessionEnum (level 10). Shows client, user, time, and idle time.\n\n" .
+    "Examples:\n" .
+    "  get-netsession DC01\n" .
+    "  get-netsession FILESERVER01\n\n" .
+    "MITRE ATT&CK: T1049 (System Network Connections Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: <hostname> (required)"
+);
+
+# --- netgroup ---
+alias netgroup {
+    local('$bid $domain $args');
+    $bid    = $1;
+    $domain = $2;
+    if ($domain is $null) { $domain = ""; }
+    $args = bof_pack($bid, "z", $domain);
+    dani_run($bid, "netgroup", $args);
+}
+beacon_command_register(
+    "netgroup",
+    "Domain groups via NetGroupEnum — T1069.002 (by Dani)",
+    "Synopsis: netgroup [domain]\n\n" .
+    "Description: Enumerate domain global groups via NetGroupEnum (level 0).\n" .
+    "Optionally target a specific domain; defaults to the current domain.\n\n" .
+    "Examples:\n" .
+    "  netgroup\n" .
+    "  netgroup CORP\n\n" .
+    "MITRE ATT&CK: T1069.002 (Permission Groups Discovery: Domain Groups)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: [domain] (optional)"
+);
+
+# --- netlocalgroup ---
+alias netlocalgroup {
+    local('$bid $host $args');
+    $bid  = $1;
+    $host = $2;
+    if ($host is $null) { $host = ""; }
+    $args = bof_pack($bid, "z", $host);
+    dani_run($bid, "netlocalgroup", $args);
+}
+beacon_command_register(
+    "netlocalgroup",
+    "Local groups via NetLocalGroupEnum — T1069.001 (by Dani)",
+    "Synopsis: netlocalgroup [hostname]\n\n" .
+    "Description: Enumerate local groups via NetLocalGroupEnum (level 0).\n" .
+    "Optionally target a remote hostname; defaults to local machine.\n\n" .
+    "Examples:\n" .
+    "  netlocalgroup\n" .
+    "  netlocalgroup WS-CORP-01\n\n" .
+    "MITRE ATT&CK: T1069.001 (Permission Groups Discovery: Local Groups)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: [hostname] (optional)"
+);
+
+# --- get-password-policy ---
+alias get-password-policy {
+    local('$bid $domain $args');
+    $bid    = $1;
+    $domain = $2;
+    if ($domain is $null) { $domain = ""; }
+    $args = bof_pack($bid, "z", $domain);
+    dani_run($bid, "get-password-policy", $args);
+}
+beacon_command_register(
+    "get-password-policy",
+    "Domain password policy via NetUserModalsGet — T1201 (by Dani)",
+    "Synopsis: get-password-policy [domain]\n\n" .
+    "Description: Retrieve the domain password policy (min length, max age,\n" .
+    "min age, lockout, history) via NetUserModalsGet (level 0).\n\n" .
+    "Examples:\n" .
+    "  get-password-policy\n" .
+    "  get-password-policy CORP\n\n" .
+    "MITRE ATT&CK: T1201 (Password Policy Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: [domain] (optional)"
+);
+
+# --- sc-query ---
+alias sc-query {
+    local('$bid $svc $args');
+    $bid = $1;
+    $svc = $2;
+    if ($svc is $null) {
+        berror($bid, "Use: sc-query <servicename>\nExample: sc-query wuauserv\nExample: sc-query MsMpSvc");
+        return;
+    }
+    $args = bof_pack($bid, "z", $svc);
+    dani_run($bid, "sc-query", $args);
+}
+beacon_command_register(
+    "sc-query",
+    "Service config + status via SCM — T1007 (by Dani)",
+    "Synopsis: sc-query <servicename>\n\n" .
+    "Description: Query service configuration and current status via\n" .
+    "OpenSCManager/OpenService/QueryServiceConfigA/QueryServiceStatusEx.\n" .
+    "Reports state, PID, start type, binary path, and display name.\n\n" .
+    "Examples:\n" .
+    "  sc-query wuauserv\n" .
+    "  sc-query MsMpSvc\n" .
+    "  sc-query LanmanServer\n\n" .
+    "MITRE ATT&CK: T1007 (System Service Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: <servicename> (required)"
+);
+
+# --- schtasksenum ---
+alias schtasksenum {
+    dani_run($1, "schtasksenum", "");
+}
+beacon_command_register(
+    "schtasksenum",
+    "Scheduled task enumeration via COM ITaskService — T1053.005 (by Dani)",
+    "Synopsis: schtasksenum\n\n" .
+    "Description: Enumerate scheduled tasks in the root folder using the\n" .
+    "Task Scheduler COM interface (ITaskService/ITaskFolder/GetTasks).\n" .
+    "Lists task names from the local machine.\n\n" .
+    "MITRE ATT&CK: T1053.005 (Scheduled Task/Job: Scheduled Task)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: none"
+);
+
+# --- useridletime ---
+alias useridletime {
+    dani_run($1, "useridletime", "");
+}
+beacon_command_register(
+    "useridletime",
+    "User idle time via GetLastInputInfo — T1010 (by Dani)",
+    "Synopsis: useridletime\n\n" .
+    "Description: Report how long the interactive user has been idle by\n" .
+    "reading GetLastInputInfo and computing elapsed ticks since last input.\n" .
+    "Useful for operator timing decisions (user away vs. active).\n\n" .
+    "MITRE ATT&CK: T1010 (Application Window Discovery)\n\n" .
+    "Phase: 2 — SA gap-fill batch 1\nArgs: none"
 );
 
 # ============================================================
@@ -1626,7 +1888,7 @@ alias dani-help {
     $bid = $1;
     blog($bid, "=================================================================");
     blog($bid, "  DEF-Situational-Awareness-BOF  //  by Dani");
-    blog($bid, "  69 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "  81 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
     blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
@@ -1661,6 +1923,20 @@ alias dani-help {
     blog($bid, "  sccm-decrypt   T1555     SCCM NAA creds");
     blog($bid, "  ldapsec-check  T1518     LDAP signing probe");
     blog($bid, "  probe          T1046     TCP probe hostname/IP/CIDR  <host> <ports>");
+    blog($bid, "");
+    blog($bid, "PHASE 2 — SA gap-fill batch 1 (12 BOFs)");
+    blog($bid, "  aadjoininfo    T1518     Azure AD join status");
+    blog($bid, "  nslookup       T1018     DNS query                <name> [type]");
+    blog($bid, "  listmods       T1057     Loaded modules via PEB");
+    blog($bid, "  cacls          T1083     File ACLs (SDDL)         <filepath>");
+    blog($bid, "  dir            T1083     Directory listing        <path>");
+    blog($bid, "  get-netsession T1049     SMB sessions             <hostname>");
+    blog($bid, "  netgroup       T1069.002 Domain groups            [domain]");
+    blog($bid, "  netlocalgroup  T1069.001 Local groups             [hostname]");
+    blog($bid, "  get-password-policy T1201 Password policy         [domain]");
+    blog($bid, "  sc-query       T1007     Service config+status    <svcname>");
+    blog($bid, "  schtasksenum   T1053.005 Scheduled task enum (COM)");
+    blog($bid, "  useridletime   T1010     User idle time");
     blog($bid, "");
     blog($bid, "PHASE 3 — Remote Ops (18 BOFs)");
     blog($bid, "  portscan       T1046     TCP scan                 <host> <ports>");
@@ -1718,9 +1994,9 @@ alias dani-help {
 }
 beacon_command_register(
     "dani-help",
-    "List all 69 BOFs in the Dani suite by phase and technique",
+    "List all 81 BOFs in the Dani suite by phase and technique",
     "Synopsis: dani-help\n\n" .
-    "Description: Print a structured list of all 69 BOFs available in the\n" .
+    "Description: Print a structured list of all 81 BOFs available in the\n" .
     "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
     "ATT&CK technique IDs and argument summaries.\n\n" .
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .

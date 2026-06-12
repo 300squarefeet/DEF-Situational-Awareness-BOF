@@ -3,6 +3,16 @@
 version = 4
 
 [[package]]
+name = "aadjoininfo"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "adcs-enum-com"
 version = "0.1.0"
 dependencies = [
@@ -62,6 +72,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cacls"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "capture-netntlm"
 version = "0.1.0"
 dependencies = [
@@ -111,6 +131,16 @@ dependencies = [
 
 [[package]]
 name = "dcom-localserver32"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "dir"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -230,6 +260,26 @@ dependencies = [
 
 [[package]]
 name = "get-dpapi-system"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "get-netsession"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "get-password-policy"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -388,6 +438,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "listmods"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "lnk-startup"
 version = "0.1.0"
 dependencies = [
@@ -399,6 +459,26 @@ dependencies = [
 
 [[package]]
 name = "make-token"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netgroup"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netlocalgroup"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -458,6 +538,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "nslookup"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "obfstr"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -465,6 +555,16 @@ checksum = "d0d354e9a302760d07e025701d40534f17dd1fe4c4db955b4e3bd2907c63bdee"
 
 [[package]]
 name = "portscan"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "probe"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -599,6 +699,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "sc-query"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "sccm-decrypt"
 version = "0.1.0"
 dependencies = [
@@ -610,6 +720,16 @@ dependencies = [
 
 [[package]]
 name = "schtask-com"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "schtasksenum"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -686,6 +806,16 @@ checksum = "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
 
 [[package]]
 name = "uptime"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "useridletime"
 version = "0.1.0"
 dependencies = [
  "common",

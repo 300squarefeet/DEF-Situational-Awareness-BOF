@@ -1,0 +1,17 @@
+[package]
+name = "listmods"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "List loaded modules in current process via PEB walk — by Dani. Original C: TrustedSec/cs-situational-awareness-bof"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "listmods"

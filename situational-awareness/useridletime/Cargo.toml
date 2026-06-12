@@ -1,0 +1,17 @@
+[package]
+name = "useridletime"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "User idle time via GetLastInputInfo — by Dani. Original C: TrustedSec/cs-situational-awareness-bof"
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+windows-sys.workspace = true
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "useridletime"
