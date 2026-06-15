@@ -23,4 +23,5 @@
 
 # Local-only design/planning artefacts (not part of public repo)
 docs/superpowers/
-.claude/
+docs/private/
+.workspace/
