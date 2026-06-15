@@ -64,6 +64,7 @@ SID:    S-1-5-21-...
 
 ## Project structure
 
-See `docs/superpowers/specs/2026-06-11-dani-rustbof-opsec-suite-design.md` for
-the full design spec, and `docs/superpowers/plans/` for phase implementation
-plans.
+Source organized as a Cargo workspace under `bofs/` (one crate per BOF),
+shared helpers in `bof-common/` and `bof-syscalls/`, build scripts in
+`scripts/`, Cobalt Strike aggressor wrappers in `aggressor/`, and built
+artefacts in `dist/`. See `CONTRIBUTORS.md` for authorship.

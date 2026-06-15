@@ -20,3 +20,7 @@
 
 # Vendored upstream reference repos (full git clones — do not track)
 /refs/
+
+# Local-only design/planning artefacts (not part of public repo)
+docs/superpowers/
+.claude/
