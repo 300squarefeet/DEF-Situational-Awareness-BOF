@@ -14,3 +14,8 @@ pub enum SspiErr {
     InitCtx,
     NoOutputToken,
 }
+
+#[cfg(target_os = "windows")]
+pub mod ap_req;
+#[cfg(target_os = "windows")]
+pub use ap_req::request_service_ticket;
