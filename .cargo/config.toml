@@ -1,7 +1,11 @@
 # .cargo/config.toml
-[unstable]
-build-std = ["core", "alloc", "panic_abort", "compiler_builtins"]
-build-std-features = ["panic_immediate_abort", "compiler-builtins-mem"]
+#
+# build-std is intentionally NOT listed here so that host-side `cargo test`
+# (Darwin) works without the duplicate-core lang-item error caused by mixing
+# a rebuilt `core` with crates that transitively depend on
+# `rustc-std-workspace-core`.  The build scripts (scripts/build_one.sh,
+# scripts/build_all.sh) pass `-Z build-std=…` and
+# `-Z build-std-features=…` on the command line for the Windows BOF targets.
 
 [target.x86_64-pc-windows-gnu]
 rustflags = [
@@ -18,3 +22,9 @@ rustflags = [
     "-Z", "function-sections",
     "-C", "link-arg=--no-entry",
 ]
+
+[target.aarch64-apple-darwin]
+rustflags = []
+
+[target.x86_64-apple-darwin]
+rustflags = []

@@ -1,0 +1,17 @@
+[package]
+name = "bof-ldap"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "no_std wldap32 wrapper for Beacon-context LDAP search — by Dani."
+
+[target.'cfg(target_os = "windows")'.dependencies]
+common = { path = "../common" }
+
+[dependencies]
+obfstr.workspace = true
+
+[lib]
+name = "bof_ldap"
+crate-type = ["rlib"]

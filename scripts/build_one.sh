@@ -26,7 +26,9 @@ for tgt in x86_64-pc-windows-gnu i686-pc-windows-gnu; do
     arch=$([[ "$tgt" == x86_64* ]] && echo x64 || echo x86)
     mingw=$([[ "$tgt" == x86_64* ]] && echo --mingw64 || echo --mingw32)
     echo "==> $CRATE [$arch]"
-    cargo +nightly-2025-01-25 build --release --target "$tgt" --manifest-path "$MANIFEST"
+    cargo +nightly-2025-01-25 build --release --target "$tgt" --manifest-path "$MANIFEST" \
+        -Z build-std="core,alloc,panic_abort,compiler_builtins" \
+        -Z build-std-features="panic_immediate_abort,compiler-builtins-mem"
     archive="target/$tgt/release/lib${UNDER}.a"
     out="dist/${CRATE}.${arch}.o"
     args=("$mingw" "$archive" -lkernel32 -ladvapi32 -lole32 -loleaut32 -o "$out")
