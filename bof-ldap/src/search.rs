@@ -83,9 +83,17 @@ pub fn search_paged<F: FnMut(&LdapEntry)>(
             ldap_create_page_control(h.0, page_size, cookie, 1, &mut page_ctrl)
         } {
             Ok(c) => c,
-            Err(_) => return Err(LdapErr::Paged),
+            Err(_) => {
+                if !cookie.is_null() {
+                    let _ = unsafe { ber_bvfree(cookie) };
+                }
+                return Err(LdapErr::Paged);
+            }
         };
         if rc != LDAP_SUCCESS {
+            if !cookie.is_null() {
+                let _ = unsafe { ber_bvfree(cookie) };
+            }
             return Err(LdapErr::Paged);
         }
         server_controls[0] = page_ctrl;
@@ -112,9 +120,17 @@ pub fn search_paged<F: FnMut(&LdapEntry)>(
             )
         } {
             Ok(c) => c,
-            Err(_) => return Err(LdapErr::Search),
+            Err(_) => {
+                if !cookie.is_null() {
+                    let _ = unsafe { ber_bvfree(cookie) };
+                }
+                return Err(LdapErr::Search);
+            }
         };
         if rc != LDAP_SUCCESS || msg.is_null() {
+            if !cookie.is_null() {
+                let _ = unsafe { ber_bvfree(cookie) };
+            }
             return Err(LdapErr::Search);
         }
 

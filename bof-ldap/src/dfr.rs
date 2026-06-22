@@ -153,13 +153,13 @@ dfr_fn!(
 );
 
 dfr_fn!(
-    ldap_controls_free(controls: *mut *mut LdapControl) -> u32,
+    ldap_controls_free(controls: *mut *mut LdapControl) -> (),
     module = "wldap32.dll",
     api    = "ldap_controls_free"
 );
 
 dfr_fn!(
-    ber_bvfree(bv: *mut LdapBerVal) -> u32,
+    ber_bvfree(bv: *mut LdapBerVal) -> (),
     module = "wldap32.dll",
     api    = "ber_bvfree"
 );
