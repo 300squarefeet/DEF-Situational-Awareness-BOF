@@ -1,0 +1,18 @@
+[package]
+name = "enum-delegation"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Kerberos delegation enumeration — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+bof-ldap = { path = "../../bof-ldap" }
+bof-kerberos = { path = "../../bof-kerberos" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "enum_delegation"

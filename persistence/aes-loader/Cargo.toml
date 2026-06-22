@@ -1,0 +1,16 @@
+[package]
+name = "aes-loader"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "AES-256-CBC in-memory blob decryption — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "aes_loader"

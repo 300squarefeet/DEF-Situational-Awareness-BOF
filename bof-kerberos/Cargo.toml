@@ -1,0 +1,14 @@
+[package]
+name = "bof-kerberos"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Kerberos enumeration helpers (LDAP filters, UAC parsing) — by Dani."
+
+[dependencies]
+obfstr.workspace = true
+
+[lib]
+name = "bof_kerberos"
+crate-type = ["rlib"]

@@ -5,6 +5,7 @@ members = [
     "common",
     "bof-ldap",
     "bof-sspi",
+    "bof-kerberos",
     "situational-awareness/uptime",
     "situational-awareness/hostname",
     "situational-awareness/whoami",
@@ -24,6 +25,8 @@ members = [
     "situational-awareness/ldapsearch",
     "situational-awareness/nonpaged-ldapsearch",
     "situational-awareness/kerberoast",
+    "situational-awareness/asreproast",
+    "situational-awareness/enum-delegation",
     "situational-awareness/adcs-enum-com",
     "situational-awareness/list-firewall",
     "situational-awareness/enum-filter-driver",
@@ -152,6 +155,7 @@ members = [
     # Phase 5 — Persistence (by Dani, original)
     "persistence/schtask-com",
     "persistence/lnk-startup",
+    "persistence/aes-loader",
     # Phase 5 — credential/token enumeration BOFs (15-19)
     "remote-ops/chromekey",
     "remote-ops/get-azure-token",
