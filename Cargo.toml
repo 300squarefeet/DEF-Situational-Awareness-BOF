@@ -23,6 +23,7 @@ members = [
     "situational-awareness/routeprint",
     "situational-awareness/ldapsearch",
     "situational-awareness/nonpaged-ldapsearch",
+    "situational-awareness/kerberoast",
     "situational-awareness/adcs-enum-com",
     "situational-awareness/list-firewall",
     "situational-awareness/enum-filter-driver",

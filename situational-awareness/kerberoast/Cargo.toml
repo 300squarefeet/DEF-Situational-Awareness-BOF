@@ -1,0 +1,18 @@
+[package]
+name = "sa-kerberoast"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Kerberoasting via SSPI — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+bof-ldap = { path = "../../bof-ldap" }
+bof-sspi = { path = "../../bof-sspi" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "sa_kerberoast"
