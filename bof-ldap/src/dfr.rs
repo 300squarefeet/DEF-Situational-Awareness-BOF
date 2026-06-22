@@ -82,3 +82,84 @@ dfr_fn!(
     module = "wldap32.dll",
     api    = "ldap_search_s"
 );
+
+#[repr(C)]
+pub struct LdapBerVal {
+    pub bv_len: u32,
+    pub bv_val: *mut u8,
+}
+
+#[repr(C)]
+pub struct LdapControl {
+    pub ldctl_oid: *mut i8,
+    pub ldctl_value: LdapBerVal,
+    pub ldctl_iscritical: u8,
+}
+
+dfr_fn!(
+    ldap_create_page_control(
+        ld: *mut u8,
+        page_size: u32,
+        cookie: *mut LdapBerVal,
+        is_critical: u8,
+        control: *mut *mut LdapControl,
+    ) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_create_page_control"
+);
+
+dfr_fn!(
+    ldap_search_ext_s_a(
+        ld: *mut u8,
+        base: *const i8,
+        scope: u32,
+        filter: *const i8,
+        attrs: *mut *mut i8,
+        attrs_only: u32,
+        server_controls: *mut *mut LdapControl,
+        client_controls: *mut *mut LdapControl,
+        timeout: *mut u8,
+        size_limit: u32,
+        res: *mut *mut u8,
+    ) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_search_ext_s"
+);
+
+dfr_fn!(
+    ldap_parse_result(
+        ld: *mut u8,
+        result: *mut u8,
+        return_code: *mut u32,
+        matched_dn: *mut *mut i8,
+        error_message: *mut *mut i8,
+        referrals: *mut *mut *mut i8,
+        server_controls: *mut *mut *mut LdapControl,
+        free_it: u8,
+    ) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_parse_result"
+);
+
+dfr_fn!(
+    ldap_parse_page_control(
+        ld: *mut u8,
+        server_controls: *mut *mut LdapControl,
+        total_count: *mut u32,
+        cookie: *mut *mut LdapBerVal,
+    ) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_parse_page_control"
+);
+
+dfr_fn!(
+    ldap_controls_free(controls: *mut *mut LdapControl) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_controls_free"
+);
+
+dfr_fn!(
+    ber_bvfree(bv: *mut LdapBerVal) -> u32,
+    module = "wldap32.dll",
+    api    = "ber_bvfree"
+);
