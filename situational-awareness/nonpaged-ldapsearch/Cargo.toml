@@ -9,7 +9,7 @@ description = "Non-paged LDAP search via ADSI COM — by Dani."
 [dependencies]
 rustbof.workspace = true
 common = { path = "../../common" }
-windows-sys = { workspace = true, features = ["Win32_Networking_Ldap", "Win32_System_Com", "Win32_Foundation"] }
+bof-ldap = { path = "../../bof-ldap" }
 obfstr.workspace = true
 
 [lib]
