@@ -13,6 +13,11 @@ pub mod conn;
 #[cfg(target_os = "windows")]
 pub use conn::{LdapHandle, connect_default_dc, bind_current_user};
 
+#[cfg(target_os = "windows")]
+pub mod entry;
+#[cfg(target_os = "windows")]
+pub use entry::LdapEntry;
+
 #[derive(Debug, Clone, Copy)]
 pub enum LdapErr {
     Init,

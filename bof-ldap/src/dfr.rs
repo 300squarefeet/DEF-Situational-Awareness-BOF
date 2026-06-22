@@ -26,3 +26,45 @@ dfr_fn!(
     module = "wldap32.dll",
     api    = "ldap_unbind_s"
 );
+
+dfr_fn!(
+    ldap_first_entry(ld: *mut u8, result: *mut u8) -> *mut u8,
+    module = "wldap32.dll",
+    api    = "ldap_first_entry"
+);
+
+dfr_fn!(
+    ldap_next_entry(ld: *mut u8, entry: *mut u8) -> *mut u8,
+    module = "wldap32.dll",
+    api    = "ldap_next_entry"
+);
+
+dfr_fn!(
+    ldap_get_dn_a(ld: *mut u8, entry: *mut u8) -> *mut i8,
+    module = "wldap32.dll",
+    api    = "ldap_get_dn"
+);
+
+dfr_fn!(
+    ldap_get_values_a(ld: *mut u8, entry: *mut u8, attr: *const i8) -> *mut *mut i8,
+    module = "wldap32.dll",
+    api    = "ldap_get_values"
+);
+
+dfr_fn!(
+    ldap_value_free_a(vals: *mut *mut i8) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_value_free"
+);
+
+dfr_fn!(
+    ldap_memfree_a(ptr: *mut i8) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_memfree"
+);
+
+dfr_fn!(
+    ldap_msgfree(msg: *mut u8) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_msgfree"
+);
