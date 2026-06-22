@@ -6,6 +6,12 @@
 extern crate alloc;
 
 pub mod filter;
+#[cfg(target_os = "windows")]
+pub mod dfr;
+#[cfg(target_os = "windows")]
+pub mod conn;
+#[cfg(target_os = "windows")]
+pub use conn::{LdapHandle, connect_default_dc, bind_current_user};
 
 #[derive(Debug, Clone, Copy)]
 pub enum LdapErr {
