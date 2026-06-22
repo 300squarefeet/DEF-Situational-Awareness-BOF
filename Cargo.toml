@@ -4,6 +4,7 @@ resolver = "2"
 members = [
     "common",
     "bof-ldap",
+    "bof-sspi",
     "situational-awareness/uptime",
     "situational-awareness/hostname",
     "situational-awareness/whoami",

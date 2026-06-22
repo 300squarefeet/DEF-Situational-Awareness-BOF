@@ -1,0 +1,17 @@
+[package]
+name = "bof-sspi"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "no_std secur32 wrapper producing Kerberos AP-REQ blobs — by Dani."
+
+[target.'cfg(target_os = "windows")'.dependencies]
+common = { path = "../common" }
+
+[dependencies]
+obfstr.workspace = true
+
+[lib]
+name = "bof_sspi"
+crate-type = ["rlib"]
