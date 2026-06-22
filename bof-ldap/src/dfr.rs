@@ -68,3 +68,17 @@ dfr_fn!(
     module = "wldap32.dll",
     api    = "ldap_msgfree"
 );
+
+dfr_fn!(
+    ldap_search_s_a(
+        ld: *mut u8,
+        base: *const i8,
+        scope: u32,
+        filter: *const i8,
+        attrs: *mut *mut i8,
+        attrs_only: u32,
+        res: *mut *mut u8,
+    ) -> u32,
+    module = "wldap32.dll",
+    api    = "ldap_search_s"
+);

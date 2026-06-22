@@ -18,6 +18,11 @@ pub mod entry;
 #[cfg(target_os = "windows")]
 pub use entry::LdapEntry;
 
+#[cfg(target_os = "windows")]
+pub mod search;
+#[cfg(target_os = "windows")]
+pub use search::search_nopaged;
+
 #[derive(Debug, Clone, Copy)]
 pub enum LdapErr {
     Init,
