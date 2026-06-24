@@ -54,8 +54,10 @@ no telltale API names or strings remain in the resulting `.o` artefact.
 | 3 | Remote Operations | 44 |
 | 4 | OperatorsKit + C2-Collection | 48 |
 | 5 | Persistence (`schtask-com`, `lnk-startup`) | 2 |
-| 6 | InlineExecuteEx OPSEC fork (`bofx` loader) | — |
-| 7+ | Roadmap: RegisterTaskDefinition, AES blob loader, LDAP/SSPI helpers | — |
+| 6 | InlineExecuteEx OPSEC fork (`bofx` loader) | ✓ |
+| 7 | `RegisterTaskDefinition` COM-based scheduled task persistence | ✓ |
+| 8 | AES-256-CBC in-memory blob decryption (`aes-loader`) | 1 |
+| 9 | LDAP/SSPI Kerberos helpers + `asreproast` + `enum-delegation` | 3 |
 
 ## Quick start
 
@@ -137,11 +139,14 @@ beacon> inline-execute dist/whoami.x64.o
 ```
 .
 ├── common/                # shared helpers (parser, formatter, MITRE banner)
-├── situational-awareness/ # Phase 1–2 BOFs
+├── bof-ldap/              # no_std wldap32 wrapper (connect, bind, search)
+├── bof-sspi/              # no_std secur32 wrapper (Kerberos AP-REQ)
+├── bof-kerberos/          # Kerberos enumeration helpers (LDAP filters, UAC)
+├── situational-awareness/ # Phase 1–2 + Phase 9 BOFs
 ├── remote-ops/            # Phase 3 BOFs
 ├── operators-kit/         # Phase 4 BOFs (OperatorsKit port)
 ├── c2-collection/         # Phase 4 BOFs (C2-Collection port)
-├── persistence/           # Phase 5 BOFs
+├── persistence/           # Phase 5 + 7 + 8 BOFs (schtask-com, lnk-startup, aes-loader)
 ├── tools/                 # bundled tooling (InlineExecuteEx OPSEC fork)
 ├── aggressor/             # Cobalt Strike .cna wrappers
 ├── scripts/               # build / verify / manifest helpers
@@ -164,9 +169,12 @@ See [docs/mitre-mapping.md](docs/mitre-mapping.md) for full ATT&CK coverage.
 
 ## Roadmap
 
-- Phase 7 — `RegisterTaskDefinition` COM-based scheduled task persistence
-- Phase 8 — AES-encrypted blob loader for protected payload staging
-- Phase 9 — LDAP / SSPI helper crate for Kerberos-aware enumeration BOFs
+All core phases are complete. Potential future work:
+
+- Additional persistence primitives (WMI event subscription, registry run keys via COM)
+- Token manipulation BOFs (impersonation, S4U2Self)
+- ETW/AMSI bypass improvements
+- Linux cross-compilation target for testing harnesses
 
 ## Acknowledgements
 
