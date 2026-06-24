@@ -64,8 +64,9 @@ extern "C" {
     }
 
     /* Get the absolute value of a LONGLONG */
-    LONGLONG llabs(LONGLONG n) {
+    static inline LONGLONG bofx_llabs(LONGLONG n) {
         return (n < 0) ? -n : n;
     }
+    #define llabs bofx_llabs
 
 }

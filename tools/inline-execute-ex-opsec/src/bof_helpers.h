@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <intrin.h>
 
+#include "base/helpers.h"
 #include "api_table.h"
 
 #define RETURN_FALSE_ON_NULL(x) if ( (x) == NULL ) { return FALSE; }
@@ -20,7 +21,7 @@
 #ifdef _DEBUG
 #define PRINT(...) printf(__VA_ARGS__)
 #else
-#define PRINT(x)
+#define PRINT(...) ((void)0)
 #endif
 
 /* Defining symbols for the OS arch */

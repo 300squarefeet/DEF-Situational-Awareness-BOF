@@ -178,7 +178,7 @@ ULONG_PTR g_JumpTableStartPointer = NULL;
             if (hModule == NULL) {
                 goto Cleanup;
             }
-            functionPtr = GetProcAddress(hModule, localFunc);
+            functionPtr = (PVOID)GetProcAddress(hModule, localFunc);
             if (functionPtr == NULL) {
                 goto Cleanup;
             }
@@ -233,7 +233,7 @@ ULONG_PTR g_JumpTableStartPointer = NULL;
             if (hModule == NULL) {
                 goto Cleanup;
             }
-            functionPtr = GetProcAddress(hModule, localFunc);
+            functionPtr = (PVOID)GetProcAddress(hModule, localFunc);
             if (functionPtr == NULL) {
                 goto Cleanup;
             }
