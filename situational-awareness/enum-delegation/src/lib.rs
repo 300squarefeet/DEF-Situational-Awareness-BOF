@@ -18,12 +18,6 @@ const TECHNIQUES: &[Technique] = &[Technique {
 
 const LDAP_PORT: u32 = 389;
 
-fn make_filter(src: &[u8], buf: &mut [u8; 128]) {
-    let n = src.len().min(127);
-    buf[..n].copy_from_slice(&src[..n]);
-    buf[n] = 0;
-}
-
 #[rustbof::main]
 fn main() {
     common::mitre::print_banner(env!("CARGO_PKG_NAME"), TECHNIQUES);
@@ -39,6 +33,8 @@ fn run() -> Result<(), &'static str> {
         let attr_sam  = c"sAMAccountName";
         let attr_deleg = c"msDS-AllowedToDelegateTo";
         let attr_dns  = c"dNSHostName";
+        let filter_constrained = c"(msDS-AllowedToDelegateTo=*)";
+        let filter_unconstrained = c"(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=524288)(!(primaryGroupID=516)))";
     }
 
     let h = connect_default_dc(host_cstr.as_ptr() as *const i8, LDAP_PORT)
@@ -49,8 +45,6 @@ fn run() -> Result<(), &'static str> {
 
     // --- Constrained delegation ---
     println!("CONSTRAINED DELEGATION:");
-    let mut filter_buf = [0u8; 128];
-    make_filter(bof_kerberos::FILTER_CONSTRAINED, &mut filter_buf);
 
     let mut attrs_c: [*mut i8; 3] = [
         attr_sam.as_ptr() as *mut i8,
@@ -60,7 +54,7 @@ fn run() -> Result<(), &'static str> {
     let mut c_count: u32 = 0;
     let _ = search_paged(
         &h, base_cstr.as_ptr() as *const i8,
-        filter_buf.as_ptr() as *const i8,
+        filter_constrained.as_ptr() as *const i8,
         &mut attrs_c, 1000,
         |e| {
             let sams = e.values(attr_sam.as_ptr() as *const i8);
@@ -80,7 +74,6 @@ fn run() -> Result<(), &'static str> {
 
     // --- Unconstrained delegation ---
     println!("UNCONSTRAINED DELEGATION:");
-    make_filter(bof_kerberos::FILTER_UNCONSTRAINED, &mut filter_buf);
 
     let mut attrs_u: [*mut i8; 3] = [
         attr_sam.as_ptr() as *mut i8,
@@ -90,7 +83,7 @@ fn run() -> Result<(), &'static str> {
     let mut u_count: u32 = 0;
     let _ = search_paged(
         &h, base_cstr.as_ptr() as *const i8,
-        filter_buf.as_ptr() as *const i8,
+        filter_unconstrained.as_ptr() as *const i8,
         &mut attrs_u, 1000,
         |e| {
             let sams = e.values(attr_sam.as_ptr() as *const i8);

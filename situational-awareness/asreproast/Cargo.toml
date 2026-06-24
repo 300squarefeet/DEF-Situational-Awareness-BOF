@@ -10,7 +10,6 @@ description = "AS-REP roastable account enumeration — by Dani."
 rustbof.workspace = true
 common = { path = "../../common" }
 bof-ldap = { path = "../../bof-ldap" }
-bof-kerberos = { path = "../../bof-kerberos" }
 obfstr.workspace = true
 
 [lib]

@@ -40,12 +40,9 @@ fn run() -> Result<(), &'static str> {
         return Err("ldap bind failed");
     }
 
-    // Build NUL-terminated filter on stack
-    let filter = bof_kerberos::FILTER_ASREP;
-    let mut filter_buf = [0u8; 128];
-    let flen = filter.len().min(filter_buf.len() - 1);
-    filter_buf[..flen].copy_from_slice(&filter[..flen]);
-    filter_buf[flen] = 0;
+    obf_cstr! {
+        let filter_cstr = c"(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))";
+    }
 
     let mut attrs: [*mut i8; 3] = [
         attr_sam.as_ptr() as *mut i8,
@@ -57,7 +54,7 @@ fn run() -> Result<(), &'static str> {
     let r = search_paged(
         &h,
         base_cstr.as_ptr() as *const i8,
-        filter_buf.as_ptr() as *const i8,
+        filter_cstr.as_ptr() as *const i8,
         &mut attrs,
         1000,
         |e| {
