@@ -187,6 +187,12 @@ members = [
     "c2-collection/spray-ad",
     "c2-collection/start-web-client",
     "c2-collection/winver",
+    # Phase 10 — New SA + Remote-Ops BOFs
+    "situational-awareness/cloud-metadata",
+    "remote-ops/certstore-loot",
+    "situational-awareness/powershell-history",
+    "situational-awareness/asr-status",
+    "situational-awareness/process-tokens",
 ]
 
 [workspace.package]
