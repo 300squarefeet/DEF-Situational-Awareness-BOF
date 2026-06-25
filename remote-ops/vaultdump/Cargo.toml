@@ -1,0 +1,16 @@
+[package]
+name = "vaultdump"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Windows Vault credential dump — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "vaultdump"
