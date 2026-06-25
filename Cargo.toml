@@ -104,6 +104,7 @@ members = [
     "remote-ops/sc-start",
     "remote-ops/sc-stop",
     "remote-ops/shutdown",
+    "remote-ops/bofkatz",
     # Phase 4 — Remote-Ops new BOFs (batch C): service ctrl / tray / DDE / tooltip / ux / stc
     "remote-ops/svcctrl",
     "remote-ops/conhost",

@@ -1,0 +1,16 @@
+[package]
+name = "bofkatz"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Process Hollowing PE loader with argument spoofing — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "bofkatz"
