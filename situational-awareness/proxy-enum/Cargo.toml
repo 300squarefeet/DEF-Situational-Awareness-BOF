@@ -1,0 +1,16 @@
+[package]
+name = "proxy-enum"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate proxy configuration (registry + env vars) — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "proxy_enum"

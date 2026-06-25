@@ -1,0 +1,16 @@
+[package]
+name = "amsi-etw-detect"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Check AMSI/ETW presence in current process — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "amsi_etw_detect"

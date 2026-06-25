@@ -122,6 +122,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "aes-loader"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "ai-surface"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "amsi-etw-detect"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "amsi-patch"
 version = "0.1.0"
 dependencies = [
@@ -152,6 +179,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "asr-status"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "asreproast"
+version = "0.1.0"
+dependencies = [
+ "bof-ldap",
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "authenticate-http"
 version = "0.1.0"
 dependencies = [
@@ -159,6 +205,47 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "bitlocker-status"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "bof-kerberos"
+version = "0.1.0"
+dependencies = [
+ "obfstr",
+]
+
+[[package]]
+name = "bof-ldap"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+]
+
+[[package]]
+name = "bof-sspi"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+]
+
+[[package]]
+name = "bofkatz"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -182,6 +269,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "certstore-loot"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "chromekey"
 version = "0.1.0"
 dependencies = [
@@ -199,6 +295,15 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "cloud-metadata"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -367,6 +472,16 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "enum-delegation"
+version = "0.1.0"
+dependencies = [
+ "bof-ldap",
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -559,6 +674,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "firewall-rule"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "force-lock-screen"
 version = "0.1.0"
 dependencies = [
@@ -656,6 +780,15 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "ide-extension-surface"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -760,10 +893,10 @@ dependencies = [
 name = "ldapsearch"
 version = "0.1.0"
 dependencies = [
+ "bof-ldap",
  "common",
  "obfstr",
  "rustbof",
- "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -950,10 +1083,10 @@ dependencies = [
 name = "nonpaged-ldapsearch"
 version = "0.1.0"
 dependencies = [
+ "bof-ldap",
  "common",
  "obfstr",
  "rustbof",
- "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1022,6 +1155,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "powershell-history"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "probe"
 version = "0.1.0"
 dependencies = [
@@ -1051,6 +1193,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "process-tokens"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "processdestroy"
 version = "0.1.0"
 dependencies = [
@@ -1061,6 +1212,15 @@ dependencies = [
 
 [[package]]
 name = "processlisthandles"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "proxy-enum"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -1190,6 +1350,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "sa-kerberoast"
+version = "0.1.0"
+dependencies = [
+ "bof-ldap",
+ "bof-sspi",
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]
@@ -1541,6 +1712,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "vaultdump"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
+
+[[package]]
 name = "vssenum"
 version = "0.1.0"
 dependencies = [
@@ -1558,6 +1738,15 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "wevt-logon-enum"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
 ]
 
 [[package]]

@@ -1,0 +1,16 @@
+[package]
+name = "wevt-logon-enum"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate recent logon events (EventID 4624) via wevtapi — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "wevt_logon_enum"

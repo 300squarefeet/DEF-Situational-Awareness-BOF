@@ -1,0 +1,16 @@
+[package]
+name = "bitlocker-status"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Read BitLocker registry keys for protection status — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "bitlocker_status"

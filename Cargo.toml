@@ -193,6 +193,14 @@ members = [
     "situational-awareness/powershell-history",
     "situational-awareness/asr-status",
     "situational-awareness/process-tokens",
+    # Phase 11 — additional SA + Remote-Ops BOFs
+    "remote-ops/firewall-rule",
+    "situational-awareness/ai-surface",
+    "situational-awareness/amsi-etw-detect",
+    "situational-awareness/bitlocker-status",
+    "situational-awareness/ide-extension-surface",
+    "situational-awareness/proxy-enum",
+    "situational-awareness/wevt-logon-enum",
 ]
 
 [workspace.package]

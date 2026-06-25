@@ -100,4 +100,15 @@ This is the master index — keep in sync with each BOF's `TECHNIQUES` constant.
 |---|---|
 | bofx (inline-execute-ex-opsec) | OPSEC-hardened BOF loader (vendored fork) |
 
+## Phase 11 — Additional SA + Remote-Ops (7 BOFs)
+| BOF | Techniques | Tactic |
+|---|---|---|
+| firewall-rule | T1562.004 | Defense Evasion |
+| ai-surface | T1518 | Discovery |
+| amsi-etw-detect | T1518.001 | Discovery |
+| bitlocker-status | T1486, T1005 | Impact / Collection |
+| ide-extension-surface | T1518 | Discovery |
+| proxy-enum | T1016 | Discovery |
+| wevt-logon-enum | T1087.001 | Discovery |
+
 _Maintained by Dani._

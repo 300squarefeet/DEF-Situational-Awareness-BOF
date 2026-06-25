@@ -1,0 +1,16 @@
+[package]
+name = "ide-extension-surface"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Enumerate VS Code/Cursor/Windsurf extensions — by Dani."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "ide_extension_surface"

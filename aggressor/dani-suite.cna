@@ -3085,3 +3085,77 @@ beacon_command_register(
     "MITRE ATT&CK: T1555.004 (Windows Credential Manager), T1003.004 (LSA Secrets)\n\n" .
     "Phase: Remote Ops\nArgs: [user] [pass] [domain] (all optional)"
 );
+
+# ============================================================
+# Phase 11 — additional SA + Remote-Ops BOFs
+# ============================================================
+
+# --- firewall-rule ---
+alias firewall-rule {
+    dani_run($1, "firewall-rule", "");
+}
+beacon_command_register(
+    "firewall-rule",
+    "Enumerate Windows Firewall rules — T1562.004 (by Dani)",
+    "Synopsis: firewall-rule\n\nDescription: Dump configured firewall rules per profile from the registry.\n\nMITRE ATT&CK: T1562.004 (Disable or Modify System Firewall)\n\nArgs: none"
+);
+
+# --- ai-surface ---
+alias ai-surface {
+    dani_run($1, "ai-surface", "");
+}
+beacon_command_register(
+    "ai-surface",
+    "Inventory AI assistants / local LLM endpoints — T1518 (by Dani)",
+    "Synopsis: ai-surface\n\nDescription: Detect installed AI assistants (Copilot, Ollama, LM Studio, etc).\n\nMITRE ATT&CK: T1518 (Software Discovery)\n\nArgs: none"
+);
+
+# --- amsi-etw-detect ---
+alias amsi-etw-detect {
+    dani_run($1, "amsi-etw-detect", "");
+}
+beacon_command_register(
+    "amsi-etw-detect",
+    "Report AMSI / ETW patch posture — T1518.001 (by Dani)",
+    "Synopsis: amsi-etw-detect\n\nDescription: Inspect amsi.dll!AmsiScanBuffer and ntdll!EtwEventWrite prologues for known patch patterns.\n\nMITRE ATT&CK: T1518.001 (Security Software Discovery)\n\nArgs: none"
+);
+
+# --- bitlocker-status ---
+alias bitlocker-status {
+    dani_run($1, "bitlocker-status", "");
+}
+beacon_command_register(
+    "bitlocker-status",
+    "Per-volume BitLocker protection status — T1486/T1005 (by Dani)",
+    "Synopsis: bitlocker-status\n\nDescription: Query BitLocker protection / encryption status for every fixed volume.\n\nMITRE ATT&CK: T1486 (Data Encrypted for Impact), T1005 (Data from Local System)\n\nArgs: none"
+);
+
+# --- ide-extension-surface ---
+alias ide-extension-surface {
+    dani_run($1, "ide-extension-surface", "");
+}
+beacon_command_register(
+    "ide-extension-surface",
+    "Enumerate VS Code / JetBrains extensions — T1518 (by Dani)",
+    "Synopsis: ide-extension-surface\n\nDescription: List installed IDE extensions (publisher, name, version) from per-user profile directories.\n\nMITRE ATT&CK: T1518 (Software Discovery)\n\nArgs: none"
+);
+
+# --- proxy-enum ---
+alias proxy-enum {
+    dani_run($1, "proxy-enum", "");
+}
+beacon_command_register(
+    "proxy-enum",
+    "Dump WinINet / WinHTTP proxy + PAC config — T1016 (by Dani)",
+    "Synopsis: proxy-enum\n\nDescription: Read system + per-user proxy configuration (auto-detect, PAC URL, bypass list).\n\nMITRE ATT&CK: T1016 (System Network Configuration Discovery)\n\nArgs: none"
+);
+
+# --- wevt-logon-enum ---
+alias wevt-logon-enum {
+    dani_run($1, "wevt-logon-enum", "");
+}
+beacon_command_register(
+    "wevt-logon-enum",
+    "Query Security event log for recent logons — T1087.001 (by Dani)",
+    "Synopsis: wevt-logon-enum\n\nDescription: Parse Security channel for 4624/4634 events to enumerate local accounts and their last-logon times.\n\nMITRE ATT&CK: T1087.001 (Local Account Discovery)\n\nArgs: none"
+);
