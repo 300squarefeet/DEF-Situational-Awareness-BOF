@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "TCP connect-scan with non-blocking sockets — by Dani."
+description = "TCP connect-scan with non-blocking sockets"
 
 [dependencies]
 rustbof.workspace = true

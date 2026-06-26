@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Local account password spray via LogonUserA (interactive logon) — by Dani"
+description = "Local account password spray via LogonUserA (interactive logon)"
 
 [dependencies]
 rustbof.workspace = true

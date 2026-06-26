@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Check UxSubclassInfo window properties for hook detection — by Dani"
+description = "Check UxSubclassInfo window properties for hook detection"
 
 [dependencies]
 rustbof.workspace = true

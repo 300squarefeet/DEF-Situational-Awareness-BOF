@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "DCOM LocalServer32 lateral movement — by Dani."
+description = "DCOM LocalServer32 lateral movement"
 
 [dependencies]
 rustbof.workspace = true

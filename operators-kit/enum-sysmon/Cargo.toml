@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Sysmon detection via service, driver, and registry — by Dani."
+description = "Sysmon detection via service, driver, and registry"
 
 [dependencies]
 rustbof.workspace = true

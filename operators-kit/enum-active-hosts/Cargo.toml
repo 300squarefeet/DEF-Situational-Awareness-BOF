@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "ICMP ping sweep to find active hosts in a /24 subnet — by Dani"
+description = "ICMP ping sweep to find active hosts in a /24 subnet"
 
 [dependencies]
 rustbof.workspace = true

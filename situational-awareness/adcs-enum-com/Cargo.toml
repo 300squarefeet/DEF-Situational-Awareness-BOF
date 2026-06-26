@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "ADCS certificate template enumeration via COM — by Dani."
+description = "ADCS certificate template enumeration via COM"
 
 [dependencies]
 rustbof.workspace = true

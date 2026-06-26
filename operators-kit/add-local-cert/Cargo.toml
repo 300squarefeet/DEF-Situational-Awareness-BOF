@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Add a DER certificate to a local Windows certificate store — by Dani"
+description = "Add a DER certificate to a local Windows certificate store"
 
 [dependencies]
 rustbof.workspace = true

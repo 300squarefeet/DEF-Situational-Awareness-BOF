@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Set a registry value (REG_SZ/REG_DWORD/REG_BINARY) — by Dani"
+description = "Set a registry value (REG_SZ/REG_DWORD/REG_BINARY)"
 
 [dependencies]
 rustbof.workspace = true

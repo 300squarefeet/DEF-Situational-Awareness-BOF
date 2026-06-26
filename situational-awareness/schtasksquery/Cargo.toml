@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Scheduled tasks enumeration — by Dani."
+description = "Scheduled tasks enumeration"
 
 [dependencies]
 rustbof.workspace = true

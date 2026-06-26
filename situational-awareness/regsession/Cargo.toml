@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate user sessions by listing HKEY_USERS subkeys — by Dani"
+description = "Enumerate user sessions by listing HKEY_USERS subkeys"
 
 [dependencies]
 rustbof.workspace = true

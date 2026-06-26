@@ -20,7 +20,7 @@ const RULE_BOT: &str = "------------------------------------------------";
 pub fn format_banner(crate_name: &str, techniques: &[Technique]) -> String {
     let mut s = String::with_capacity(256);
     let _ = writeln!(s, "{}", RULE_TOP);
-    let _ = writeln!(s, "  {} \u{2014} by Dani", crate_name);
+    let _ = writeln!(s, "  {}", crate_name);
     let _ = writeln!(s, "{}", RULE_TOP);
     for t in techniques {
         let _ = writeln!(s, "  [MITRE] {} - {} ({})", t.id, t.name, t.tactic);

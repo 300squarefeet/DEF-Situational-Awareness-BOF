@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Find loaded module in remote process — by Dani."
+description = "Find loaded module in remote process"
 
 [dependencies]
 rustbof.workspace = true

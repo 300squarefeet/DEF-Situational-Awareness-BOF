@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Set service failure actions to restart — by Dani"
+description = "Set service failure actions to restart"
 
 [dependencies]
 rustbof.workspace = true

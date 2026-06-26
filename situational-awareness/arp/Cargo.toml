@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "ARP cache dump — by Dani."
+description = "ARP cache dump"
 
 [dependencies]
 rustbof.workspace = true

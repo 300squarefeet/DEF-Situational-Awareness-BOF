@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate network connections (mapped drives) via NetUseEnum — by Dani"
+description = "Enumerate network connections (mapped drives) via NetUseEnum"
 
 [dependencies]
 rustbof.workspace = true

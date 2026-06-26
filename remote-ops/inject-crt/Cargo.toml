@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Classic CreateRemoteThread shellcode injection (DFR-only, detectable) — by Dani."
+description = "Classic CreateRemoteThread shellcode injection (DFR-only, detectable)"
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Start a service via StartServiceA — by Dani"
+description = "Start a service via StartServiceA"
 
 [dependencies]
 rustbof.workspace = true

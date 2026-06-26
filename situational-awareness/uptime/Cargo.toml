@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Uptime via KUSER_SHARED_DATA — by Dani."
+description = "Uptime via KUSER_SHARED_DATA"
 
 [dependencies]
 rustbof.workspace = true

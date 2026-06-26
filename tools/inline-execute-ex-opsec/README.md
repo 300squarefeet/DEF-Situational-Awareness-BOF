@@ -104,4 +104,3 @@ This component vendors OPSEC modifications atop:
 | InlineExecuteEx | 0xTriboulet | MIT |
 | COFFLoader (via InlineExecuteEx) | TrustedSec | BSD |
 
-All OPSEC modifications and integration code by Dani &lt;daniagungg@gmail.com&gt;.

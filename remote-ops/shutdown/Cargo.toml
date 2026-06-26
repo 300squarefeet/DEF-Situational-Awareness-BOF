@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Shutdown, reboot, or logoff the system — by Dani"
+description = "Shutdown, reboot, or logoff the system"
 
 [dependencies]
 rustbof.workspace = true

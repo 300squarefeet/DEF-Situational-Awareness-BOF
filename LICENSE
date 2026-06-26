@@ -34,4 +34,3 @@ It depends on:
 - rustbof template by João Victor / joaoviictorti (MIT/Apache-2.0)
 - InlineExecuteEx by 0xTriboulet (MIT) — vendored as OPSEC-modified fork in tools/
 
-All Rust port code, OPSEC hardening, and persistence BOFs are by Dani.

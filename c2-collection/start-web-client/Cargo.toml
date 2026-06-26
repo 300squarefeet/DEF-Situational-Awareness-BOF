@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Start the WebClient service to enable WebDAV for UNC-path coercion — by Dani"
+description = "Start the WebClient service to enable WebDAV for UNC-path coercion"
 
 [dependencies]
 rustbof.workspace = true

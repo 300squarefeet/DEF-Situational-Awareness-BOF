@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate thread IDs for a process (SetThreadContext technique recon) — by Dani"
+description = "Enumerate thread IDs for a process (SetThreadContext technique recon)"
 
 [dependencies]
 rustbof.workspace = true

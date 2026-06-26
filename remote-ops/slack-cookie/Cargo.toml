@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate Slack AppData storage for session cookie artifacts — by Dani"
+description = "Enumerate Slack AppData storage for session cookie artifacts"
 
 [dependencies]
 rustbof.workspace = true

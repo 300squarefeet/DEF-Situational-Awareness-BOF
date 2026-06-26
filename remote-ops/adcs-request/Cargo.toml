@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate ADCS CA configuration from registry — by Dani. Original C: OperatorsKit"
+description = "Enumerate ADCS CA configuration from registry Original C: OperatorsKit"
 
 [dependencies]
 rustbof.workspace = true

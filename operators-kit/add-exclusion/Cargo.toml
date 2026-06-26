@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Add Windows Defender exclusion via WMI MSFT_MpPreference — COM-based, no PowerShell — by Dani."
+description = "Add Windows Defender exclusion via WMI MSFT_MpPreference — COM-based, no PowerShell"
 
 [dependencies]
 rustbof.workspace = true

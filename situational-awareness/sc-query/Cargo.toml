@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Service config + status via OpenSCManager/QueryServiceConfig — by Dani. Original C: TrustedSec/cs-situational-awareness-bof"
+description = "Service config + status via OpenSCManager/QueryServiceConfig Original C: TrustedSec/cs-situational-awareness-bof"
 
 [dependencies]
 rustbof.workspace = true

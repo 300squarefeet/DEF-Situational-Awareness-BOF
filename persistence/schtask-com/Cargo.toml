@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Scheduled Task persistence via ITaskService COM (no schtasks.exe) — by Dani (original)."
+description = "Scheduled Task persistence via ITaskService COM (no schtasks.exe) (original)."
 
 [dependencies]
 rustbof.workspace = true

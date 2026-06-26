@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Read PowerShell PSReadLine history file — by Dani."
+description = "Read PowerShell PSReadLine history file"
 
 [dependencies]
 rustbof.workspace = true

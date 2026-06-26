@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Remote Windows service create + start via DFR — by Dani."
+description = "Remote Windows service create + start via DFR"
 
 [dependencies]
 rustbof.workspace = true

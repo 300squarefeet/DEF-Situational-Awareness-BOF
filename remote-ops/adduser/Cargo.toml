@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Local user create + group add via NetUserAdd — by Dani."
+description = "Local user create + group add via NetUserAdd"
 
 [dependencies]
 rustbof.workspace = true

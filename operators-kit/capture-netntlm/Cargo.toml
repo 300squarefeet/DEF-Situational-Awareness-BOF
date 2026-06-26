@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "NetNTLMv2 hash capture via SSPI — by Dani."
+description = "NetNTLMv2 hash capture via SSPI"
 
 [dependencies]
 rustbof.workspace = true

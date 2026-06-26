@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Cloud instance metadata probe (AWS/Azure/GCP) — by Dani."
+description = "Cloud instance metadata probe (AWS/Azure/GCP)"
 
 [dependencies]
 rustbof.workspace = true

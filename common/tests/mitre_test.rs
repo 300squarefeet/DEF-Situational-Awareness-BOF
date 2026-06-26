@@ -12,7 +12,7 @@ fn banner_format_snapshot() {
     let out = format_banner("whoami", techs);
     let expected = "\
 ================================================
-  whoami — by Dani
+  whoami
 ================================================
   [MITRE] T1033 - System Owner/User Discovery (Discovery)
   [MITRE] T1134 - Access Token Manipulation (Privilege Escalation)
@@ -24,6 +24,6 @@ fn banner_format_snapshot() {
 #[test]
 fn banner_empty_techniques() {
     let out = format_banner("stub", &[]);
-    assert!(out.contains("stub — by Dani"));
+    assert!(out.contains("stub"));
     assert!(out.contains("------------------------------------------------"));
 }

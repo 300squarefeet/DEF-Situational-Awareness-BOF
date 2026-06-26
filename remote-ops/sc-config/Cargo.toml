@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Change service start type / binary path via ChangeServiceConfigA — by Dani"
+description = "Change service start type / binary path via ChangeServiceConfigA"
 
 [dependencies]
 rustbof.workspace = true

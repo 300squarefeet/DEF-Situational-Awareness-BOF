@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Force outbound HTTP NTLM auth (relay capture) — by Dani."
+description = "Force outbound HTTP NTLM auth (relay capture)"
 
 [dependencies]
 rustbof.workspace = true

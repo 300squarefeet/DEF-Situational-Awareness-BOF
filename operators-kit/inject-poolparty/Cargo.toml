@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Thread-pool injection via WorkerFactory handle stealing + NtSetTimer2 — by Dani."
+description = "Thread-pool injection via WorkerFactory handle stealing + NtSetTimer2"
 
 [dependencies]
 rustbof.workspace = true

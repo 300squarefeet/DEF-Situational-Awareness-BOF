@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate logical drives with type and free space — by Dani"
+description = "Enumerate logical drives with type and free space"
 
 [dependencies]
 rustbof.workspace = true

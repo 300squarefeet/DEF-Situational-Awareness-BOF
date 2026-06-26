@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Startup folder LNK persistence via IShellLinkW COM (no cmd.exe copy) — by Dani (original)."
+description = "Startup folder LNK persistence via IShellLinkW COM (no cmd.exe copy) (original)."
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Network adapter info — by Dani."
+description = "Network adapter info"
 
 [dependencies]
 rustbof.workspace = true

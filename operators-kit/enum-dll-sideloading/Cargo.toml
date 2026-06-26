@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Find potential DLL sideloading opportunities in loaded modules — by Dani"
+description = "Find potential DLL sideloading opportunities in loaded modules"
 
 [dependencies]
 rustbof.workspace = true

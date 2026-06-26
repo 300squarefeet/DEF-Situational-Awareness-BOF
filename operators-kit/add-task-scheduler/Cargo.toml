@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Create a scheduled task via ITaskService COM vtable — by Dani"
+description = "Create a scheduled task via ITaskService COM vtable"
 
 [dependencies]
 rustbof.workspace = true

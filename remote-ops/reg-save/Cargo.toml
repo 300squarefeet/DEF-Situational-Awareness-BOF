@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Remote registry hive dump via RegSaveKeyExA — by Dani."
+description = "Remote registry hive dump via RegSaveKeyExA"
 
 [dependencies]
 rustbof.workspace = true

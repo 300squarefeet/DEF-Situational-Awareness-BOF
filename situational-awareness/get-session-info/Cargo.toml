@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Query WTS session info for a specific session ID — by Dani"
+description = "Query WTS session info for a specific session ID"
 
 [dependencies]
 rustbof.workspace = true

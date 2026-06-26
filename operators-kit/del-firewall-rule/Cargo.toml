@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Delete a Windows Firewall rule by name from registry — by Dani"
+description = "Delete a Windows Firewall rule by name from registry"
 
 [dependencies]
 rustbof.workspace = true

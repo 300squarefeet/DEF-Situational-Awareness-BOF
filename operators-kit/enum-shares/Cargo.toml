@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate local and remote network shares via NetShareEnum — by Dani"
+description = "Enumerate local and remote network shares via NetShareEnum"
 
 [dependencies]
 rustbof.workspace = true

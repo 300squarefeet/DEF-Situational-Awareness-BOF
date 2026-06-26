@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Running process list — by Dani."
+description = "Running process list"
 
 [dependencies]
 rustbof.workspace = true

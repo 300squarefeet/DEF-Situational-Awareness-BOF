@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Recursive file enumeration under a directory — by Dani"
+description = "Recursive file enumeration under a directory"
 
 [dependencies]
 rustbof.workspace = true

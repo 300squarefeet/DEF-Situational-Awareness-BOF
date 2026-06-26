@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "TCP/UDP connection table — by Dani."
+description = "TCP/UDP connection table"
 
 [dependencies]
 rustbof.workspace = true

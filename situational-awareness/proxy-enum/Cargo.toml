@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate proxy configuration (registry + env vars) — by Dani."
+description = "Enumerate proxy configuration (registry + env vars)"
 
 [dependencies]
 rustbof.workspace = true

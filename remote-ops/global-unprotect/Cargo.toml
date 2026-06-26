@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "DPAPI decrypt (Chrome cookies / creds) via CryptUnprotectData — by Dani."
+description = "DPAPI decrypt (Chrome cookies / creds) via CryptUnprotectData"
 
 [dependencies]
 rustbof.workspace = true

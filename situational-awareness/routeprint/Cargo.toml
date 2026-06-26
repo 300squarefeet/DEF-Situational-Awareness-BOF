@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "IP routing table — by Dani."
+description = "IP routing table"
 
 [dependencies]
 rustbof.workspace = true

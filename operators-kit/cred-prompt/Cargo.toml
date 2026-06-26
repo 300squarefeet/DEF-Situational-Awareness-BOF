@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Native Windows credential prompt — captures domain/user/password via CredUIPromptForWindowsCredentialsW — by Dani."
+description = "Native Windows credential prompt — captures domain/user/password via CredUIPromptForWindowsCredentialsW"
 
 [dependencies]
 rustbof.workspace = true

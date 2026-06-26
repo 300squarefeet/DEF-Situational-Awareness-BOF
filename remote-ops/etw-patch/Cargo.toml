@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Patch ntdll!EtwEventWrite to xor eax, eax; ret — by Dani."
+description = "Patch ntdll!EtwEventWrite to xor eax, eax; ret"
 
 [dependencies]
 rustbof.workspace = true

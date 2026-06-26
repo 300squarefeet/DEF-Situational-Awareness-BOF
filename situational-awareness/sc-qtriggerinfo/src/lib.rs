@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening — by Dani
+// Credit: Rust port + OPSEC hardening
 //
 //! QueryServiceConfig2A SERVICE_CONFIG_TRIGGER_INFO — trigger count and types.
 //! Args: <servicename>

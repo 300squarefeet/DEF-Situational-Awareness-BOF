@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "no_std secur32 wrapper producing Kerberos AP-REQ blobs — by Dani."
+description = "no_std secur32 wrapper producing Kerberos AP-REQ blobs"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 common = { path = "../common" }

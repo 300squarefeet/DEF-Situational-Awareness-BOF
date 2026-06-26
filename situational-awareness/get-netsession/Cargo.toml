@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "NetSession enumeration via NetSessionEnum — by Dani. Original C: TrustedSec/cs-situational-awareness-bof"
+description = "NetSession enumeration via NetSessionEnum Original C: TrustedSec/cs-situational-awareness-bof"
 
 [dependencies]
 rustbof.workspace = true

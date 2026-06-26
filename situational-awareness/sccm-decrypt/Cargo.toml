@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "SCCM secret decryption via DPAPI — by Dani."
+description = "SCCM secret decryption via DPAPI"
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Delete a certificate from a local store by SHA1 thumbprint — by Dani"
+description = "Delete a certificate from a local store by SHA1 thumbprint"
 
 [dependencies]
 rustbof.workspace = true

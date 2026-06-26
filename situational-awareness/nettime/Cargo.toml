@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Get system time from a server via NetRemoteTOD — by Dani"
+description = "Get system time from a server via NetRemoteTOD"
 
 [dependencies]
 rustbof.workspace = true

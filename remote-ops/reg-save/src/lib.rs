@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening — by Dani
+// Credit: Rust port + OPSEC hardening
 // Original C: TrustedSec/cs-remote-ops/reg_save
 //
 //! Save a registry hive to a file via DFR `RegSaveKeyExA`.

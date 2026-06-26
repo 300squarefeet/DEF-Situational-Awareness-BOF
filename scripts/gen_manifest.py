@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """scripts/gen_manifest.py — emit dist/manifest.json with SHA-256 per .o.
 
-by Dani <daniagungg@gmail.com>
 """
 import hashlib
 import json
@@ -28,7 +27,7 @@ def main() -> int:
         })
     json.dump({
         "project": "DEF-Situational-Awareness-BOF",
-        "credit": "by Dani <daniagungg@gmail.com>",
+        "credit": "",
         "artifacts": entries,
     }, sys.stdout, indent=2)
     print()

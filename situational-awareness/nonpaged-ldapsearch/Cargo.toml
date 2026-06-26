@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Non-paged LDAP search via ADSI COM — by Dani."
+description = "Non-paged LDAP search via ADSI COM"
 
 [dependencies]
 rustbof.workspace = true

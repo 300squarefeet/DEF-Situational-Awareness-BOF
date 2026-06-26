@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Suspend or resume a process via indirect Nt syscalls — by Dani."
+description = "Suspend or resume a process via indirect Nt syscalls"
 
 [dependencies]
 rustbof.workspace = true

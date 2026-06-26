@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Shellcode injection via NtCreateThreadEx (10-arg indirect) — by Dani."
+description = "Shellcode injection via NtCreateThreadEx (10-arg indirect)"
 
 [dependencies]
 rustbof.workspace = true

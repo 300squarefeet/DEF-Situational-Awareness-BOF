@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Check WebClient (WebDAV) service status and proxy config — by Dani"
+description = "Check WebClient (WebDAV) service status and proxy config"
 
 [dependencies]
 rustbof.workspace = true

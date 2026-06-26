@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "List DNS server addresses from registry adapter settings — by Dani"
+description = "List DNS server addresses from registry adapter settings"
 
 [dependencies]
 rustbof.workspace = true

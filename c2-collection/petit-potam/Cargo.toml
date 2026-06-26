@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "PetitPotam — coerce target machine NTLM auth to attacker listener via UNC path — by Dani"
+description = "PetitPotam — coerce target machine NTLM auth to attacker listener via UNC path"
 
 [dependencies]
 rustbof.workspace = true

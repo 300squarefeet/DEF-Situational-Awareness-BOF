@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Add a machine account to Active Directory via NetUserAdd — by Dani"
+description = "Add a machine account to Active Directory via NetUserAdd"
 
 [dependencies]
 rustbof.workspace = true

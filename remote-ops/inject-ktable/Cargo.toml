@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "KernelCallbackTable injection via PEB overwrite — by Dani."
+description = "KernelCallbackTable injection via PEB overwrite"
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Current-process module enumeration via PEB InLoadOrderModuleList — by Dani."
+description = "Current-process module enumeration via PEB InLoadOrderModuleList"
 
 [dependencies]
 rustbof.workspace = true

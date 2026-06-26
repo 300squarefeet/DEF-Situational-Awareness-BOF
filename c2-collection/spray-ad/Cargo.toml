@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "AD password spray — discovers domain via GetComputerNameExA then LogonUserA — by Dani"
+description = "AD password spray — discovers domain via GetComputerNameExA then LogonUserA"
 
 [dependencies]
 rustbof.workspace = true

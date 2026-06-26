@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Patch AmsiScanBuffer to return E_INVALIDARG — by Dani."
+description = "Patch AmsiScanBuffer to return E_INVALIDARG"
 
 [dependencies]
 rustbof.workspace = true

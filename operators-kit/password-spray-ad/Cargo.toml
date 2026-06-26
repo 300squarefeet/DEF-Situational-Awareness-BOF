@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Active Directory password spray via LogonUserA (network logon) — by Dani"
+description = "Active Directory password spray via LogonUserA (network logon)"
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Process Hollowing PE loader with argument spoofing — by Dani."
+description = "Process Hollowing PE loader with argument spoofing"
 
 [dependencies]
 rustbof.workspace = true

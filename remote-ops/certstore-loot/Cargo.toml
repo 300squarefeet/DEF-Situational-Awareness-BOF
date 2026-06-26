@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate certificates with private keys from MY store — by Dani."
+description = "Enumerate certificates with private keys from MY store"
 
 [dependencies]
 rustbof.workspace = true

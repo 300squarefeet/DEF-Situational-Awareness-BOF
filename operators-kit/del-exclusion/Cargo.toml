@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Remove a Windows Defender exclusion from registry — by Dani"
+description = "Remove a Windows Defender exclusion from registry"
 
 [dependencies]
 rustbof.workspace = true

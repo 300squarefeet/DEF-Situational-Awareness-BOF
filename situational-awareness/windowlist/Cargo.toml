@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Window enumeration — by Dani."
+description = "Window enumeration"
 
 [dependencies]
 rustbof.workspace = true

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Firewall rules enumeration via registry — by Dani."
+description = "Firewall rules enumeration via registry"
 
 [dependencies]
 rustbof.workspace = true

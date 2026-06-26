@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Spawn process as user via CreateProcessWithLogonW — by Dani."
+description = "Spawn process as user via CreateProcessWithLogonW"
 
 [dependencies]
 rustbof.workspace = true

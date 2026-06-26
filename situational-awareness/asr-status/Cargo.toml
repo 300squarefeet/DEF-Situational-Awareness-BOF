@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enumerate Windows Defender ASR rules state — by Dani."
+description = "Enumerate Windows Defender ASR rules state"
 
 [dependencies]
 rustbof.workspace = true

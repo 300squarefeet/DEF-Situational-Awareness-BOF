@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Generic service controller (start/stop/pause/continue) — by Dani"
+description = "Generic service controller (start/stop/pause/continue)"
 
 [dependencies]
 rustbof.workspace = true

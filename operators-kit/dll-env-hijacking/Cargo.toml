@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Find writable PATH entries for DLL hijacking opportunities — by Dani"
+description = "Find writable PATH entries for DLL hijacking opportunities"
 
 [dependencies]
 rustbof.workspace = true

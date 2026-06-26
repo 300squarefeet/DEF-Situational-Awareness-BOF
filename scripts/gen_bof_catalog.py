@@ -158,7 +158,6 @@ def main() -> int:
         lines.append("")
 
     lines.append("---\n")
-    lines.append("_Maintained by Dani <daniagungg@gmail.com>._")
 
     OUT.write_text("\n".join(lines))
     print(f"wrote {OUT.relative_to(ROOT)} — {total} BOFs across {len(bofs_by_phase)} phases")

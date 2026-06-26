@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Check registry for DDE server associations — by Dani"
+description = "Check registry for DDE server associations"
 
 [dependencies]
 rustbof.workspace = true

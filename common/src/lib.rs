@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: shared OPSEC primitives — by Dani
+// Credit: shared OPSEC primitives
 //
 #![no_std]
 #![allow(clippy::missing_safety_doc)]

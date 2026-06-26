@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Kerberos TGS extraction via LSA SSPI — by Dani."
+description = "Kerberos TGS extraction via LSA SSPI"
 
 [dependencies]
 rustbof.workspace = true

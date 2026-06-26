@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "List open handles of a process via NtQuerySystemInformation — by Dani"
+description = "List open handles of a process via NtQuerySystemInformation"
 
 [dependencies]
 rustbof.workspace = true

@@ -105,7 +105,7 @@ alias bofx {
 
 beacon_command_register(
     "bofx",
-    "Inline-execute a COFF / BOF-PE object (OPSEC fork of InlineExecuteEx by Dani).",
+    "Inline-execute a COFF / BOF-PE object (OPSEC fork of InlineExecuteEx).",
     "Usage: bofx <path-to-bof.o> <entry> [args]\n" .
     "\n" .
     "  path-to-bof.o   Local path to the COFF/BOF-PE file.\n" .

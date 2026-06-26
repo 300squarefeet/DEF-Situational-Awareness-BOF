@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Check ADCS enrollment agent (ESC3) rights from registry — by Dani. Original C: OperatorsKit"
+description = "Check ADCS enrollment agent (ESC3) rights from registry Original C: OperatorsKit"
 
 [dependencies]
 rustbof.workspace = true

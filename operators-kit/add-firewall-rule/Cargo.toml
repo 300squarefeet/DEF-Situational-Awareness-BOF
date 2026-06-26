@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Add a Windows Firewall rule via registry write — by Dani"
+description = "Add a Windows Firewall rule via registry write"
 
 [dependencies]
 rustbof.workspace = true

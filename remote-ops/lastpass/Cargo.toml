@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Locate LastPass browser extension data — by Dani"
+description = "Locate LastPass browser extension data"
 
 [dependencies]
 rustbof.workspace = true

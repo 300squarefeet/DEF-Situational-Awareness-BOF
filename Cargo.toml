@@ -93,7 +93,7 @@ members = [
     "remote-ops/procdump",
     "remote-ops/global-unprotect",
     "remote-ops/inject-ktable",
-    # Phase 3 — Remote-Ops gap-fill batch 2 (BOFs 1-10 by Dani)
+    # Phase 3 — Remote-Ops gap-fill batch 2
     "remote-ops/processdestroy",
     "remote-ops/processlisthandles",
     "remote-ops/reg-delete",
@@ -154,7 +154,7 @@ members = [
     # Phase 4 — C2-Collection (batch H, exploits)
     "c2-collection/wdtoggle",
     "c2-collection/cve-2022-26923",
-    # Phase 5 — Persistence (by Dani, original)
+    # Phase 5 — Persistence (original)
     "persistence/schtask-com",
     "persistence/lnk-startup",
     "persistence/aes-loader",

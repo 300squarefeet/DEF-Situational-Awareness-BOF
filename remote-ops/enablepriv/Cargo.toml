@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Enable a token privilege via indirect NtAdjustPrivilegesToken — by Dani."
+description = "Enable a token privilege via indirect NtAdjustPrivilegesToken"
 
 [dependencies]
 rustbof.workspace = true
