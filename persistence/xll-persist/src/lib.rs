@@ -9,4 +9,8 @@
 extern crate alloc;
 
 pub mod args;
+pub mod reg_open;
 pub mod xlstart;
+
+#[cfg(target_os = "windows")]
+pub mod dfr;
