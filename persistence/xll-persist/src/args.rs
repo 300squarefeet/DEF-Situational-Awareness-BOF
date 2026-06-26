@@ -33,9 +33,9 @@ pub fn parse_pair(sub: &str, path: &str) -> Cmd {
 
 #[cfg(target_os = "windows")]
 pub fn parse(parser: &mut rustbof::data::DataParser) -> Cmd {
-    let sub = parser.get_str();
-    let path = parser.get_str();
-    parse_pair(sub, path)
+    let sub: String = parser.get_str().into();
+    let path: String = parser.get_str().into();
+    parse_pair(&sub, &path)
 }
 
 #[cfg(test)]

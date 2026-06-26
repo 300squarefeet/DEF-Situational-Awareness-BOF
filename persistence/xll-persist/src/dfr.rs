@@ -36,9 +36,6 @@ pub struct WIN32_FIND_DATAA {
     pub dw_reserved_1: u32,
     pub c_file_name: [u8; 260],
     pub c_alternate_file_name: [u8; 14],
-    pub dw_file_type: u32,
-    pub dw_creator_type: u32,
-    pub w_finder_flags: u16,
 }
 
 dfr_fn!(
