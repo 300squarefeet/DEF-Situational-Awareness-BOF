@@ -1879,3 +1879,12 @@ dependencies = [
  "rustbof",
  "windows-sys 0.52.0",
 ]
+
+[[package]]
+name = "xll-persist"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "obfstr",
+ "rustbof",
+]
