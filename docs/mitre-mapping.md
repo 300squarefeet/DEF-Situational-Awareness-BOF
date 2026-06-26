@@ -89,7 +89,7 @@ This is the master index — keep in sync with each BOF's `TECHNIQUES` constant.
 | wdtoggle | T1003.001, T1112 | Defense Evasion |
 | cve-2022-26923 | T1068 | Privilege Escalation |
 
-## Phase 5 — Persistence (2 BOFs, original)
+## Phase 5 — Persistence (3 BOFs)
 | BOF | Techniques | Tactic |
 |---|---|---|
 | schtask-com | T1053.005 | Persistence |

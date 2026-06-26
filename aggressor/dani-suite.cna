@@ -19,7 +19,7 @@
 # Phase 3 — Remote Ops          (18 BOFs)
 # Phase 4 — OperatorsKit        (12 BOFs)
 # Phase 4 — C2-Collection       (8 BOFs)
-# Phase 5 — Persistence         (2 BOFs)
+# Phase 5 — Persistence         (3 BOFs)
 # Phase 6 — Loader              (1 BOF)
 # Phase 2 gap-fill — SA (21 BOFs)
 # Phase 3 gap-fill — Remote-Ops (26 BOFs)
@@ -1764,7 +1764,7 @@ beacon_command_register(
 
 # ============================================================
 # ============================================================
-# PHASE 5 — PERSISTENCE  (2 BOFs)
+# PHASE 5 — PERSISTENCE  (3 BOFs)
 # ============================================================
 # ============================================================
 
@@ -2986,9 +2986,10 @@ alias dani-help {
     blog($bid, "  force-lock-screen T1531  Lock workstation         [no args]");
     blog($bid, "  enum-web-client T1135    WebClient + proxy        [no args]");
     blog($bid, "");
-    blog($bid, "PHASE 5 — Persistence (2 BOFs)");
+    blog($bid, "PHASE 5 — Persistence (3 BOFs)");
     blog($bid, "  schtask-com    T1053.005 Sched task via COM       <name> <cmd> [trig] [rm]");
     blog($bid, "  lnk-startup    T1547.001 Startup LNK via COM      <name> <target> [args] [rm]");
+    blog($bid, "  xll-persist    T1137.006 Excel XLL add-in         [install|remove|status] [<path>]");
     blog($bid, "");
     blog($bid, "PHASE 6 — Loader (1 BOF)");
     blog($bid, "  bofx                     OPSEC BOF loader         <path> [entry] [args]");
@@ -3178,7 +3179,7 @@ alias xll-persist {
 beacon_command_register(
     "xll-persist",
     "Excel XLL add-in persistence — T1137.006",
-    "Synopsis: xll-persist [install|remove|status] [--path <unc-or-local>]\n\n" .
+    "Synopsis: xll-persist [install|remove|status] [<path>]\n\n" .
     "Description: Install / remove / inspect Excel XLL add-in persistence\n" .
     "via HKCU\\Software\\Microsoft\\Office\\<ver>\\Excel\\Options\\OPEN[N] +\n" .
     "%APPDATA%\\Microsoft\\Excel\\XLSTART\\ on every detected Office version.\n\n" .
