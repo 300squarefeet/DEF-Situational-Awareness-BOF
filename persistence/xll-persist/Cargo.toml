@@ -1,0 +1,16 @@
+[package]
+name = "xll-persist"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Excel XLL add-in persistence via HKCU OPEN + XLSTART (original)."
+
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+obfstr.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+name = "xll_persist"

@@ -201,6 +201,8 @@ members = [
     "situational-awareness/ide-extension-surface",
     "situational-awareness/proxy-enum",
     "situational-awareness/wevt-logon-enum",
+    # Phase 12 — XLL persistence
+    "persistence/xll-persist",
 ]
 
 [workspace.package]
