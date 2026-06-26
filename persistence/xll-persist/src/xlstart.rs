@@ -95,9 +95,11 @@ mod win {
 
     pub fn list(dir: &str) -> Vec<String> {
         let mut out = Vec::new();
-        let mut glob = String::with_capacity(dir.len() + 7);
+        obf_cstr! { let suffix = c"\\*.xll"; }
+        let suffix_s = core::str::from_utf8(suffix.to_bytes()).unwrap_or("");
+        let mut glob = String::with_capacity(dir.len() + suffix_s.len());
         glob.push_str(dir);
-        glob.push_str("\\*.xll");
+        glob.push_str(suffix_s);
         let glob_c = cstr(&glob);
         let mut fd: WIN32_FIND_DATAA = unsafe { core::mem::zeroed() };
         let h = match unsafe { FindFirstFileA(glob_c.as_ptr() as *const i8, &mut fd) } {

