@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 // Original C: TrustedSec/cs-remote-ops/get_priv (modified)
 //
 //! Enable a single token privilege on the current process token using:

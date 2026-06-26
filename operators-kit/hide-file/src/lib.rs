@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! Set Hidden + System file attributes to conceal a file on disk.
 //!

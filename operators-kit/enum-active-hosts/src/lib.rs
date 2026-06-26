@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! ICMP ping sweep to enumerate active hosts in a /24 subnet.
 //! Args: <cidr>  e.g. "192.168.1.0/24"

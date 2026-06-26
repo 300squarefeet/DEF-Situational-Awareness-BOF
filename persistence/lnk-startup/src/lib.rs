@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Original persistence primitive (NOT a port)
 //
 //! lnk-startup — Startup folder LNK persistence via IShellLinkW COM.
 //!

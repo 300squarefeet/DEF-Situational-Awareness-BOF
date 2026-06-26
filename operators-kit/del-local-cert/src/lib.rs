@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! Delete a certificate from a local Windows certificate store by SHA1 thumbprint.
 //!

@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "List loaded modules in current process via PEB walk Original C: TrustedSec/cs-situational-awareness-bof"
+description = "List loaded modules in current process via PEB walk. Original C: TrustedSec/cs-situational-awareness-bof"
 
 [dependencies]
 rustbof.workspace = true

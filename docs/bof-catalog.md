@@ -25,8 +25,8 @@ python3 scripts/gen_bof_catalog.py
 
 | BOF | MITRE | Tactic | Description | Args |
 |:--|:--|:--|:--|:--|
-| `aadjoininfo` | T1518 | Discovery | Azure AD join status via NetGetAadJoinInformation Original C: TrustedSec/cs-situational-awareness-bof | none |
-| `adcs-enum` | T1518.001 | Discovery | Non-COM ADCS enumeration via registry walk Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `aadjoininfo` | T1518 | Discovery | Azure AD join status via NetGetAadJoinInformation. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `adcs-enum` | T1518.001 | Discovery | Non-COM ADCS enumeration via registry walk. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `adcs-enum-com` | T1518.001 | Discovery | ADCS certificate template enumeration via COM | none |
 | `adv-audit-policies` | T1201 | Discovery | Enumerate Windows advanced audit policy categories via registry | none |
 | `ai-surface` | T1518 | Discovery | Enumerate AI tooling config artifacts | none |
@@ -35,10 +35,10 @@ python3 scripts/gen_bof_catalog.py
 | `asr-status` | T1562.001 | Defense Evasion | Enumerate Windows Defender ASR rules state | none |
 | `asreproast` | T1558.004 | Credential Access | AS-REP roastable account enumeration | none |
 | `bitlocker-status` | T1486, T1005 | Collection / Impact | Read BitLocker registry keys for protection status | none |
-| `cacls` | T1083 | Discovery | Print file ACLs via GetNamedSecurityInfo Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `cacls` | T1083 | Discovery | Print file ACLs via GetNamedSecurityInfo. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `clipboard` | T1115 | Collection | Clipboard content dump | none |
 | `cloud-metadata` | T1552.005 | Credential Access | Cloud instance metadata probe (AWS/Azure/GCP) | none |
-| `dir` | T1083 | Discovery | Directory listing via FindFirstFile/FindNextFile Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `dir` | T1083 | Discovery | Directory listing via FindFirstFile/FindNextFile. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `dnscache` | T1016.001 | Discovery | DNS cache dump | none |
 | `driversigs` | T1518.001 | Discovery | Driver signature verification | none |
 | `enum-delegation` | T1134.001 | Privilege Escalation | Kerberos delegation enumeration | none |
@@ -47,8 +47,8 @@ python3 scripts/gen_bof_catalog.py
 | `env` | T1082 | Discovery | Environment variables dump | none |
 | `findmodule` | T1057 | Discovery | Find loaded module in remote process | none |
 | `get-dpapi-system` | T1555.004 | Credential Access | DPAPI system master key retrieval | none |
-| `get-netsession` | T1049 | Discovery | NetSession enumeration via NetSessionEnum Original C: TrustedSec/cs-situational-awareness-bof | none |
-| `get-password-policy` | T1201 | Discovery | Domain password policy via NetUserModalsGet Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `get-netsession` | T1049 | Discovery | NetSession enumeration via NetSessionEnum. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `get-password-policy` | T1201 | Discovery | Domain password policy via NetUserModalsGet. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `get-session-info` | T1049 | Discovery | Query WTS session info for a specific session ID | none |
 | `hostname` | T1082 | Discovery | Hostname (NetBIOS, DNS domain, FQDN) | none |
 | `ide-extension-surface` | T1518 | Discovery | Enumerate VS Code/Cursor/Windsurf extensions | none |
@@ -58,11 +58,11 @@ python3 scripts/gen_bof_catalog.py
 | `ldapsec-check` | T1518 | Discovery | LDAP signing/binding security probe | none |
 | `list-firewall` | T1518.001 | Discovery | Firewall rules enumeration via registry | none |
 | `listdns` | T1016 | Discovery | List DNS server addresses from registry adapter settings | none |
-| `listmods` | T1057 | Discovery | List loaded modules in current process via PEB walk Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `listmods` | T1057 | Discovery | List loaded modules in current process via PEB walk. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `locale` | T1614 | Discovery | Get system locale, timezone, and code page info | none |
 | `md5` | T1083 | Discovery | Compute MD5 hash of a file via CryptAPI | <filepath> |
-| `netgroup` | T1069.002 | Discovery | Domain groups via NetGroupEnum Original C: TrustedSec/cs-situational-awareness-bof | none |
-| `netlocalgroup` | T1069.001 | Discovery | Local groups via NetLocalGroupEnum Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `netgroup` | T1069.002 | Discovery | Domain groups via NetGroupEnum. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `netlocalgroup` | T1069.001 | Discovery | Local groups via NetLocalGroupEnum. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `netloggedon` | T1033 | Discovery | Logged-on users enumeration | none |
 | `netshare` | T1135 | Discovery | SMB share enumeration | none |
 | `netstat` | T1049 | Discovery | TCP/UDP connection table | none |
@@ -72,7 +72,7 @@ python3 scripts/gen_bof_catalog.py
 | `netuser` | T1087.001, T1087.002 | Discovery | Local/domain user enumeration | none |
 | `netview` | T1018 | Discovery | Enumerate servers on the network via NetServerEnum | none |
 | `nonpaged-ldapsearch` | T1087.002 | Discovery | Non-paged LDAP search via ADSI COM | none |
-| `nslookup` | T1018, T1016.001 | Discovery | DNS query via DnsQuery_A Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `nslookup` | T1018, T1016.001 | Discovery | DNS query via DnsQuery_A. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `powershell-history` | T1552.003 | Credential Access | Read PowerShell PSReadLine history file | none |
 | `probe` | T1046 | Discovery | TCP port probe — hostname/IPv4/CIDR + multi-port | none |
 | `process-tokens` | T1134.001 | Privilege Escalation | Enumerate process tokens and resolve SIDs | none |
@@ -81,20 +81,20 @@ python3 scripts/gen_bof_catalog.py
 | `regsession` | T1012 | Discovery | Enumerate user sessions by listing HKEY_USERS subkeys | none |
 | `resources` | T1082 | Discovery | Display system memory and CPU info via GlobalMemoryStatusEx/GetSystemInfo | none |
 | `routeprint` | T1016 | Discovery | IP routing table | none |
-| `sc-enum` | T1007 | Discovery | Enumerate all services via EnumServicesStatusExA Original C: TrustedSec/cs-situational-awareness-bof | none |
-| `sc-qc` | T1007 | Discovery | QueryServiceConfigA — binPath, startType, account Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
-| `sc-qdescription` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_DESCRIPTION Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
-| `sc-qfailure` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_FAILURE_ACTIONS Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
-| `sc-qtriggerinfo` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_TRIGGER_INFO Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
-| `sc-query` | T1007 | Discovery | Service config + status via OpenSCManager/QueryServiceConfig Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `sc-enum` | T1007 | Discovery | Enumerate all services via EnumServicesStatusExA. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `sc-qc` | T1007 | Discovery | QueryServiceConfigA — binPath, startType, account. Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
+| `sc-qdescription` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_DESCRIPTION. Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
+| `sc-qfailure` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_FAILURE_ACTIONS. Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
+| `sc-qtriggerinfo` | T1007 | Discovery | QueryServiceConfig2A SERVICE_CONFIG_TRIGGER_INFO. Original C: TrustedSec/cs-situational-awareness-bof | <service-name> |
+| `sc-query` | T1007 | Discovery | Service config + status via OpenSCManager/QueryServiceConfig. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `sccm-decrypt` | T1555 | Credential Access | SCCM secret decryption via DPAPI | none |
-| `schtasksenum` | T1053.005 | Persistence | Scheduled task enumeration via COM ITaskService Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `schtasksenum` | T1053.005 | Persistence | Scheduled task enumeration via COM ITaskService. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `schtasksquery` | T1053.005, T1518 | Discovery / Persistence | Scheduled tasks enumeration | none |
 | `sha1` | T1083 | Discovery | Compute SHA1 hash of a file via CryptAPI | <filepath> |
 | `sha256` | T1083 | Discovery | Compute SHA256 hash of a file via BCrypt | <filepath> |
 | `tasklist` | T1057 | Discovery | Running process list | none |
 | `uptime` | T1082 | Discovery | Uptime via KUSER_SHARED_DATA | none |
-| `useridletime` | T1010 | Discovery | User idle time via GetLastInputInfo Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `useridletime` | T1010 | Discovery | User idle time via GetLastInputInfo. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `vssenum` | T1490 | Impact | Enumerate Volume Shadow Copies via WMI query | none |
 | `wevt-logon-enum` | T1087.001 | Discovery | Enumerate recent logon events (EventID 4624) via wevtapi | none |
 | `whoami` | T1033, T1134 | Discovery / Privilege Escalation | Token info dump | none |
@@ -105,21 +105,21 @@ python3 scripts/gen_bof_catalog.py
 
 | BOF | MITRE | Tactic | Description | Args |
 |:--|:--|:--|:--|:--|
-| `adcs-request` | T1649 | Credential Access | Enumerate ADCS CA configuration from registry Original C: OperatorsKit | none |
-| `adcs-request-on-behalf` | T1649 | Credential Access | Check ADCS enrollment agent (ESC3) rights from registry Original C: OperatorsKit | none |
+| `adcs-request` | T1649 | Credential Access | Enumerate ADCS CA configuration from registry. Original C: OperatorsKit | none |
+| `adcs-request-on-behalf` | T1649 | Credential Access | Check ADCS enrollment agent (ESC3) rights from registry. Original C: OperatorsKit | none |
 | `adduser` | T1136.001 | Persistence | Local user create + group add via NetUserAdd | none |
 | `amsi-patch` | T1562.001 | Defense Evasion | Patch AmsiScanBuffer to return E_INVALIDARG | none |
-| `ask-mfa` | T1056.002 | Collection | Display fake MFA credential prompt via CredUI Original C: C2-Tool-Collection | [caption] [message] |
+| `ask-mfa` | T1056.002 | Collection | Display fake MFA credential prompt via CredUI. Original C: C2-Tool-Collection | [caption] [message] |
 | `bofkatz` | T1055.012, T1003.001, T1564.010 | Credential Access / Defense Evasion | Process Hollowing PE loader with argument spoofing | none |
 | `certstore-loot` | T1552.004 | Credential Access | Enumerate certificates with private keys from MY store | none |
-| `chromekey` | T1555.003 | Credential Access | Read Chrome Local State for DPAPI-encrypted master key Original C: C2-Tool-Collection | none |
+| `chromekey` | T1555.003 | Credential Access | Read Chrome Local State for DPAPI-encrypted master key. Original C: C2-Tool-Collection | none |
 | `conhost` | T1057 | Discovery | Find conhost.exe PID for a given parent process | none |
 | `ctray` | T1082 | Discovery | Enumerate system tray windows | none |
 | `dde` | T1559.002 | Execution | Check registry for DDE server associations | none |
 | `enablepriv` | T1134.002 | Privilege Escalation | Enable a token privilege via indirect NtAdjustPrivilegesToken | none |
 | `etw-patch` | T1562.006 | Defense Evasion | Patch ntdll!EtwEventWrite to xor eax, eax; ret | none |
 | `firewall-rule` | T1562.004 | Defense Evasion | Enumerate Windows Firewall rules via registry | none |
-| `get-azure-token` | T1528 | Credential Access | Locate Azure/MSAL token cache files Original C: C2-Tool-Collection | none |
+| `get-azure-token` | T1528 | Credential Access | Locate Azure/MSAL token cache files. Original C: C2-Tool-Collection | none |
 | `ghost-task` | T1053.005 | Persistence | Hidden scheduled task via COM ITaskService | none |
 | `global-unprotect` | T1555.003 | Credential Access | DPAPI decrypt (Chrome cookies / creds) via CryptUnprotectData | none |
 | `inject-apc` | T1055.004 | Defense Evasion | APC shellcode injection via NtQueueApcThread | none |
@@ -219,5 +219,3 @@ python3 scripts/gen_bof_catalog.py
 | `aes-loader` | T1140 | Defense Evasion | AES-256-CBC in-memory blob decryption | none |
 | `lnk-startup` | T1547.001 | Persistence | Startup folder LNK persistence via IShellLinkW COM (no cmd.exe copy) (original). | none |
 | `schtask-com` | T1053.005 | Persistence / Privilege Escalation | Scheduled Task persistence via ITaskService COM (no schtasks.exe) (original). | none |
-
----

@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! Create a logon token via `LogonUserA` with `LOGON32_LOGON_NEW_CREDENTIALS`.
 //! The resulting token can be used with `ImpersonateLoggedOnUser` for

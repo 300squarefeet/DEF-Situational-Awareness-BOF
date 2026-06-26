@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "User idle time via GetLastInputInfo Original C: TrustedSec/cs-situational-awareness-bof"
+description = "User idle time via GetLastInputInfo. Original C: TrustedSec/cs-situational-awareness-bof"
 
 [dependencies]
 rustbof.workspace = true

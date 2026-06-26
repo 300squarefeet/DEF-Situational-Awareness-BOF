@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! KernelCallbackTable injection: overwrite a KCT slot in the target's PEB
 //! to point at our shellcode, then trigger it via PostMessageW(WM_NULL).

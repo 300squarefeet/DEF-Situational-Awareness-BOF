@@ -25,14 +25,14 @@
 # Phase 3 gap-fill — Remote-Ops (26 BOFs)
 # Phase 4 gap-fill — OperatorsKit (23 BOFs)
 # Phase 5 gap-fill — C2-Collection (5 BOFs)
-# Total: 158 registered commands (157 BOFs + dani-help meta)
+# Total: 175 registered commands (174 BOFs + dani-help meta)
 
 # ============================================================
 # LOAD-TIME BANNER
 # ============================================================
 println("============================================================");
 println("  DEF-Situational-Awareness-BOF");
-println("  157 BOFs across 6 phases loaded");
+println("  174 BOFs across 6 phases loaded");
 println("  Type 'dani-help' in a beacon for the full command list.");
 println("============================================================");
 
@@ -2811,7 +2811,7 @@ alias dani-help {
     $bid = $1;
     blog($bid, "=================================================================");
     blog($bid, "  DEF-Situational-Awareness-BOF");
-    blog($bid, "  157 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
+    blog($bid, "  174 BOFs across 6 phases  |  Use 'help <cmd>' for full syntax");
     blog($bid, "=================================================================");
     blog($bid, "");
     blog($bid, "PHASE 1 — Canary (3 BOFs, no args)");
@@ -2998,9 +2998,9 @@ alias dani-help {
 }
 beacon_command_register(
     "dani-help",
-    "List all 157 BOFs in the Dani suite by phase and technique",
+    "List all 174 BOFs in the Dani suite by phase and technique",
     "Synopsis: dani-help\n\n" .
-    "Description: Print a structured list of all 157 BOFs available in the\n" .
+    "Description: Print a structured list of all 174 BOFs available in the\n" .
     "DEF-Situational-Awareness-BOF suite, organized by phase, with MITRE\n" .
     "ATT&CK technique IDs and argument summaries.\n\n" .
     "Use 'help <command>' for full syntax and MITRE details on any BOF.\n\n" .

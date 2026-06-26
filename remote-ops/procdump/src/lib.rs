@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 // Original C: TrustedSec/cs-remote-ops/procdump
 //
 //! MiniDump a process to a file. Commonly used against LSASS (pid from

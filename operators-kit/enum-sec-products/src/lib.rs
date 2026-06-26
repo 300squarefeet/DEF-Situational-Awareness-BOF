@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! AV/EDR enumeration via Service Control Manager — Phase 4 OperatorsKit.
 //! Checks well-known AV/EDR service names via OpenServiceW without spawning

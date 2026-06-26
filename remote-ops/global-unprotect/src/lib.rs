@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! Decrypt a DPAPI-protected blob (e.g. Chrome master key from Local State).
 //! Operator provides the raw encrypted bytes as hex; BOF returns decrypted

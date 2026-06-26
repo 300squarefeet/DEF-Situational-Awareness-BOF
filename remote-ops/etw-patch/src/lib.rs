@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! Patch `ntdll!EtwEventWrite` to immediately return success (`xor eax, eax;
 //! ret`). After this BOF runs, every ETW emit from the current process is

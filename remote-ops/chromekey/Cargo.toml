@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
-description = "Read Chrome Local State for DPAPI-encrypted master key Original C: C2-Tool-Collection"
+description = "Read Chrome Local State for DPAPI-encrypted master key. Original C: C2-Tool-Collection"
 
 [dependencies]
 rustbof.workspace = true

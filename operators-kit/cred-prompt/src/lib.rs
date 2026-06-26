@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 Dani <daniagungg@gmail.com>
 // SPDX-License-Identifier: MIT
 // Project: DEF-Situational-Awareness-BOF — Dani RustBOF OPSEC Suite
-// Credit: Rust port + OPSEC hardening
 //
 //! GUI credential capture via OS-native CredUIPromptForWindowsCredentialsW.
 //! Decrypts captured credentials with CredUnPackAuthenticationBufferW.
