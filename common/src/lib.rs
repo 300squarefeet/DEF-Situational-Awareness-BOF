@@ -18,9 +18,18 @@ pub mod com;
 
 #[cfg(target_arch = "x86_64")]
 pub mod syscalls;
+#[cfg(target_arch = "x86")]
+#[path = "syscalls_x86.rs"]
+pub mod syscalls;
 #[cfg(target_arch = "x86_64")]
 pub mod token;
-#[cfg(target_arch = "x86_64")]
+#[cfg(target_arch = "x86")]
+#[path = "token_x86.rs"]
+pub mod token;
 pub mod dfr;
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 pub mod evasion;
+#[cfg(all(target_os = "windows", target_arch = "x86"))]
+pub mod evasion_x86;
+#[cfg(all(target_os = "windows", target_arch = "x86"))]
+pub use evasion_x86 as evasion;

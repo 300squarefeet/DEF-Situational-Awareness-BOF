@@ -1,0 +1,13 @@
+[package]
+name = "wsc-status"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Query Windows Security Center provider health"
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+[lib]
+crate-type = ["staticlib"]
+name = "wsc_status"

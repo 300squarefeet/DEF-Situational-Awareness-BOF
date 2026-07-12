@@ -1,0 +1,13 @@
+[package]
+name="wallpaper-enum"
+version.workspace=true
+edition.workspace=true
+authors.workspace=true
+license.workspace=true
+description="Enumerate the current desktop wallpaper path"
+[dependencies]
+rustbof.workspace=true
+common={path="../../common"}
+[lib]
+crate-type=["staticlib"]
+name="wallpaper_enum"

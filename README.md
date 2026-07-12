@@ -184,6 +184,7 @@ This collection ports and refines work from the upstream C BOF projects:
 - [trustedsec/CS-Remote-OPs-BOF](https://github.com/trustedsec/CS-Remote-OPs-BOF)
 - [outflanknl/C2-Tool-Collection](https://github.com/outflanknl/C2-Tool-Collection)
 - [Cobalt-Strike/OperatorsKit](https://github.com/Cobalt-Strike/OperatorsKit)
+- [atomiczsec/Adrenaline](https://github.com/atomiczsec/Adrenaline)
 - [anthemtotheego/InlineExecute-Assembly](https://github.com/anthemtotheego/InlineExecute-Assembly)
 
 ## Contributing

@@ -1,0 +1,13 @@
+[package]
+name="wef-detect"
+version.workspace=true
+edition.workspace=true
+authors.workspace=true
+license.workspace=true
+description="Detect Windows Event Forwarding subscriptions and collector configuration"
+[dependencies]
+rustbof.workspace=true
+common={path="../../common"}
+[lib]
+crate-type=["staticlib"]
+name="wef_detect"

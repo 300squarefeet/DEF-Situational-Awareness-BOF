@@ -159,6 +159,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "app-count"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
+]
+
+[[package]]
+name = "applocker-policy"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
+]
+
+[[package]]
 name = "arp"
 version = "0.1.0"
 dependencies = [
@@ -303,6 +319,14 @@ version = "0.1.0"
 dependencies = [
  "common",
  "obfstr",
+ "rustbof",
+]
+
+[[package]]
+name = "com-probe"
+version = "0.1.0"
+dependencies = [
+ "common",
  "rustbof",
 ]
 
@@ -980,6 +1004,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mdm-policy-artifacts"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
+]
+
+[[package]]
 name = "netgroup"
 version = "0.1.0"
 dependencies = [
@@ -987,6 +1019,14 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "netjoin-query"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
 ]
 
 [[package]]
@@ -1090,6 +1130,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "notepad-grab"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
+]
+
+[[package]]
 name = "nslookup"
 version = "0.1.0"
 dependencies = [
@@ -1152,6 +1200,14 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "power-state"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
 ]
 
 [[package]]
@@ -1731,6 +1787,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "wallpaper-enum"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
+]
+
+[[package]]
 name = "wdtoggle"
 version = "0.1.0"
 dependencies = [
@@ -1738,6 +1802,14 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "wef-detect"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
 ]
 
 [[package]]
@@ -1878,6 +1950,14 @@ dependencies = [
  "obfstr",
  "rustbof",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "wsc-status"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "rustbof",
 ]
 
 [[package]]

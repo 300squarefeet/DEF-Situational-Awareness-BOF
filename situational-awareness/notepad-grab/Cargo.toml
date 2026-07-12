@@ -1,0 +1,13 @@
+[package]
+name="notepad-grab"
+version.workspace=true
+edition.workspace=true
+authors.workspace=true
+license.workspace=true
+description="Extract text from classic Notepad edit controls"
+[dependencies]
+rustbof.workspace=true
+common={path="../../common"}
+[lib]
+crate-type=["staticlib"]
+name="notepad_grab"

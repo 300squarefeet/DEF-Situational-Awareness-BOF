@@ -7,7 +7,7 @@ Regenerate after adding or modifying any BOF:
 python3 scripts/gen_bof_catalog.py
 ```
 
-**Total BOFs**: 175
+**Total BOFs**: 185
 
 **Loader**: Cobalt Strike `inline-execute` or via `aggressor/dani-suite.cna` aliases.
 
@@ -15,7 +15,7 @@ python3 scripts/gen_bof_catalog.py
 
 ## Table of contents
 
-- [Situational Awareness (75)](#situational-awareness)
+- [Situational Awareness (85)](#situational-awareness)
 - [Remote Operations (48)](#remote-operations)
 - [OperatorsKit (35)](#operatorskit)
 - [C2-Collection (13)](#c2-collection)
@@ -31,6 +31,8 @@ python3 scripts/gen_bof_catalog.py
 | `adv-audit-policies` | T1201 | Discovery | Enumerate Windows advanced audit policy categories via registry | none |
 | `ai-surface` | T1518 | Discovery | Enumerate AI tooling config artifacts | none |
 | `amsi-etw-detect` | T1518.001 | Discovery | Check AMSI/ETW presence in current process | none |
+| `app-count` | T1518 | Discovery | Count installed applications across native and WOW64 registry views | none |
+| `applocker-policy` | T1069.001 | Discovery | Enumerate AppLocker rule collections and enforcement configuration | none |
 | `arp` | T1018 | Discovery | ARP cache dump | none |
 | `asr-status` | T1562.001 | Defense Evasion | Enumerate Windows Defender ASR rules state | none |
 | `asreproast` | T1558.004 | Credential Access | AS-REP roastable account enumeration | none |
@@ -38,6 +40,7 @@ python3 scripts/gen_bof_catalog.py
 | `cacls` | T1083 | Discovery | Print file ACLs via GetNamedSecurityInfo. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `clipboard` | T1115 | Collection | Clipboard content dump | none |
 | `cloud-metadata` | T1552.005 | Credential Access | Cloud instance metadata probe (AWS/Azure/GCP) | none |
+| `com-probe` | T1218 | Defense Evasion | Probe whether a COM class can be instantiated from a CLSID | CLSID string |
 | `dir` | T1083 | Discovery | Directory listing via FindFirstFile/FindNextFile. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `dnscache` | T1016.001 | Discovery | DNS cache dump | none |
 | `driversigs` | T1518.001 | Discovery | Driver signature verification | none |
@@ -61,7 +64,9 @@ python3 scripts/gen_bof_catalog.py
 | `listmods` | T1057 | Discovery | List loaded modules in current process via PEB walk. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `locale` | T1614 | Discovery | Get system locale, timezone, and code page info | none |
 | `md5` | T1083 | Discovery | Compute MD5 hash of a file via CryptAPI | <filepath> |
+| `mdm-policy-artifacts` | T1082 | Discovery | Score Windows MDM enrollment posture from registry artifacts | none |
 | `netgroup` | T1069.002 | Discovery | Domain groups via NetGroupEnum. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `netjoin-query` | T1016 | Discovery | Query Windows domain/workgroup join information | none |
 | `netlocalgroup` | T1069.001 | Discovery | Local groups via NetLocalGroupEnum. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `netloggedon` | T1033 | Discovery | Logged-on users enumeration | none |
 | `netshare` | T1135 | Discovery | SMB share enumeration | none |
@@ -72,7 +77,9 @@ python3 scripts/gen_bof_catalog.py
 | `netuser` | T1087.001, T1087.002 | Discovery | Local/domain user enumeration | none |
 | `netview` | T1018 | Discovery | Enumerate servers on the network via NetServerEnum | none |
 | `nonpaged-ldapsearch` | T1087.002 | Discovery | Non-paged LDAP search via ADSI COM | none |
+| `notepad-grab` | T1005 | Collection | Extract text from classic Notepad edit controls | none |
 | `nslookup` | T1018, T1016.001 | Discovery | DNS query via DnsQuery_A. Original C: TrustedSec/cs-situational-awareness-bof | none |
+| `power-state` | T1082 | Discovery | Identify host power source, battery state, and likely form factor | none |
 | `powershell-history` | T1552.003 | Credential Access | Read PowerShell PSReadLine history file | none |
 | `probe` | T1046 | Discovery | TCP port probe — hostname/IPv4/CIDR + multi-port | none |
 | `process-tokens` | T1134.001 | Privilege Escalation | Enumerate process tokens and resolve SIDs | none |
@@ -96,10 +103,13 @@ python3 scripts/gen_bof_catalog.py
 | `uptime` | T1082 | Discovery | Uptime via KUSER_SHARED_DATA | none |
 | `useridletime` | T1010 | Discovery | User idle time via GetLastInputInfo. Original C: TrustedSec/cs-situational-awareness-bof | none |
 | `vssenum` | T1490 | Impact | Enumerate Volume Shadow Copies via WMI query | none |
+| `wallpaper-enum` | T1016 | Discovery | Enumerate the current desktop wallpaper path | none |
+| `wef-detect` | T1518.001 | Discovery | Detect Windows Event Forwarding subscriptions and collector configuration | none |
 | `wevt-logon-enum` | T1087.001 | Discovery | Enumerate recent logon events (EventID 4624) via wevtapi | none |
 | `whoami` | T1033, T1134 | Discovery / Privilege Escalation | Token info dump | none |
 | `windowlist` | T1010 | Discovery | Window enumeration | none |
 | `wmi-query` | T1047 | Execution | Generic WMI query via COM | none |
+| `wsc-status` | T1518.001 | Discovery | Query Windows Security Center provider health | none |
 
 ## Remote Operations
 

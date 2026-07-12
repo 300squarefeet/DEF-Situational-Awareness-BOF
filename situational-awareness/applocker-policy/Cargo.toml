@@ -1,0 +1,13 @@
+[package]
+name="applocker-policy"
+version.workspace=true
+edition.workspace=true
+authors.workspace=true
+license.workspace=true
+description="Enumerate AppLocker rule collections and enforcement configuration"
+[dependencies]
+rustbof.workspace=true
+common={path="../../common"}
+[lib]
+crate-type=["staticlib"]
+name="applocker_policy"

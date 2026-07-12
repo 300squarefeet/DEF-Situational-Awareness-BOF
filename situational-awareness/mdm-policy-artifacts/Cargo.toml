@@ -1,0 +1,13 @@
+[package]
+name="mdm-policy-artifacts"
+version.workspace=true
+edition.workspace=true
+authors.workspace=true
+license.workspace=true
+description="Score Windows MDM enrollment posture from registry artifacts"
+[dependencies]
+rustbof.workspace=true
+common={path="../../common"}
+[lib]
+crate-type=["staticlib"]
+name="mdm_policy_artifacts"

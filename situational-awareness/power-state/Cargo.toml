@@ -1,0 +1,13 @@
+[package]
+name = "power-state"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Identify host power source, battery state, and likely form factor"
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+[lib]
+crate-type = ["staticlib"]
+name = "power_state"

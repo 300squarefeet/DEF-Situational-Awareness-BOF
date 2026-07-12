@@ -1,0 +1,13 @@
+[package]
+name = "netjoin-query"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Query Windows domain/workgroup join information"
+[dependencies]
+rustbof.workspace = true
+common = { path = "../../common" }
+[lib]
+crate-type = ["staticlib"]
+name = "netjoin_query"

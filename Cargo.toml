@@ -201,6 +201,17 @@ members = [
     "situational-awareness/ide-extension-surface",
     "situational-awareness/proxy-enum",
     "situational-awareness/wevt-logon-enum",
+    # Phase 13 — Adrenaline discovery gap-fill
+    "situational-awareness/app-count",
+    "situational-awareness/netjoin-query",
+    "situational-awareness/power-state",
+    "situational-awareness/wsc-status",
+    "situational-awareness/applocker-policy",
+    "situational-awareness/wef-detect",
+    "situational-awareness/wallpaper-enum",
+    "situational-awareness/mdm-policy-artifacts",
+    "situational-awareness/com-probe",
+    "situational-awareness/notepad-grab",
     # Phase 12 — XLL persistence
     "persistence/xll-persist",
 ]
